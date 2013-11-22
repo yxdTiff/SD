@@ -630,7 +630,7 @@ void SD_cut(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
 			*dual_statble_flag = TRUE;
 	}
 
-	if (1)
+	if (0)
 	{
 		/*printf("c->k=%d  STABLE_FLAG: %d, max: %f, min: %f, diff: %f, This is new pi's impact ratio # %d: %f \n", num_samples, *dual_statble_flag,max_ratio, min_ratio, max_ratio-min_ratio, num_samples %sd_global->config.SCAN_LEN,  pi_ratio[num_samples %sd_global->config.SCAN_LEN]);*/
 		fptr = fopen("pi_ratio.log", "a");
