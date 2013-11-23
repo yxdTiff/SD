@@ -7,8 +7,34 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6960045518219FE900CD6831 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960045418219FE900CD6831 /* main.c */; };
-		6960045718219FE900CD6831 /* sdlb.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6960045618219FE900CD6831 /* sdlb.1 */; };
+		696004911821A00300CD6831 /* batch.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960045D1821A00300CD6831 /* batch.c */; };
+		696004921821A00300CD6831 /* cell.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960045F1821A00300CD6831 /* cell.c */; };
+		696004931821A00300CD6831 /* cuts.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004611821A00300CD6831 /* cuts.c */; };
+		696004941821A00300CD6831 /* delta.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004631821A00300CD6831 /* delta.c */; };
+		696004951821A00300CD6831 /* improve.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004651821A00300CD6831 /* improve.c */; };
+		696004961821A00300CD6831 /* input.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004671821A00300CD6831 /* input.c */; };
+		696004971821A00300CD6831 /* lambda.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004691821A00300CD6831 /* lambda.c */; };
+		696004981821A00300CD6831 /* log.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960046B1821A00300CD6831 /* log.c */; };
+		696004991821A00300CD6831 /* master.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960046D1821A00300CD6831 /* master.c */; };
+		6960049A1821A00300CD6831 /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960046F1821A00300CD6831 /* memory.c */; };
+		6960049B1821A00300CD6831 /* omega.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004711821A00300CD6831 /* omega.c */; };
+		6960049C1821A00300CD6831 /* optimal.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004731821A00300CD6831 /* optimal.c */; };
+		6960049D1821A00300CD6831 /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004751821A00300CD6831 /* parser.c */; };
+		6960049E1821A00300CD6831 /* prob.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004771821A00300CD6831 /* prob.c */; };
+		6960049F1821A00300CD6831 /* quad.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004791821A00300CD6831 /* quad.c */; };
+		696004A01821A00300CD6831 /* rvgen.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960047B1821A00300CD6831 /* rvgen.c */; };
+		696004A11821A00300CD6831 /* sd.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960047D1821A00300CD6831 /* sd.c */; };
+		696004A21821A00300CD6831 /* sigma.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004801821A00300CD6831 /* sigma.c */; };
+		696004A31821A00300CD6831 /* soln.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004821821A00300CD6831 /* soln.c */; };
+		696004A41821A00300CD6831 /* solverc.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004851821A00300CD6831 /* solverc.c */; };
+		696004A61821A00300CD6831 /* subprob.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004871821A00300CD6831 /* subprob.c */; };
+		696004A71821A00300CD6831 /* supomega.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004891821A00300CD6831 /* supomega.c */; };
+		696004A81821A00300CD6831 /* testout.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960048B1821A00300CD6831 /* testout.c */; };
+		696004A91821A00300CD6831 /* theta.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960048D1821A00300CD6831 /* theta.c */; };
+		696004AA1821A00300CD6831 /* utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960048F1821A00300CD6831 /* utility.c */; };
+		696004AC1821A04200CD6831 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696004AB1821A04200CD6831 /* CoreFoundation.framework */; };
+		696004AE1821A04800CD6831 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696004AD1821A04800CD6831 /* IOKit.framework */; };
+		696004B01821A06100CD6831 /* libcplex.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 696004AF1821A06100CD6831 /* libcplex.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -18,7 +44,6 @@
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
-				6960045718219FE900CD6831 /* sdlb.1 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -26,8 +51,62 @@
 
 /* Begin PBXFileReference section */
 		6960045118219FE900CD6831 /* sdlb */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sdlb; sourceTree = BUILT_PRODUCTS_DIR; };
-		6960045418219FE900CD6831 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		6960045618219FE900CD6831 /* sdlb.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = sdlb.1; sourceTree = "<group>"; };
+		6960045D1821A00300CD6831 /* batch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = batch.c; sourceTree = "<group>"; };
+		6960045E1821A00300CD6831 /* batch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = batch.h; sourceTree = "<group>"; };
+		6960045F1821A00300CD6831 /* cell.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cell.c; sourceTree = "<group>"; };
+		696004601821A00300CD6831 /* cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cell.h; sourceTree = "<group>"; };
+		696004611821A00300CD6831 /* cuts.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cuts.c; sourceTree = "<group>"; };
+		696004621821A00300CD6831 /* cuts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cuts.h; sourceTree = "<group>"; };
+		696004631821A00300CD6831 /* delta.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = delta.c; sourceTree = "<group>"; };
+		696004641821A00300CD6831 /* delta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = delta.h; sourceTree = "<group>"; };
+		696004651821A00300CD6831 /* improve.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = improve.c; sourceTree = "<group>"; };
+		696004661821A00300CD6831 /* improve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = improve.h; sourceTree = "<group>"; };
+		696004671821A00300CD6831 /* input.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = input.c; sourceTree = "<group>"; };
+		696004681821A00300CD6831 /* input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = input.h; sourceTree = "<group>"; };
+		696004691821A00300CD6831 /* lambda.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lambda.c; sourceTree = "<group>"; };
+		6960046A1821A00300CD6831 /* lambda.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lambda.h; sourceTree = "<group>"; };
+		6960046B1821A00300CD6831 /* log.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = log.c; sourceTree = "<group>"; };
+		6960046C1821A00300CD6831 /* log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = log.h; sourceTree = "<group>"; };
+		6960046D1821A00300CD6831 /* master.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = master.c; sourceTree = "<group>"; };
+		6960046E1821A00300CD6831 /* master.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = master.h; sourceTree = "<group>"; };
+		6960046F1821A00300CD6831 /* memory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = memory.c; sourceTree = "<group>"; };
+		696004701821A00300CD6831 /* memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memory.h; sourceTree = "<group>"; };
+		696004711821A00300CD6831 /* omega.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = omega.c; sourceTree = "<group>"; };
+		696004721821A00300CD6831 /* omega.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = omega.h; sourceTree = "<group>"; };
+		696004731821A00300CD6831 /* optimal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = optimal.c; sourceTree = "<group>"; };
+		696004741821A00300CD6831 /* optimal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = optimal.h; sourceTree = "<group>"; };
+		696004751821A00300CD6831 /* parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = parser.c; sourceTree = "<group>"; };
+		696004761821A00300CD6831 /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parser.h; sourceTree = "<group>"; };
+		696004771821A00300CD6831 /* prob.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = prob.c; sourceTree = "<group>"; };
+		696004781821A00300CD6831 /* prob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = prob.h; sourceTree = "<group>"; };
+		696004791821A00300CD6831 /* quad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = quad.c; sourceTree = "<group>"; };
+		6960047A1821A00300CD6831 /* quad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = quad.h; sourceTree = "<group>"; };
+		6960047B1821A00300CD6831 /* rvgen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rvgen.c; sourceTree = "<group>"; };
+		6960047C1821A00300CD6831 /* rvgen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rvgen.h; sourceTree = "<group>"; };
+		6960047D1821A00300CD6831 /* sd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sd.c; sourceTree = "<group>"; };
+		6960047E1821A00300CD6831 /* sdconstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sdconstants.h; sourceTree = "<group>"; };
+		6960047F1821A00300CD6831 /* sdglobal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sdglobal.h; sourceTree = "<group>"; };
+		696004801821A00300CD6831 /* sigma.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sigma.c; sourceTree = "<group>"; };
+		696004811821A00300CD6831 /* sigma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sigma.h; sourceTree = "<group>"; };
+		696004821821A00300CD6831 /* soln.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = soln.c; sourceTree = "<group>"; };
+		696004831821A00300CD6831 /* soln.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = soln.h; sourceTree = "<group>"; };
+		696004841821A00300CD6831 /* solver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = solver.h; sourceTree = "<group>"; };
+		696004851821A00300CD6831 /* solverc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = solverc.c; sourceTree = "<group>"; };
+		696004861821A00300CD6831 /* solverg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = solverg.c; sourceTree = "<group>"; };
+		696004871821A00300CD6831 /* subprob.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = subprob.c; sourceTree = "<group>"; };
+		696004881821A00300CD6831 /* subprob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = subprob.h; sourceTree = "<group>"; };
+		696004891821A00300CD6831 /* supomega.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = supomega.c; sourceTree = "<group>"; };
+		6960048A1821A00300CD6831 /* supomega.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = supomega.h; sourceTree = "<group>"; };
+		6960048B1821A00300CD6831 /* testout.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = testout.c; sourceTree = "<group>"; };
+		6960048C1821A00300CD6831 /* testout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testout.h; sourceTree = "<group>"; };
+		6960048D1821A00300CD6831 /* theta.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = theta.c; sourceTree = "<group>"; };
+		6960048E1821A00300CD6831 /* theta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = theta.h; sourceTree = "<group>"; };
+		6960048F1821A00300CD6831 /* utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utility.c; sourceTree = "<group>"; };
+		696004901821A00300CD6831 /* utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utility.h; sourceTree = "<group>"; };
+		696004AB1821A04200CD6831 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		696004AD1821A04800CD6831 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		696004AF1821A06100CD6831 /* libcplex.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcplex.a; path = "../../../../Applications/IBM/ILOG/CPLEX_Studio124/cplex/lib/x86-64_darwin9_gcc4.0/static_pic/libcplex.a"; sourceTree = "<group>"; };
+		696004B41821A2EA00CD6831 /* config.sd */ = {isa = PBXFileReference; lastKnownFileType = text; name = config.sd; path = "../../../../Library/Developer/Xcode/DerivedData/sdlb-aqzmdecdolvenjbvdyqijfayklfa/Build/Products/Debug/config.sd"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +114,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				696004B01821A06100CD6831 /* libcplex.a in Frameworks */,
+				696004AE1821A04800CD6831 /* IOKit.framework in Frameworks */,
+				696004AC1821A04200CD6831 /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,7 +126,9 @@
 		6960044818219FE900CD6831 = {
 			isa = PBXGroup;
 			children = (
+				696004B11821A06C00CD6831 /* Framework */,
 				6960045318219FE900CD6831 /* sdlb */,
+				696004B41821A2EA00CD6831 /* config.sd */,
 				6960045218219FE900CD6831 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -60,10 +144,70 @@
 		6960045318219FE900CD6831 /* sdlb */ = {
 			isa = PBXGroup;
 			children = (
-				6960045418219FE900CD6831 /* main.c */,
-				6960045618219FE900CD6831 /* sdlb.1 */,
+				6960045D1821A00300CD6831 /* batch.c */,
+				6960045F1821A00300CD6831 /* cell.c */,
+				696004611821A00300CD6831 /* cuts.c */,
+				696004631821A00300CD6831 /* delta.c */,
+				696004651821A00300CD6831 /* improve.c */,
+				696004671821A00300CD6831 /* input.c */,
+				696004691821A00300CD6831 /* lambda.c */,
+				6960046B1821A00300CD6831 /* log.c */,
+				6960046D1821A00300CD6831 /* master.c */,
+				6960046F1821A00300CD6831 /* memory.c */,
+				696004711821A00300CD6831 /* omega.c */,
+				696004731821A00300CD6831 /* optimal.c */,
+				696004751821A00300CD6831 /* parser.c */,
+				696004771821A00300CD6831 /* prob.c */,
+				696004791821A00300CD6831 /* quad.c */,
+				6960047B1821A00300CD6831 /* rvgen.c */,
+				6960047D1821A00300CD6831 /* sd.c */,
+				696004801821A00300CD6831 /* sigma.c */,
+				696004821821A00300CD6831 /* soln.c */,
+				696004851821A00300CD6831 /* solverc.c */,
+				696004861821A00300CD6831 /* solverg.c */,
+				696004871821A00300CD6831 /* subprob.c */,
+				696004891821A00300CD6831 /* supomega.c */,
+				6960048B1821A00300CD6831 /* testout.c */,
+				6960048D1821A00300CD6831 /* theta.c */,
+				6960048F1821A00300CD6831 /* utility.c */,
+				6960045E1821A00300CD6831 /* batch.h */,
+				696004601821A00300CD6831 /* cell.h */,
+				696004621821A00300CD6831 /* cuts.h */,
+				696004641821A00300CD6831 /* delta.h */,
+				696004661821A00300CD6831 /* improve.h */,
+				696004681821A00300CD6831 /* input.h */,
+				6960046A1821A00300CD6831 /* lambda.h */,
+				6960046C1821A00300CD6831 /* log.h */,
+				6960046E1821A00300CD6831 /* master.h */,
+				696004701821A00300CD6831 /* memory.h */,
+				696004721821A00300CD6831 /* omega.h */,
+				696004741821A00300CD6831 /* optimal.h */,
+				696004761821A00300CD6831 /* parser.h */,
+				696004781821A00300CD6831 /* prob.h */,
+				6960047A1821A00300CD6831 /* quad.h */,
+				6960047C1821A00300CD6831 /* rvgen.h */,
+				6960047E1821A00300CD6831 /* sdconstants.h */,
+				6960047F1821A00300CD6831 /* sdglobal.h */,
+				696004811821A00300CD6831 /* sigma.h */,
+				696004831821A00300CD6831 /* soln.h */,
+				696004841821A00300CD6831 /* solver.h */,
+				696004881821A00300CD6831 /* subprob.h */,
+				6960048A1821A00300CD6831 /* supomega.h */,
+				6960048C1821A00300CD6831 /* testout.h */,
+				6960048E1821A00300CD6831 /* theta.h */,
+				696004901821A00300CD6831 /* utility.h */,
 			);
 			path = sdlb;
+			sourceTree = "<group>";
+		};
+		696004B11821A06C00CD6831 /* Framework */ = {
+			isa = PBXGroup;
+			children = (
+				696004AF1821A06100CD6831 /* libcplex.a */,
+				696004AD1821A04800CD6831 /* IOKit.framework */,
+				696004AB1821A04200CD6831 /* CoreFoundation.framework */,
+			);
+			name = Framework;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -117,7 +261,31 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6960045518219FE900CD6831 /* main.c in Sources */,
+				6960049E1821A00300CD6831 /* prob.c in Sources */,
+				6960049D1821A00300CD6831 /* parser.c in Sources */,
+				696004A21821A00300CD6831 /* sigma.c in Sources */,
+				6960049F1821A00300CD6831 /* quad.c in Sources */,
+				696004A91821A00300CD6831 /* theta.c in Sources */,
+				696004981821A00300CD6831 /* log.c in Sources */,
+				696004A11821A00300CD6831 /* sd.c in Sources */,
+				696004911821A00300CD6831 /* batch.c in Sources */,
+				696004A41821A00300CD6831 /* solverc.c in Sources */,
+				696004A61821A00300CD6831 /* subprob.c in Sources */,
+				696004961821A00300CD6831 /* input.c in Sources */,
+				696004991821A00300CD6831 /* master.c in Sources */,
+				6960049C1821A00300CD6831 /* optimal.c in Sources */,
+				696004A71821A00300CD6831 /* supomega.c in Sources */,
+				696004971821A00300CD6831 /* lambda.c in Sources */,
+				696004A81821A00300CD6831 /* testout.c in Sources */,
+				696004951821A00300CD6831 /* improve.c in Sources */,
+				696004931821A00300CD6831 /* cuts.c in Sources */,
+				6960049A1821A00300CD6831 /* memory.c in Sources */,
+				696004A31821A00300CD6831 /* soln.c in Sources */,
+				6960049B1821A00300CD6831 /* omega.c in Sources */,
+				696004941821A00300CD6831 /* delta.c in Sources */,
+				696004AA1821A00300CD6831 /* utility.c in Sources */,
+				696004921821A00300CD6831 /* cell.c in Sources */,
+				696004A01821A00300CD6831 /* rvgen.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,6 +363,16 @@
 		6960045B18219FE900CD6831 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/Users/yifanliu/Applications/IBM/ILOG/CPLEX_Studio124/cplex/include/ilcplex,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_APPS_DIR)/IBM/ILOG/CPLEX_Studio124/cplex/lib/x86-64_darwin9_gcc4.0/static_pic",
+				);
+				OTHER_LDFLAGS = "-Wl,-no_compact_unwind";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -202,6 +380,16 @@
 		6960045C18219FE900CD6831 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/Users/yifanliu/Applications/IBM/ILOG/CPLEX_Studio124/cplex/include/ilcplex,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_APPS_DIR)/IBM/ILOG/CPLEX_Studio124/cplex/lib/x86-64_darwin9_gcc4.0/static_pic",
+				);
+				OTHER_LDFLAGS = "-Wl,-no_compact_unwind";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -225,6 +413,7 @@
 				6960045C18219FE900CD6831 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
