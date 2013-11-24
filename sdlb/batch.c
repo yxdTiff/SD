@@ -51,10 +51,12 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 	copy->bndname = NULL;
 
 	/* Initialize dimensions of copy based on master. */
-	copy->matsz = BATCH_SIZE * master->matsz
+    /* modified by Yifan 2013.11.23 Initialize only one batch for first stage constraints*/
+    /* batch problem column number won't be affected. It is still BATCH_SIZE * (master->mac + 1) */
+	copy->matsz = master->matsz
 			+ BATCH_SIZE * (max_cuts) * (master->mac + 1);
-	copy->marsz = BATCH_SIZE * master->mar + BATCH_SIZE * max_cuts;
-	copy->mar = BATCH_SIZE * master->mar;
+	copy->marsz = master->mar + BATCH_SIZE * max_cuts;
+	copy->mar = master->mar;
 	copy->macsz = BATCH_SIZE * (master->mac + 1);
 	copy->mac = BATCH_SIZE * (master->mac + 1);
 	copy->cstorsz = BATCH_SIZE
