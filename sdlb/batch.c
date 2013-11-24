@@ -162,7 +162,7 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 			copy->cname[i * master->mac + j] = master->cname[j]
 					+ BATCH_SUFFIX * j + col_offset + i * batch_col_offset;
             /* modified by Yifan 2013.11.24 Let's try the second batch */
-            if (i==1) {
+            if (i==0) {
                 copy->matbeg[i * master->mac + j] = cnt;
                 copy->matcnt[i * master->mac + j] = master->matcnt[j];
                 for (idx = master->matbeg[j];
@@ -626,8 +626,8 @@ BOOL get_beta_x(sdglobal_type* sd_global, soln_type *s, vector Beta,
 	int i, j, k;
 	int row, col, mast_rows;
 	double alpha, dual;
-
-	mast_rows = BATCH_SIZE * num->mast_rows;
+    /* modified by Yifan 2013.11.24 Master rows count needs update here!*/
+	mast_rows = num->mast_rows;
 
 	for (i = 0; i < BATCH_SIZE; i++)
 	{
