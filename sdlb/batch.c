@@ -222,7 +222,7 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 	if (!(setup_problem(copy)))
 		err_msg("Problem Setup", "new_master", "copy");
 
-	write_prob(copy, "batch.lp"); /* added by Yifan to test batch.lp structure */
+	/* write_prob(copy, "batch.lp");*/ /* added by Yifan to test batch.lp structure */
 
 	/*
 	 ** We're done, and we have room for max_cuts more constraints.
