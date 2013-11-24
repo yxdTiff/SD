@@ -163,7 +163,8 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 					+ BATCH_SUFFIX * j + col_offset + i * batch_col_offset;
 			copy->matbeg[i * master->mac + j] = cnt;
 			copy->matcnt[i * master->mac + j] = master->matcnt[j];
-            if (i==0) {
+            /* modified by Yifan 2013.11.24 Let's try the second batch */
+            if (i==1) {
                 for (idx = master->matbeg[j];
                      idx < master->matbeg[j] + master->matcnt[j]; idx++)
                 {
@@ -180,7 +181,8 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 
 	/* Copy all information concerning rows of master */
     /* modified by Yifan 2013.11.23 Only do this update for the first batch*/
-    i = 0;
+    /* modified by Yifan 2013.11.24 Let's try the second batch */
+    i = 1;
     for (r = 0; r < master->mar; r++)
     {
         copy->rhsx[i * master->mar + r] = master->rhsx[r];
