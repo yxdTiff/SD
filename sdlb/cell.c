@@ -245,9 +245,11 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
             if (prob->current_batch_id == 0) {
                 update_batch_rhs(sd_global, prob, cell, soln,
                                  prob->current_batch_id);
-                update_batch_bounds(sd_global, prob, cell, soln,
-                                    prob->current_batch_id);
             }
+            /* modified by Yifan 2013.11.23 bounds for each batch variables are added back. */
+            /* It is not working without bounds. */
+            update_batch_bounds(sd_global, prob, cell, soln,
+                                prob->current_batch_id);
 			save_batch_incumb(sd_global, prob, cell, soln,
 					prob->current_batch_id);
 
