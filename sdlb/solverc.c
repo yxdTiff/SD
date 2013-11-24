@@ -689,15 +689,15 @@ BOOL get_dual(vector Pi, one_problem *p, num_type *num, int length)
 	if (strcmp(p->name, "batch_mean") == 0)
 	{
 		/*This part is for original master constraints*/
-		failed = CPXgetpi(env, p->lp, Pi + 1, num->mast_rows * num->batch_id,
-				num->mast_rows * num->batch_id + length - 1);
+        /* modified by Yifan 2013.11.23  Now the original part only have one batch */
+		failed = CPXgetpi(env, p->lp, Pi + 1, 0, length - 1);
 		/*This part is for final optimality cuts*/
 		failed = CPXgetpi(
 				env,
 				p->lp,
 				Pi + 1 + length,
-				BATCH_SIZE * num->mast_rows + num->batch_id * num->max_cuts,
-				BATCH_SIZE * num->mast_rows + num->batch_id * num->max_cuts
+				num->mast_rows + num->batch_id * num->max_cuts,
+				num->mast_rows + num->batch_id * num->max_cuts
 						+ num->max_cuts - 1);
 	}
 	else
