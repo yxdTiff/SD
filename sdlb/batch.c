@@ -61,7 +61,7 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 	copy->mac = BATCH_SIZE * (master->mac + 1);
 	copy->cstorsz = BATCH_SIZE
 			* (master->cstorsz + BATCH_SUFFIX * master->mac + NAME_SIZE);
-	copy->rstorsz = BATCH_SIZE * (master->rstorsz + BATCH_SUFFIX * master->mar)
+	copy->rstorsz = (master->rstorsz + BATCH_SUFFIX * master->mar)
 			+ NAME_SIZE * (BATCH_SIZE * max_cuts);
 	copy->objsen = master->objsen;
 
