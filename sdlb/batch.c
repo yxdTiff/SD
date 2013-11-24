@@ -181,8 +181,8 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 
 	/* Copy all information concerning rows of master */
     /* modified by Yifan 2013.11.23 Only do this update for the first batch*/
-    /* modified by Yifan 2013.11.24 Let's try the second batch */
-    i = 1;
+    /* modified by Yifan 2013.11.24 Let's try the second batch , still need i=0 for these names, rhs values and sense*/
+    i = 0;
     for (r = 0; r < master->mar; r++)
     {
         copy->rhsx[i * master->mar + r] = master->rhsx[r];
