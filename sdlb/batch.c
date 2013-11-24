@@ -122,19 +122,23 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 			}
 			copy->cstore[i++] = *q;
 		}
+        
+        if (idx==0) {
+            /* modified by Yifan 2013.11.23 No need to repeat BATCH_SIZE times for master constraints */
+            /* modified by Yifan 2013.11.23 This piece need to be rearranged into the loop to get correct name*/
+            for (q = master->rname[0]; q < master->rname[0] + master->rstorsz; q++)
+            {
+                if (*q == '\0')
+                {
+                    copy->rstore[j++] = batch_name[0];
+                    copy->rstore[j++] = batch_name[1];
+                    copy->rstore[j++] = batch_name[2];
+                }
+                copy->rstore[j++] = *q;
+            }
+        }
 	}
     
-    /* modified by Yifan 2013.11.23 No need to repeat BATCH_SIZE times for master constraints */
-    for (q = master->rname[0]; q < master->rname[0] + master->rstorsz; q++)
-    {
-        if (*q == '\0')
-        {
-            copy->rstore[j++] = batch_name[0];
-            copy->rstore[j++] = batch_name[1];
-            copy->rstore[j++] = batch_name[2];
-        }
-        copy->rstore[j++] = *q;
-    }
 
 	strcpy(copy->name, "batch_mean");
 	strcpy(copy->objname, master->objname);
@@ -177,13 +181,13 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 	/* Copy all information concerning rows of master */
     /* modified by Yifan 2013.11.23 Only do this update for the first batch*/
     i = 0;
-		for (r = 0; r < master->mar; r++)
-		{
-			copy->rhsx[i * master->mar + r] = master->rhsx[r];
-			copy->senx[i * master->mar + r] = master->senx[r];
-			copy->rname[i * master->mar + r] = master->rname[r]
-					+ BATCH_SUFFIX * r + row_offset + i * batch_row_offset;
-		}
+    for (r = 0; r < master->mar; r++)
+    {
+        copy->rhsx[i * master->mar + r] = master->rhsx[r];
+        copy->senx[i * master->mar + r] = master->senx[r];
+        copy->rname[i * master->mar + r] = master->rname[r]
+                + BATCH_SUFFIX * r + row_offset + i * batch_row_offset;
+    }
 
 	/*
 	 ** Initialize information for the extra columns in the new batch mean problem.
@@ -216,7 +220,7 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 	if (!(setup_problem(copy)))
 		err_msg("Problem Setup", "new_master", "copy");
 
-	/*write_prob(copy, "batch.lp");*//* added by Yifan to test batch.lp structure */
+	/*write_prob(copy, "batch.lp");*/ /* added by Yifan to test batch.lp structure */
 
 	/*
 	 ** We're done, and we have room for max_cuts more constraints.
