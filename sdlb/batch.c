@@ -161,15 +161,15 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 			copy->bdl[i * master->mac + j] = master->bdl[j];
 			copy->cname[i * master->mac + j] = master->cname[j]
 					+ BATCH_SUFFIX * j + col_offset + i * batch_col_offset;
-			copy->matbeg[i * master->mac + j] = cnt;
-			copy->matcnt[i * master->mac + j] = master->matcnt[j];
             /* modified by Yifan 2013.11.24 Let's try the second batch */
             if (i==1) {
+                copy->matbeg[i * master->mac + j] = cnt;
+                copy->matcnt[i * master->mac + j] = master->matcnt[j];
                 for (idx = master->matbeg[j];
                      idx < master->matbeg[j] + master->matcnt[j]; idx++)
                 {
                     copy->matval[cnt] = master->matval[idx];
-                    copy->matind[cnt] = master->matind[idx] + i * master->mar;
+                    copy->matind[cnt] = master->matind[idx] + 0 * master->mar;
                     cnt++;
                 }
             }
@@ -222,7 +222,7 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 	if (!(setup_problem(copy)))
 		err_msg("Problem Setup", "new_master", "copy");
 
-	/*write_prob(copy, "batch.lp");*/ /* added by Yifan to test batch.lp structure */
+	write_prob(copy, "batch.lp"); /* added by Yifan to test batch.lp structure */
 
 	/*
 	 ** We're done, and we have room for max_cuts more constraints.
