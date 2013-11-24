@@ -122,19 +122,19 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 			}
 			copy->cstore[i++] = *q;
 		}
-
-		for (q = master->rname[0]; q < master->rname[0] + master->rstorsz; q++)
-		{
-			if (*q == '\0')
-			{
-				copy->rstore[j++] = batch_name[0];
-				copy->rstore[j++] = batch_name[1];
-				copy->rstore[j++] = batch_name[2];
-			}
-			copy->rstore[j++] = *q;
-		}
-
 	}
+    
+    /* modified by Yifan 2013.11.23 No need to repeat BATCH_SIZE times for master constraints */
+    for (q = master->rname[0]; q < master->rname[0] + master->rstorsz; q++)
+    {
+        if (*q == '\0')
+        {
+            copy->rstore[j++] = batch_name[0];
+            copy->rstore[j++] = batch_name[1];
+            copy->rstore[j++] = batch_name[2];
+        }
+        copy->rstore[j++] = *q;
+    }
 
 	strcpy(copy->name, "batch_mean");
 	strcpy(copy->objname, master->objname);
@@ -159,21 +159,24 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 					+ BATCH_SUFFIX * j + col_offset + i * batch_col_offset;
 			copy->matbeg[i * master->mac + j] = cnt;
 			copy->matcnt[i * master->mac + j] = master->matcnt[j];
-			for (idx = master->matbeg[j];
-					idx < master->matbeg[j] + master->matcnt[j]; idx++)
-			{
-				copy->matval[cnt] = master->matval[idx];
-				copy->matind[cnt] = master->matind[idx] + i * master->mar;
-				cnt++;
-			}
+            if (i==0) {
+                for (idx = master->matbeg[j];
+                     idx < master->matbeg[j] + master->matcnt[j]; idx++)
+                {
+                    copy->matval[cnt] = master->matval[idx];
+                    copy->matind[cnt] = master->matind[idx] + i * master->mar;
+                    cnt++;
+                }
+            }
+            /* modified by Yifan 2013.11.23 Only do the above row update for the first batch*/
 			/* This line of code is causing a issue in printing the Batch-Mean */
 			//cnt += BATCH_SIZE * max_cuts;
 		}
 	}
 
 	/* Copy all information concerning rows of master */
-	for (i = 0; i < BATCH_SIZE; i++)
-	{
+    /* modified by Yifan 2013.11.23 Only do this update for the first batch*/
+    i = 0;
 		for (r = 0; r < master->mar; r++)
 		{
 			copy->rhsx[i * master->mar + r] = master->rhsx[r];
@@ -181,7 +184,6 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 			copy->rname[i * master->mar + r] = master->rname[r]
 					+ BATCH_SUFFIX * r + row_offset + i * batch_row_offset;
 		}
-	}
 
 	/*
 	 ** Initialize information for the extra columns in the new batch mean problem.
