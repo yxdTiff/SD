@@ -308,7 +308,7 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
                 batch_start = clock();
                 solve_problem(sd_global, sd_global->batch_problem);
                 batch_end = clock();
-                batch_time = ((double) batch_end - (double) batch_start)/ CLOCKS_PER_SEC;
+                batch_time = ((double) (batch_end - batch_start))/ CLOCKS_PER_SEC;
 				process_batch_prob(sd_global, prob, soln, &obj, batch_dual,
 						batch_d, batch_obj);
 			}
