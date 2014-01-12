@@ -54,6 +54,9 @@ BOOL optimal(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_type *s,
 	 */
 	if (c->k > sd_global->config.MIN_ITER && *s->dual_statble_flag)
 	{
+        /* Store all data structure necessary for resuming SD */
+        /* modified by Yifan 2014.01.12 */
+        
 		if (pre_test_1(sd_global, s))
 		{ /* if (pre_test_2(p,c,s) )  JH */
 			{

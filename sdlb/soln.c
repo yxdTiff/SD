@@ -794,7 +794,7 @@ void process_batch_prob(sdglobal_type* sd_global, prob_type *prob,
 				prob->num, prob->num->mast_rows);
 		get_dual_slacks(soln->Batch_dj[prob->num->batch_id],
 				sd_global->batch_problem, prob->num, prob->num->mast_cols);
-        /* modified by Yifan 2013.11.23 Think about this re-scale for constraint dual!*/
+
 		for (k = 0; k <= prob->num->mast_rows + prob->num->max_cuts; k++)
 		{
 			soln->Batch_pi[prob->num->batch_id][k] = BATCH_SIZE
