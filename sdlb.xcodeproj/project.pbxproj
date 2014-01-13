@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		695D165D1883B4CE0037891D /* resume.c in Sources */ = {isa = PBXBuildFile; fileRef = 695D165C1883B4CE0037891D /* resume.c */; };
 		696004911821A00300CD6831 /* batch.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960045D1821A00300CD6831 /* batch.c */; };
 		696004921821A00300CD6831 /* cell.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960045F1821A00300CD6831 /* cell.c */; };
 		696004931821A00300CD6831 /* cuts.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004611821A00300CD6831 /* cuts.c */; };
@@ -50,6 +51,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		695D165C1883B4CE0037891D /* resume.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = resume.c; sourceTree = "<group>"; };
+		695D165E1883B57F0037891D /* resume.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = resume.h; sourceTree = "<group>"; };
 		6960045118219FE900CD6831 /* sdlb */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sdlb; sourceTree = BUILT_PRODUCTS_DIR; };
 		6960045D1821A00300CD6831 /* batch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = batch.c; sourceTree = "<group>"; };
 		6960045E1821A00300CD6831 /* batch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = batch.h; sourceTree = "<group>"; };
@@ -196,6 +199,8 @@
 				6960048C1821A00300CD6831 /* testout.h */,
 				6960048E1821A00300CD6831 /* theta.h */,
 				696004901821A00300CD6831 /* utility.h */,
+				695D165C1883B4CE0037891D /* resume.c */,
+				695D165E1883B57F0037891D /* resume.h */,
 			);
 			path = sdlb;
 			sourceTree = "<group>";
@@ -281,6 +286,7 @@
 				696004931821A00300CD6831 /* cuts.c in Sources */,
 				6960049A1821A00300CD6831 /* memory.c in Sources */,
 				696004A31821A00300CD6831 /* soln.c in Sources */,
+				695D165D1883B4CE0037891D /* resume.c in Sources */,
 				6960049B1821A00300CD6831 /* omega.c in Sources */,
 				696004941821A00300CD6831 /* delta.c in Sources */,
 				696004AA1821A00300CD6831 /* utility.c in Sources */,
