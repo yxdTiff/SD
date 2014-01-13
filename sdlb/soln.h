@@ -72,8 +72,6 @@ typedef struct
     sd_long *fidx;
 	int *weight;
 	int *filter;
-	int **batch_idx;
-	BOOL *used_opt_cut; /* Yifan 03/20/2012 Test for omega issues*/
 	double *RT;
 } omega_type;
 

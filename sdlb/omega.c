@@ -66,7 +66,6 @@ int generate_observ(sdglobal_type* sd_global, omega_type *omega, num_type *num,
 				(*new_omeg) = FALSE;
 				omega->weight[cnt]++;
 				mem_free(observ);
-				//omega->batch_idx[omega->k] = omega->idx[cnt];
 				return cnt;
 			}
 
@@ -94,7 +93,6 @@ int generate_observ(sdglobal_type* sd_global, omega_type *omega, num_type *num,
 #ifdef TRACE
 	printf("Exiting generate_observ\n");
 #endif
-	//omega->batch_idx[omega->k] = omega->idx[next];
 	return next;
 }
 
@@ -309,14 +307,7 @@ omega_type *new_omega(int num_iter, int num_rv, coord_type *coord)
 	if (!(omega->filter = (int *) mem_calloc (num_iter, sizeof(int))))
 		err_msg("Allocation", "new_omega", "omega->filter");
 
-	/* Yifan 03/20/2012 Test for omega issues*/
-	if (!(omega->used_opt_cut = (BOOL *) mem_calloc (num_iter, sizeof(BOOL))))
-		err_msg("Allocation", "new_omega", "omega->filter");
-
 	if (!(omega->idx = (int **) mem_calloc (num_iter, sizeof(int *))))
-		err_msg("Allocation", "new_omega", "omega->idx");
-
-	if (!(omega->batch_idx = (int **) mem_calloc (num_iter, sizeof(int *))))
 		err_msg("Allocation", "new_omega", "omega->idx");
   
     if(!(omega->fidx = (sd_long *) mem_calloc (num_iter, sizeof(sd_long))))
@@ -354,8 +345,6 @@ void free_omega(omega_type *omega)
 	mem_free(omega->weight);
 	mem_free(omega->filter);
 	mem_free(omega->RT);
-	mem_free(omega->used_opt_cut);
-	mem_free(omega->batch_idx);
     mem_free(omega->fidx);
 	mem_free(omega);
 }
