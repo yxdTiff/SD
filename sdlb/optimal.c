@@ -58,8 +58,8 @@ BOOL optimal(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_type *s,
 	if (c->k > sd_global->config.MIN_ITER && *s->dual_statble_flag)
 	{
 
-        store_sd_data(sd_global, p, c, s);
-        
+        //store_sd_data(sd_global, p, c, s);
+        //write_prob(c->master,"com.lp");
 		if (pre_test_1(sd_global, s))
 		{ /* if (pre_test_2(p,c,s) )  JH */
 			{

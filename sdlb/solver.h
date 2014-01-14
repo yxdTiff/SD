@@ -30,6 +30,7 @@ int get_cols(one_problem *p, int *pnzcnt, int *cmatbeg, int *cmatind,
 		double *cmatval, int cmatspace, int *psurplus, int begin, int end);
 int get_coef(one_problem *p, int row, int col, double *coef);
 void *read_problem(one_problem *p, char *filename, char *filetype);
+void read_problem_simple(one_problem *p, char *filename, char *filetype);
 int get_obj(one_problem *p, double *obj, int begin, int end);
 int get_rhs(one_problem *p, double *rhsx, int begin, int end);
 int get_sense(one_problem *p, char *senx, int begin, int end);

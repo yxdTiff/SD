@@ -27,212 +27,205 @@
 int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_type *s)
 {
     int cnt, idx, obs;
+    FILE *rep_data;
     /* Store all data structure necessary for resuming SD */
     /* modified by Yifan 2014.01.12 */
-    
+    rep_data = fopen("rep_data.txt", "w");
     /* 1. Start storing omega_type */
-    printf("\n");
-    printf("OMEGA\n");
-    printf("cnt: %d\n",s->omega->cnt);
-    printf("next: %d\n",s->omega->next);
-    printf("most: %d\n",s->omega->most);
-    printf("last: %d\n",s->omega->last);
-    printf("k: %d\n",s->omega->k);
+    fprintf(rep_data, "%d\n",s->omega->cnt);
+    fprintf(rep_data, "%d\n",s->omega->next);
+    fprintf(rep_data, "%d\n",s->omega->most);
+    fprintf(rep_data, "%d\n",s->omega->last);
+    fprintf(rep_data, "%d\n",s->omega->k);
     for (cnt = 0; cnt <= p->num->rv; cnt++) {
-        printf("row[%d]: %d\n", cnt, s->omega->row[cnt]);
+        fprintf(rep_data, "%d\n", s->omega->row[cnt]);
     }
     for (cnt = 0; cnt <= p->num->rv; cnt++) {
-        printf("col[%d]: %d\n", cnt, s->omega->col[cnt]);
+        fprintf(rep_data, "%d\n", s->omega->col[cnt]);
     }
     for (idx = 0; idx < s->omega->cnt; idx++) {
         for (cnt = 0; cnt <= p->num->cipher; cnt++) {
-            printf("idx[%d][%d]: %d\n", idx, cnt, s->omega->idx[idx][cnt]);
+            fprintf(rep_data, "%d\n", s->omega->idx[idx][cnt]);
         }
     }
     for (idx = 0; idx < s->omega->cnt; idx++) {
-        printf("weight[%d]: %d\n", idx, s->omega->weight[idx]);
+        fprintf(rep_data, "%d\n", s->omega->weight[idx]);
     }
     for (idx = 0; idx < s->omega->cnt; idx++) {
-        printf("filter[%d]: %d\n", idx, s->omega->filter[idx]);
+        fprintf(rep_data, "%d\n", s->omega->filter[idx]);
     }
     for (cnt = 1; cnt <= sd_global->omegas.num_omega; cnt++) {
-        printf("RT[%d]: %f\n", cnt, s->omega->RT[cnt]);
+        fprintf(rep_data, "%.17g\n", s->omega->RT[cnt]);
     }
     
     /* 2. Start storing lambda_type */
-    printf("LAMBDA\n");
-    printf("cnt: %d\n",c->lambda->cnt);
+    fprintf(rep_data, "%d\n",c->lambda->cnt);
     for (cnt = 0; cnt <= p->num->rv_rows; cnt++) {
-        printf("row[%d]: %d\n", cnt, c->lambda->row[cnt]);
+        fprintf(rep_data, "%d\n", c->lambda->row[cnt]);
     }
     for (idx = 0; idx < c->lambda->cnt; idx++) {
         for (cnt = 0; cnt <= p->num->rv_rows; cnt++) {
-            printf("val[%d][%d]: %f\n", idx, cnt, c->lambda->val[idx][cnt]);
+            fprintf(rep_data, "%.17g\n", c->lambda->val[idx][cnt]);
         }
     }
     
     /* 3. Start storing sigma_type */
-    printf("SIGMA\n");
-    printf("cnt: %d\n",c->sigma->cnt);
+    fprintf(rep_data, "%d\n",c->sigma->cnt);
     for (cnt = 0; cnt <= p->num->nz_cols; cnt++) {
-        printf("col[%d]: %d\n", cnt, c->sigma->col[cnt]);
+        fprintf(rep_data, "%d\n", c->sigma->col[cnt]);
     }
     for (idx = 0; idx < c->sigma->cnt; idx++) {
-        printf("val[%d].R: %f\n", idx, c->sigma->val[idx].R);
+        fprintf(rep_data, "%.17g\n", c->sigma->val[idx].R);
         for (cnt = 0; cnt <= p->num->nz_cols; cnt++) {
-            printf("val[%d].T[%d]: %f\n", idx, cnt, c->sigma->val[idx].T[cnt]);
+            fprintf(rep_data, "%.17g\n", c->sigma->val[idx].T[cnt]);
         }
     }
     for (idx = 0; idx < c->sigma->cnt; idx++) {
-        printf("ck[%d]: %d\n", idx, c->sigma->ck[idx]);
+        fprintf(rep_data, "%d\n", c->sigma->ck[idx]);
     }
     
     /* 4. Start storing theta_type */
-    printf("TEHTA\n");
-    printf("cnt: %d\n",c->theta->cnt);
+    fprintf(rep_data, "cnt: %d\n",c->theta->cnt);
     for (idx = 0; idx < c->theta->cnt; idx++) {
-        printf("last[%d]: %d\n", idx, c->theta->last[idx]);
+        fprintf(rep_data, "%d\n", c->theta->last[idx]);
     }
     for (idx = 0; idx < c->theta->cnt; idx++) {
-        printf("k[%d]: %f\n", idx, c->theta->k[idx]);
+        fprintf(rep_data, "%.17g\n", c->theta->k[idx]);
     }
     for (idx = 0; idx < c->theta->cnt; idx++) {
-        printf("p[%d]: %f\n", idx, c->theta->p[idx]);
+        fprintf(rep_data, "%.17g\n", c->theta->p[idx]);
     }
     
     /* 5. Start storing delta_type */
-    printf("DELTA\n");
     for (cnt = 0; cnt <= p->num->rv_cols; cnt++) {
-        printf("col[%d]: %d\n", cnt, s->delta->col[cnt]);
+        fprintf(rep_data, "%d\n", s->delta->col[cnt]);
     }
     for (idx = 0; idx < c->lambda->cnt; idx++) {
         for (obs = 0; obs < s->omega->most; obs++) {
             if (valid_omega_idx(s->omega, obs)) {
-                printf("val[%d][%d].R: %f\n", idx, obs, s->delta->val[idx][obs].R);
+                fprintf(rep_data, "%.17g\n", s->delta->val[idx][obs].R);
                 for (cnt = 0; cnt <= p->num->rv_cols; cnt++) {
-                    printf("val[%d][%d].T[%d]: %f\n", idx, obs, cnt, s->delta->val[idx][obs].T[cnt]);
+                    fprintf(rep_data, "%.17g\n", s->delta->val[idx][obs].T[cnt]);
                 }
             }
         }
     }
 
     /* 6. Start storing cuts */
-    printf("CUTS\n");
-    printf("cnt: %d\n", c->cuts->cnt);
+    fprintf(rep_data, "cnt: %d\n", c->cuts->cnt);
     for (idx = 0; idx < c->cuts->cnt; idx++) {
-        printf("val[%d]->omega_cnt: %d\n",idx, c->cuts->val[idx]->omega_cnt);
+        fprintf(rep_data, "%d\n", c->cuts->val[idx]->omega_cnt);
+        fprintf(rep_data, "%d\n", c->cuts->val[idx]->cut_obs);
         for (cnt = 0; cnt < c->cuts->val[idx]->omega_cnt; cnt++) {
-            printf("val[%d]->istar[%d]: %d\n", idx, cnt, c->cuts->val[idx]->istar[cnt]);
+            fprintf(rep_data, "%d\n", c->cuts->val[idx]->istar[cnt]);
         }
-        printf("val[%d]->slack_cnt: %d\n",idx, c->cuts->val[idx]->slack_cnt);
-        printf("val[%d]->cell_num: %d\n",idx, c->cuts->val[idx]->cell_num);
-        printf("val[%d]->cut_obs: %d\n",idx, c->cuts->val[idx]->cut_obs);
-        printf("val[%d]->row_num: %d\n",idx, c->cuts->val[idx]->row_num);
-        printf("val[%d]->alpha: %f\n",idx, c->cuts->val[idx]->alpha);
-        printf("val[%d]->alpha_incumb: %f\n",idx, c->cuts->val[idx]->alpha_incumb);
+        fprintf(rep_data, "%d\n", c->cuts->val[idx]->slack_cnt);
+        fprintf(rep_data, "%d\n", c->cuts->val[idx]->cell_num);
+        fprintf(rep_data, "%d\n", c->cuts->val[idx]->row_num);
+        fprintf(rep_data, "%.17g\n", c->cuts->val[idx]->alpha);
+        fprintf(rep_data, "%.17g\n", c->cuts->val[idx]->alpha_incumb);
         for (cnt = 0; cnt <= p->num->mast_cols; cnt++) {
-            printf("val[%d]->beta[%d]: %f\n", idx, cnt, c->cuts->val[idx]->beta[cnt]);
+            fprintf(rep_data, "%.17g\n", c->cuts->val[idx]->beta[cnt]);
         }
-        printf("val[%d]->subfeaflag: %u\n",idx, c->cuts->val[idx]->subfeaflag);
-        printf("val[%d]->is_incumbent: %u\n",idx, c->cuts->val[idx]->is_incumbent);
+        fprintf(rep_data, "%u\n", c->cuts->val[idx]->subfeaflag);
+        fprintf(rep_data, "%u\n", c->cuts->val[idx]->is_incumbent);
         if (c->cuts->val[idx]->is_incumbent) {
             for (obs = 0; obs < c->cuts->val[idx]->omega_cnt; obs++) {
-                printf("val[%d]->subobj_omega[%d]: %f\n", idx, obs, c->cuts->val[idx]->subobj_omega[obs]);
+                fprintf(rep_data, "%.17g\n", c->cuts->val[idx]->subobj_omega[obs]);
             }
             for (obs = 0; obs < c->cuts->val[idx]->omega_cnt; obs++) {
-                printf("val[%d]->subobj_omega[%d]: %d\n", idx, obs, c->cuts->val[idx]->subobj_freq[obs]);
+                fprintf(rep_data, "%d\n", c->cuts->val[idx]->subobj_freq[obs]);
             }
         }
         
     }
     
     /* 6. Start storing run_time */
-    printf("TIME\n");
-    printf("total_time: %f\n", s->run_time->total_time);
-    printf("iteration_time: %f\n", s->run_time->iteration_time);
-    printf("soln_master_iter: %f\n", s->run_time->soln_master_iter);
-    printf("soln_subprob_iter: %f\n", s->run_time->soln_subprob_iter);
-    printf("full_test_iter: %f\n", s->run_time->full_test_iter);
-    printf("argmax_iter: %f\n", s->run_time->argmax_iter);
-    printf("iteration_accum: %f\n", s->run_time->iteration_accum);
-    printf("soln_master_accum: %f\n", s->run_time->soln_master_accum);
-    printf("soln_subprob_accum: %f\n", s->run_time->soln_subprob_accum);
-    printf("full_test_accum: %f\n", s->run_time->full_test_accum);
-    printf("argmax_accum: %f\n", s->run_time->argmax_accum);
+    fprintf(rep_data, "%.17g\n", s->run_time->total_time);
+    fprintf(rep_data, "%.17g\n", s->run_time->iteration_time);
+    fprintf(rep_data, "%.17g\n", s->run_time->soln_master_iter);
+    fprintf(rep_data, "%.17g\n", s->run_time->soln_subprob_iter);
+    fprintf(rep_data, "%.17g\n", s->run_time->full_test_iter);
+    fprintf(rep_data, "%.17g\n", s->run_time->argmax_iter);
+    fprintf(rep_data, "%.17g\n", s->run_time->iteration_accum);
+    fprintf(rep_data, "%.17g\n", s->run_time->soln_master_accum);
+    fprintf(rep_data, "%.17g\n", s->run_time->soln_subprob_accum);
+    fprintf(rep_data, "%.17g\n", s->run_time->full_test_accum);
+    fprintf(rep_data, "%.17g\n", s->run_time->argmax_accum);
 
 
 
     /* 8. Start storing the remaining of cell structure */
-    printf("CELL\n");
-    printf("id_num: %d\n", c->id_num);
-    printf("num_members: %d\n", c->num_members);
+    fprintf(rep_data, "%d\n", c->id_num);
+    fprintf(rep_data, "%d\n", c->num_members);
     for (idx = 0; idx < c->num_members; idx++) {
-        printf("members[%d]: %d\n", idx, c->members[idx]);
+        fprintf(rep_data, "%d\n", c->members[idx]);
     }
-    printf("quad_scalar: %f\n", c->quad_scalar);
-    printf("LP_cnt: %d\n", c->LP_cnt);
-    printf("LP_test: %d\n", c->LP_test);
-    printf("N: %d\n", c->N);
-    printf("P: %f\n", c->P);
-    printf("k: %d\n", c->k);
-    printf("opt_mode: %u\n", c->opt_mode);
-    printf("incumb_infea: %u\n", c->incumb_infea);
-    printf("fea_count: %d\n", c->fea_count);
+    fprintf(rep_data, "%.17g\n", c->quad_scalar);
+    fprintf(rep_data, "%d\n", c->LP_cnt);
+    fprintf(rep_data, "%d\n", c->LP_test);
+    fprintf(rep_data, "%d\n", c->N);
+    fprintf(rep_data, "%.17g\n", c->P);
+    fprintf(rep_data, "%d\n", c->k);
+    fprintf(rep_data, "%u\n", c->opt_mode);
+    fprintf(rep_data, "%u\n", c->incumb_infea);
+    fprintf(rep_data, "%d\n", c->fea_count);
     
     /* 9. Start storing the remaining of soln structure */
-    printf("SOLN\n");
     for (idx = 0; idx <= p->num->sub_rows; idx++) {
-        printf("Pi[%d]: %f\n", idx, s->Pi[idx]);
+        fprintf(rep_data, "%.17g\n", s->Pi[idx]);
     }
-    printf("subobj_est: %f\n", s->subobj_est);
+    fprintf(rep_data, "%.17g\n", s->subobj_est);
     for (idx = 0; idx <= p->num->mast_rows + c->cuts->cnt + c->feasible_cuts_added->cnt; idx++) {
-        printf("Master_pi[%d]: %f\n", idx, s->Master_pi[idx]);
+        fprintf(rep_data, "%.17g\n", s->Master_pi[idx]);
     }
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
-        printf("Master_dj[%d]: %f\n", idx, s->Master_dj[idx]);
+        fprintf(rep_data, "%.17g\n", s->Master_dj[idx]);
     }
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
-        printf("candid_x[%d]: %f\n", idx, s->candid_x[idx]);
+        fprintf(rep_data, "%.17g\n", s->candid_x[idx]);
     }
-    printf("candid_est: %f\n", s->candid_est);
+    fprintf(rep_data, "%.17g\n", s->candid_est);
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
-        printf("incumb_x[%d]: %f\n", idx, s->incumb_x[idx]);
+        fprintf(rep_data, "%.17g\n", s->incumb_x[idx]);
     }
-    printf("incumb_k: %d\n", s->incumb_k);
+    fprintf(rep_data, "%d\n", s->incumb_k);
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
-        printf("incumb_d[%d]: %f\n", idx, s->incumb_d[idx]);
+        fprintf(rep_data, "%.17g\n", s->incumb_d[idx]);
     }
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
-        printf("incumb_avg[%d]: %f\n", idx, s->incumb_avg[idx]);
+        fprintf(rep_data, "%.17g\n", s->incumb_avg[idx]);
     }
-    printf("alpha: %f\n", s->alpha);
+    fprintf(rep_data, "%.17g\n", s->alpha);
     for (cnt = 0; cnt <= p->num->mast_cols; cnt++) {
-        printf("beta[%d]: %f\n", cnt, s->beta[cnt]);
+        fprintf(rep_data, "%.17g\n", s->beta[cnt]);
     }
-    printf("incumb_est: %f\n", s->incumb_est);
-    printf("opt_value: %f\n", s->opt_value);
-    printf("norm_d_k_1: %f\n", s->norm_d_k_1);
-    printf("norm_d_k: %f\n", s->norm_d_k);
-    printf("incumb_stdev: %f\n", s->incumb_stdev);
-    printf("incumb_cut: %d\n", s->incumb_cut);
-    printf("last_update: %d\n", s->last_update);
-    printf("gamma: %f\n", s->gamma);
-    printf("optimality_flag: %u\n", s->optimality_flag);
-    printf("smpl_ever_flag: %u\n", s->smpl_ever_flag);
-    printf("smpl_test_flag: %u\n", s->smpl_test_flag);
-    printf("incumbent_change: %u\n", s->incumbent_change);
-    printf("dual_statble_flag: %u\n", *(s->dual_statble_flag));
-    printf("full_test_error: %f\n", s->full_test_error);
-    printf("passed: %d\n", s->passed);
-    printf("sub_lb_checker: %f\n", s->sub_lb_checker);
-    printf("max_ratio: %f\n", s->max_ratio);
-    printf("min_ratio: %f\n", s->min_ratio);
+    fprintf(rep_data, "%.17g\n", s->incumb_est);
+    fprintf(rep_data, "%.17g\n", s->opt_value);
+    fprintf(rep_data, "%.17g\n", s->norm_d_k_1);
+    fprintf(rep_data, "%.17g\n", s->norm_d_k);
+    fprintf(rep_data, "%.17g\n", s->incumb_stdev);
+    fprintf(rep_data, "%d\n", s->incumb_cut);
+    fprintf(rep_data, "%d\n", s->last_update);
+    fprintf(rep_data, "%.17g\n", s->gamma);
+    fprintf(rep_data, "%u\n", s->optimality_flag);
+    fprintf(rep_data, "%u\n", s->smpl_ever_flag);
+    fprintf(rep_data, "%u\n", s->smpl_test_flag);
+    fprintf(rep_data, "%u\n", s->incumbent_change);
+    fprintf(rep_data, "%u\n", *(s->dual_statble_flag));
+    fprintf(rep_data, "%.17g\n", s->full_test_error);
+    fprintf(rep_data, "%d\n", s->passed);
+    fprintf(rep_data, "%.17g\n", s->sub_lb_checker);
+    fprintf(rep_data, "%.17g\n", s->max_ratio);
+    fprintf(rep_data, "%.17g\n", s->min_ratio);
     for (idx = 0; idx < sd_global->config.MAX_SCAN_LEN; idx++) {
-        printf("pi_ratio[%d]: %f\n", idx, s->pi_ratio[idx]);
+        fprintf(rep_data, "%.17g\n", s->pi_ratio[idx]);
     }
 
     /* 9. Start storing the last seed used in getting observation */
-    printf("config.RUN_SEED: %lld\n", sd_global->config.RUN_SEED);
+    fprintf(rep_data, "%lld\n", sd_global->config.RUN_SEED);
+    
+    fclose(rep_data);
     
     return 0;
 }
@@ -240,212 +233,248 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
 int restore_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_type *s)
 {
     int cnt, idx, obs;
+    FILE *rep_data;
     /* Store all data structure necessary for resuming SD */
     /* modified by Yifan 2014.01.12 */
+    rep_data = fopen("rep_data.txt", "r");
     
-    /* 1. Start storing omega_type */
-    printf("\n");
-    printf("OMEGA\n");
-    printf("cnt: %d\n",s->omega->cnt);
-    printf("next: %d\n",s->omega->next);
-    printf("most: %d\n",s->omega->most);
-    printf("last: %d\n",s->omega->last);
-    printf("k: %d\n",s->omega->k);
+    /* 1. Start restoring omega_type */
+    fscanf(rep_data, "%d\n",&s->omega->cnt);
+    for (idx = 0; idx < s->omega->cnt; idx++) {
+        s->omega->idx[idx] = arr_alloc(p->num->cipher+1, int);
+    }
+    
+    fscanf(rep_data, "%d\n",&s->omega->next);
+    fscanf(rep_data, "%d\n",&s->omega->most);
+    fscanf(rep_data, "%d\n",&s->omega->last);
+    fscanf(rep_data, "%d\n",&s->omega->k);
     for (cnt = 0; cnt <= p->num->rv; cnt++) {
-        printf("row[%d]: %d\n", cnt, s->omega->row[cnt]);
+        fscanf(rep_data, "%d\n", &s->omega->row[cnt]);
     }
     for (cnt = 0; cnt <= p->num->rv; cnt++) {
-        printf("col[%d]: %d\n", cnt, s->omega->col[cnt]);
+        fscanf(rep_data, "%d\n", &s->omega->col[cnt]);
     }
     for (idx = 0; idx < s->omega->cnt; idx++) {
         for (cnt = 0; cnt <= p->num->cipher; cnt++) {
-            printf("idx[%d][%d]: %d\n", idx, cnt, s->omega->idx[idx][cnt]);
+            fscanf(rep_data, "%d\n", &s->omega->idx[idx][cnt]);
         }
     }
     for (idx = 0; idx < s->omega->cnt; idx++) {
-        printf("weight[%d]: %d\n", idx, s->omega->weight[idx]);
+        fscanf(rep_data, "%d\n", &s->omega->weight[idx]);
     }
     for (idx = 0; idx < s->omega->cnt; idx++) {
-        printf("filter[%d]: %d\n", idx, s->omega->filter[idx]);
+        fscanf(rep_data, "%d\n", &s->omega->filter[idx]);
     }
     for (cnt = 1; cnt <= sd_global->omegas.num_omega; cnt++) {
-        printf("RT[%d]: %f\n", cnt, s->omega->RT[cnt]);
+        fscanf(rep_data, "%lg\n", &s->omega->RT[cnt]);
     }
     
-    /* 2. Start storing lambda_type */
-    printf("LAMBDA\n");
-    printf("cnt: %d\n",c->lambda->cnt);
+    /* 2. Start restoring lambda_type */
+    fscanf(rep_data, "%d\n",&c->lambda->cnt);
+    
+    /* Dynamically allocate memory space for lambda */
+    for (cnt = 0; cnt < c->lambda->cnt; cnt++)
+		if (!(c->lambda->val[cnt] = arr_alloc(p->num->rv_rows+1, double)))
+			err_msg("Allocation", "restore_lambda", "lambda->val[cnt]");
+    
     for (cnt = 0; cnt <= p->num->rv_rows; cnt++) {
-        printf("row[%d]: %d\n", cnt, c->lambda->row[cnt]);
+        fscanf(rep_data, "%d\n", &c->lambda->row[cnt]);
     }
     for (idx = 0; idx < c->lambda->cnt; idx++) {
         for (cnt = 0; cnt <= p->num->rv_rows; cnt++) {
-            printf("val[%d][%d]: %f\n", idx, cnt, c->lambda->val[idx][cnt]);
+            fscanf(rep_data, "%lg\n", &c->lambda->val[idx][cnt]);
         }
     }
     
-    /* 3. Start storing sigma_type */
-    printf("SIGMA\n");
-    printf("cnt: %d\n",c->sigma->cnt);
+    /* 3. Start restoring sigma_type */
+    fscanf(rep_data, "%d\n",&c->sigma->cnt);
+    
+    /* Dynamically allocate memory space for sigma */
+    for (cnt = 0; cnt < c->sigma->cnt && cnt < sd_global->config.MAX_ITER; cnt++)
+		if (!(c->sigma->val[cnt].T = arr_alloc(p->num->nz_cols+1, double)))
+			err_msg("Allocation", "resotre_sigma", "sigma->val[cnt]");
+    
     for (cnt = 0; cnt <= p->num->nz_cols; cnt++) {
-        printf("col[%d]: %d\n", cnt, c->sigma->col[cnt]);
+        fscanf(rep_data, "%d\n", &c->sigma->col[cnt]);
     }
     for (idx = 0; idx < c->sigma->cnt; idx++) {
-        printf("val[%d].R: %f\n", idx, c->sigma->val[idx].R);
+        fscanf(rep_data, "%lg\n", &c->sigma->val[idx].R);
         for (cnt = 0; cnt <= p->num->nz_cols; cnt++) {
-            printf("val[%d].T[%d]: %f\n", idx, cnt, c->sigma->val[idx].T[cnt]);
+            fscanf(rep_data, "%lg\n", &c->sigma->val[idx].T[cnt]);
         }
     }
     for (idx = 0; idx < c->sigma->cnt; idx++) {
-        printf("ck[%d]: %d\n", idx, c->sigma->ck[idx]);
+        fscanf(rep_data, "%d\n", &c->sigma->ck[idx]);
     }
     
-    /* 4. Start storing theta_type */
-    printf("TEHTA\n");
-    printf("cnt: %d\n",c->theta->cnt);
+    /* 4. Start restoring theta_type */
+    fscanf(rep_data, "cnt: %d\n",&c->theta->cnt);
     for (idx = 0; idx < c->theta->cnt; idx++) {
-        printf("last[%d]: %d\n", idx, c->theta->last[idx]);
+        fscanf(rep_data, "%d\n", &c->theta->last[idx]);
     }
     for (idx = 0; idx < c->theta->cnt; idx++) {
-        printf("k[%d]: %f\n", idx, c->theta->k[idx]);
+        fscanf(rep_data, "%lg\n", &c->theta->k[idx]);
     }
     for (idx = 0; idx < c->theta->cnt; idx++) {
-        printf("p[%d]: %f\n", idx, c->theta->p[idx]);
+        fscanf(rep_data, "%lg\n", &c->theta->p[idx]);
     }
     
-    /* 5. Start storing delta_type */
-    printf("DELTA\n");
+    /* 5. Start restoring delta_type */
+    
+    /* Dynamically allocate memory space for delta */
+    /* Double check this part since there might be an error here!!!! */
+    for (cnt = 0; cnt < c->lambda->cnt; cnt++){
+        if (!(s->delta->val[cnt] = arr_alloc(p->num->iter, pi_R_T_type)))
+            err_msg("Allocation", "restore_delta", "delta->val");
+       for (obs=0; obs<s->omega->most; obs++) {
+            if (!(s->delta->val[cnt][obs].T = arr_alloc(p->num->rv_cols + 1, double)))
+                err_msg("Allocation", "restore_delta", "delta->val[cnt]");
+       }
+    }
+    
+    
     for (cnt = 0; cnt <= p->num->rv_cols; cnt++) {
-        printf("col[%d]: %d\n", cnt, s->delta->col[cnt]);
+        fscanf(rep_data, "%d\n", &s->delta->col[cnt]);
     }
     for (idx = 0; idx < c->lambda->cnt; idx++) {
         for (obs = 0; obs < s->omega->most; obs++) {
             if (valid_omega_idx(s->omega, obs)) {
-                printf("val[%d][%d].R: %f\n", idx, obs, s->delta->val[idx][obs].R);
+                fscanf(rep_data, "%lg\n", &s->delta->val[idx][obs].R);
                 for (cnt = 0; cnt <= p->num->rv_cols; cnt++) {
-                    printf("val[%d][%d].T[%d]: %f\n", idx, obs, cnt, s->delta->val[idx][obs].T[cnt]);
+                    fscanf(rep_data, "%lg\n", &s->delta->val[idx][obs].T[cnt]);
                 }
             }
         }
     }
     
-    /* 6. Start storing cuts */
-    printf("CUTS\n");
-    printf("cnt: %d\n", c->cuts->cnt);
+    /* 6. Start restoring cuts */
+    fscanf(rep_data, "cnt: %d\n", &c->cuts->cnt);
+    
+    /* Dynamically allocate memory space for cuts */
+		
+    int omega_cnt, cut_obs;
     for (idx = 0; idx < c->cuts->cnt; idx++) {
-        printf("val[%d]->omega_cnt: %d\n",idx, c->cuts->val[idx]->omega_cnt);
+        fscanf(rep_data, "%d\n", &omega_cnt);
+        fscanf(rep_data, "%d\n", &cut_obs);
+        c->cuts->val[idx] = new_cut(p->num->mast_cols, omega_cnt, cut_obs);
+        c->cuts->val[idx]->omega_cnt = omega_cnt;
+        c->cuts->val[idx]->cut_obs = cut_obs;
         for (cnt = 0; cnt < c->cuts->val[idx]->omega_cnt; cnt++) {
-            printf("val[%d]->istar[%d]: %d\n", idx, cnt, c->cuts->val[idx]->istar[cnt]);
+            fscanf(rep_data, "%d\n", &c->cuts->val[idx]->istar[cnt]);
         }
-        printf("val[%d]->slack_cnt: %d\n",idx, c->cuts->val[idx]->slack_cnt);
-        printf("val[%d]->cell_num: %d\n",idx, c->cuts->val[idx]->cell_num);
-        printf("val[%d]->cut_obs: %d\n",idx, c->cuts->val[idx]->cut_obs);
-        printf("val[%d]->row_num: %d\n",idx, c->cuts->val[idx]->row_num);
-        printf("val[%d]->alpha: %f\n",idx, c->cuts->val[idx]->alpha);
-        printf("val[%d]->alpha_incumb: %f\n",idx, c->cuts->val[idx]->alpha_incumb);
+        fscanf(rep_data, "%d\n", &c->cuts->val[idx]->slack_cnt);
+        fscanf(rep_data, "%d\n", &c->cuts->val[idx]->cell_num);
+        fscanf(rep_data, "%d\n", &c->cuts->val[idx]->row_num);
+        fscanf(rep_data, "%lg\n", &c->cuts->val[idx]->alpha);
+        fscanf(rep_data, "%lg\n", &c->cuts->val[idx]->alpha_incumb);
         for (cnt = 0; cnt <= p->num->mast_cols; cnt++) {
-            printf("val[%d]->beta[%d]: %f\n", idx, cnt, c->cuts->val[idx]->beta[cnt]);
+            fscanf(rep_data, "%lg\n", &c->cuts->val[idx]->beta[cnt]);
         }
-        printf("val[%d]->subfeaflag: %u\n",idx, c->cuts->val[idx]->subfeaflag);
-        printf("val[%d]->is_incumbent: %u\n",idx, c->cuts->val[idx]->is_incumbent);
+        fscanf(rep_data, "%u\n", &c->cuts->val[idx]->subfeaflag);
+        fscanf(rep_data, "%u\n", &c->cuts->val[idx]->is_incumbent);
         if (c->cuts->val[idx]->is_incumbent) {
+            if (!(c->cuts->val[idx]->subobj_omega = arr_alloc( c->cuts->val[idx]->omega_cnt+1, double)))
+                err_msg("Allocation", "SD_cut", "subobj_omega");
+            if (!(c->cuts->val[idx]->subobj_freq = arr_alloc( c->cuts->val[idx]->omega_cnt+1, int)))
+                err_msg("Allocation", "SD_cut", "subobj_freq");
             for (obs = 0; obs < c->cuts->val[idx]->omega_cnt; obs++) {
-                printf("val[%d]->subobj_omega[%d]: %f\n", idx, obs, c->cuts->val[idx]->subobj_omega[obs]);
+                fscanf(rep_data, "%lg\n", &c->cuts->val[idx]->subobj_omega[obs]);
             }
             for (obs = 0; obs < c->cuts->val[idx]->omega_cnt; obs++) {
-                printf("val[%d]->subobj_omega[%d]: %d\n", idx, obs, c->cuts->val[idx]->subobj_freq[obs]);
+                fscanf(rep_data, "%d\n", &c->cuts->val[idx]->subobj_freq[obs]);
             }
         }
         
     }
     
-    /* 6. Start storing run_time */
-    printf("TIME\n");
-    printf("total_time: %f\n", s->run_time->total_time);
-    printf("iteration_time: %f\n", s->run_time->iteration_time);
-    printf("soln_master_iter: %f\n", s->run_time->soln_master_iter);
-    printf("soln_subprob_iter: %f\n", s->run_time->soln_subprob_iter);
-    printf("full_test_iter: %f\n", s->run_time->full_test_iter);
-    printf("argmax_iter: %f\n", s->run_time->argmax_iter);
-    printf("iteration_accum: %f\n", s->run_time->iteration_accum);
-    printf("soln_master_accum: %f\n", s->run_time->soln_master_accum);
-    printf("soln_subprob_accum: %f\n", s->run_time->soln_subprob_accum);
-    printf("full_test_accum: %f\n", s->run_time->full_test_accum);
-    printf("argmax_accum: %f\n", s->run_time->argmax_accum);
+    /* 6. Start restoring run_time */
+    fscanf(rep_data, "%lg\n", &s->run_time->total_time);
+    fscanf(rep_data, "%lg\n", &s->run_time->iteration_time);
+    fscanf(rep_data, "%lg\n", &s->run_time->soln_master_iter);
+    fscanf(rep_data, "%lg\n", &s->run_time->soln_subprob_iter);
+    fscanf(rep_data, "%lg\n", &s->run_time->full_test_iter);
+    fscanf(rep_data, "%lg\n", &s->run_time->argmax_iter);
+    fscanf(rep_data, "%lg\n", &s->run_time->iteration_accum);
+    fscanf(rep_data, "%lg\n", &s->run_time->soln_master_accum);
+    fscanf(rep_data, "%lg\n", &s->run_time->soln_subprob_accum);
+    fscanf(rep_data, "%lg\n", &s->run_time->full_test_accum);
+    fscanf(rep_data, "%lg\n", &s->run_time->argmax_accum);
     
     
     
-    /* 8. Start storing the remaining of cell structure */
-    printf("CELL\n");
-    printf("id_num: %d\n", c->id_num);
-    printf("num_members: %d\n", c->num_members);
+    /* 8. Start restoring the remaining of cell structure */
+    fscanf(rep_data, "%d\n", &c->id_num);
+    fscanf(rep_data, "%d\n", &c->num_members);
     for (idx = 0; idx < c->num_members; idx++) {
-        printf("members[%d]: %d\n", idx, c->members[idx]);
+        fscanf(rep_data, "%d\n", &c->members[idx]);
     }
-    printf("quad_scalar: %f\n", c->quad_scalar);
-    printf("LP_cnt: %d\n", c->LP_cnt);
-    printf("LP_test: %d\n", c->LP_test);
-    printf("N: %d\n", c->N);
-    printf("P: %f\n", c->P);
-    printf("k: %d\n", c->k);
-    printf("opt_mode: %u\n", c->opt_mode);
-    printf("incumb_infea: %u\n", c->incumb_infea);
-    printf("fea_count: %d\n", c->fea_count);
+    fscanf(rep_data, "%lg\n", &c->quad_scalar);
+    fscanf(rep_data, "%d\n", &c->LP_cnt);
+    fscanf(rep_data, "%d\n", &c->LP_test);
+    fscanf(rep_data, "%d\n", &c->N);
+    fscanf(rep_data, "%lg\n", &c->P);
+    fscanf(rep_data, "%d\n", &c->k);
+    fscanf(rep_data, "%u\n", &c->opt_mode);
+    fscanf(rep_data, "%u\n", &c->incumb_infea);
+    fscanf(rep_data, "%d\n", &c->fea_count);
     
-    /* 9. Start storing the remaining of soln structure */
-    printf("SOLN\n");
+    /* 9. Start restoring the remaining of soln structure */
     for (idx = 0; idx <= p->num->sub_rows; idx++) {
-        printf("Pi[%d]: %f\n", idx, s->Pi[idx]);
+        fscanf(rep_data, "%lg\n", &s->Pi[idx]);
     }
-    printf("subobj_est: %f\n", s->subobj_est);
+    fscanf(rep_data, "%lg\n", &s->subobj_est);
     for (idx = 0; idx <= p->num->mast_rows + c->cuts->cnt + c->feasible_cuts_added->cnt; idx++) {
-        printf("Master_pi[%d]: %f\n", idx, s->Master_pi[idx]);
+        fscanf(rep_data, "%lg\n", &s->Master_pi[idx]);
     }
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
-        printf("Master_dj[%d]: %f\n", idx, s->Master_dj[idx]);
+        fscanf(rep_data, "%lg\n", &s->Master_dj[idx]);
     }
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
-        printf("candid_x[%d]: %f\n", idx, s->candid_x[idx]);
+        fscanf(rep_data, "%lg\n", &s->candid_x[idx]);
     }
-    printf("candid_est: %f\n", s->candid_est);
+    fscanf(rep_data, "%lg\n", &s->candid_est);
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
-        printf("incumb_x[%d]: %f\n", idx, s->incumb_x[idx]);
+        fscanf(rep_data, "%lg\n", &s->incumb_x[idx]);
     }
-    printf("incumb_k: %d\n", s->incumb_k);
+    fscanf(rep_data, "%d\n", &s->incumb_k);
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
-        printf("incumb_d[%d]: %f\n", idx, s->incumb_d[idx]);
+        fscanf(rep_data, "%lg\n", &s->incumb_d[idx]);
     }
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
-        printf("incumb_avg[%d]: %f\n", idx, s->incumb_avg[idx]);
+        fscanf(rep_data, "%lg\n", &s->incumb_avg[idx]);
     }
-    printf("alpha: %f\n", s->alpha);
+    fscanf(rep_data, "%lg\n", &s->alpha);
     for (cnt = 0; cnt <= p->num->mast_cols; cnt++) {
-        printf("beta[%d]: %f\n", cnt, s->beta[cnt]);
+        fscanf(rep_data, "%lg\n", &s->beta[cnt]);
     }
-    printf("incumb_est: %f\n", s->incumb_est);
-    printf("opt_value: %f\n", s->opt_value);
-    printf("norm_d_k_1: %f\n", s->norm_d_k_1);
-    printf("norm_d_k: %f\n", s->norm_d_k);
-    printf("incumb_stdev: %f\n", s->incumb_stdev);
-    printf("incumb_cut: %d\n", s->incumb_cut);
-    printf("last_update: %d\n", s->last_update);
-    printf("gamma: %f\n", s->gamma);
-    printf("optimality_flag: %u\n", s->optimality_flag);
-    printf("smpl_ever_flag: %u\n", s->smpl_ever_flag);
-    printf("smpl_test_flag: %u\n", s->smpl_test_flag);
-    printf("incumbent_change: %u\n", s->incumbent_change);
-    printf("dual_statble_flag: %u\n", *(s->dual_statble_flag));
-    printf("full_test_error: %f\n", s->full_test_error);
-    printf("passed: %d\n", s->passed);
-    printf("sub_lb_checker: %f\n", s->sub_lb_checker);
-    printf("max_ratio: %f\n", s->max_ratio);
-    printf("min_ratio: %f\n", s->min_ratio);
+    fscanf(rep_data, "%lg\n", &s->incumb_est);
+    fscanf(rep_data, "%lg\n", &s->opt_value);
+    fscanf(rep_data, "%lg\n", &s->norm_d_k_1);
+    fscanf(rep_data, "%lg\n", &s->norm_d_k);
+    fscanf(rep_data, "%lg\n", &s->incumb_stdev);
+    fscanf(rep_data, "%d\n", &s->incumb_cut);
+    fscanf(rep_data, "%d\n", &s->last_update);
+    fscanf(rep_data, "%lg\n", &s->gamma);
+    fscanf(rep_data, "%u\n", &s->optimality_flag);
+    fscanf(rep_data, "%u\n", &s->smpl_ever_flag);
+    fscanf(rep_data, "%u\n", &s->smpl_test_flag);
+    fscanf(rep_data, "%u\n", &s->incumbent_change);
+    fscanf(rep_data, "%u\n", (s->dual_statble_flag));
+    /* make sure dual_stable_flag is turned to NO */
+    *s->dual_statble_flag = 0;
+    fscanf(rep_data, "%lg\n", &s->full_test_error);
+    fscanf(rep_data, "%d\n", &s->passed);
+    fscanf(rep_data, "%lg\n", &s->sub_lb_checker);
+    fscanf(rep_data, "%lg\n", &s->max_ratio);
+    fscanf(rep_data, "%lg\n", &s->min_ratio);
     for (idx = 0; idx < sd_global->config.MAX_SCAN_LEN; idx++) {
-        printf("pi_ratio[%d]: %f\n", idx, s->pi_ratio[idx]);
+        fscanf(rep_data, "%lg\n", &s->pi_ratio[idx]);
     }
     
-    /* 9. Start storing the last seed used in getting observation */
-    printf("config.RUN_SEED: %lld\n", sd_global->config.RUN_SEED);
+    /* 9. Start restoring the last seed used in getting observation */
+    fscanf(rep_data, "%lld\n", &sd_global->config.RUN_SEED);
+    
+    fclose(rep_data);
     
     return 0;
 }

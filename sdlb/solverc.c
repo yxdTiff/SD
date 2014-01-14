@@ -258,6 +258,24 @@ void *read_problem(one_problem *p, char *filename, char *filetype)
 }
 
 /***********************************************************************\
+ ** Tell the external Solver to just read data into the
+ ** problem pointed by p->lp from an MPS file.
+ \***********************************************************************/
+void read_problem_simple(one_problem *p, char *filename, char *filetype)
+{
+    int status;
+    
+    printf("the filename is : %s\n", filename);
+    
+    /* the pointer in the second argument is changed from _p->lp_ to _lp_ Yifan 11/08/2011 */
+    status = CPXreadcopyprob(env, p->lp, filename, filetype);
+    
+    if (status != 0)
+    {
+        printf(" read_problem: read MPS file failed \n");
+    }
+}
+/***********************************************************************\
 ** Tell CPLEX to write out an MPS file for the LP problem,
  ** using the filename provided.  It returns whatever CPLEX returns.
  \***********************************************************************/

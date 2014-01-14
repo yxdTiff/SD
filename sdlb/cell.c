@@ -34,6 +34,7 @@
 #include "master.h"
 #include "cuts.h"
 #include "batch.h"
+#include "resume.h"
 #include <limits.h> 
 
 FILE *fix;
@@ -183,6 +184,7 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 
 	fclose(fix);
 #endif
+    
 
 	/*Code above are added for evaluation!!!!!*/
 
@@ -193,7 +195,26 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 	 while (!(soln->optimality_flag) && cell->k < prob->num->iter)
 	 */
 	/* modified by zl, 08/10/04. */
-	write_statistics(sd_global, prob, cell, soln);
+    write_statistics(sd_global, prob, cell, soln);
+
+    /* modified by Yifan 2014.01.12 */
+    
+    if (0) {
+        restore_sd_data(sd_global, prob, cell, soln);
+
+        
+		update_dual_size(cell, soln, prob);
+        read_problem_simple(cell->master, "rep_data.lp", "lp");
+        write_prob(cell->master, "comp2.lp");
+        
+        if (!solve_QP_master(sd_global, prob, cell, soln))
+        {
+            cplex_err_msg(sd_global, "QP_Master", prob, cell, soln);
+            return;
+        }
+        
+    }
+
 
 	while (TRUE)
 	{
