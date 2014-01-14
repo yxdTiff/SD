@@ -1524,6 +1524,7 @@ one_cut *new_cut(int num_x, int num_istar, int num_samples)
 #endif
 
 	cut = (one_cut *) mem_malloc (sizeof(one_cut));
+    cut->cell_num = 0;
 	cut->cut_obs = num_samples;
 	cut->omega_cnt = num_istar;
 	cut->slack_cnt = 0;
@@ -1557,6 +1558,7 @@ one_cut *new_fea_cut(int num_x, int num_istar, int num_samples)
 #endif
 
 	cut = (one_cut *) mem_malloc (sizeof(one_cut));
+    cut->cell_num = 0;
 	cut->cut_obs = num_samples;
 	cut->omega_cnt = num_istar;
 	cut->slack_cnt = 0; /*make sure the cut won't be dropped Yifan /08/22/2011*/

@@ -1392,6 +1392,7 @@ int load_config(sdglobal_type* sd_global, BOOL read_seeds, BOOL read_iters)
     /* Establish default settings for all parameters */
     sd_global->config.EPSILON      = 0.001;
     sd_global->config.SCAN_LEN     = 256;
+    sd_global->config.MAX_SCAN_LEN = 512;
     
     sd_global->config.MULTIPLE_REP = 0;
     
@@ -1707,6 +1708,8 @@ int load_config(sdglobal_type* sd_global, BOOL read_seeds, BOOL read_iters)
 				status = fscanf(f_in, "%d", &(sd_global->config.PI_EVAL_START));
 			else if (!strcmp(param, "PI_CYCLE"))
 				status = fscanf(f_in, "%d", &(sd_global->config.PI_CYCLE));
+            else if (!strcmp(param, "MAX_SCAN_LEN"))
+				status = fscanf(f_in, "%d", &(sd_global->config.MAX_SCAN_LEN));
 			else if (!strcmp(param, "SCAN_LEN"))
 				status = fscanf(f_in, "%d", &(sd_global->config.SCAN_LEN));
 			else if (!strcmp(param, "DETAILED_SOLN"))

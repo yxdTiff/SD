@@ -179,6 +179,9 @@ typedef struct
 	double Obj_mean_stdev;
 	double rep_mean;
 	double rep_stdev;
+    double *xc_height; /* Used to store cut height estimated by compromise solutions*/
+	double c_xc;  /* c_xc is used to estimate the lower bound of the problem */
+
 
 	vector candid_x;
 	double candid_est;
@@ -186,10 +189,8 @@ typedef struct
 	int incumb_k;
 	vector incumb_d; /*Initially store d, later become x since we add incumbent to it directly*/
 	vector incumb_avg;
-	double c_xc;
 	double alpha;
 	double *beta;
-	double *xc_height; /* Used to store cut height estimated by compromise solutions*/
 	double incumb_est;
 	double opt_value;
 	double norm_d_k_1;
@@ -198,21 +199,22 @@ typedef struct
 	int incumb_cut;
 	int last_update;
 	double gamma;
-	time_type *run_time; /* added by zl, 06/29/04. */
 	BOOL optimality_flag;/* added by zl, 06/30/04. */
 	BOOL smpl_ever_flag; /* added by zl, 08/20/04. */
 	BOOL smpl_test_flag; /* added by zl, 08/17/04. */
-	BOOL *dual_statble_flag; /*added by Yifan 09/27/2011*/
+    BOOL incumbent_change;
+    BOOL *dual_statble_flag; /*added by Yifan 09/27/2011*/
 	double full_test_error;/* added by zl, 08/17/04. average error when failed in full test. */
-	double *pi_ratio; /*added by Yifan 09/27/2011*/
-	double max_ratio; /*added by Yifan 09/27/2011*/
-	double min_ratio; /*added by Yifan 09/27/2011*/
 	int passed; /* added by zl, 06/30/04. # of replications passed in full test. */
 	double sub_lb_checker; /* addedy by zl, 07/01/04. check the valid lower bound of the subproblem obj function value. */
+    double max_ratio; /*added by Yifan 09/27/2011*/
+	double min_ratio; /*added by Yifan 09/27/2011*/
+    double *pi_ratio; /*added by Yifan 09/27/2011*/
 	omega_type *omega;
 	delta_type *delta;
-	BOOL incumbent_change;
 	delta_type *feasible_delta;
+    time_type *run_time; /* added by zl, 06/29/04. */
+
 } soln_type;
 
 int *find_rows(int num_elem, int *num_rows, int *omega_row,int *omega_col, int mast_col);

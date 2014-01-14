@@ -732,7 +732,6 @@ cell_type *new_cell(sdglobal_type* sd_global, prob_type *p, int id_num)
 	if (!(c = (cell_type *) mem_malloc (sizeof(cell_type))))
 		err_msg("Allocation", "new_cell", "cell");
 	/* Yifan 06/18/2012 batch mean */
-
 	c->members = arr_alloc(1, int); /* Make room for one member */
 	c->members[0] = id_num; /* That member is itself */
 	c->num_members = 1; /* Establish the number of members as 1 */

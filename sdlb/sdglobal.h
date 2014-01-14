@@ -156,6 +156,7 @@ typedef struct
 	int TEST_TYPE;
 	int PI_EVAL_START;
 	int PI_CYCLE;
+    int MAX_SCAN_LEN;
 	int SCAN_LEN;
 	int DETAILED_SOLN;
 	int MULTIPLE_REP;
@@ -280,10 +281,10 @@ typedef struct
  \**************************************************************************/
 typedef struct
 {
+    int omega_cnt;
 	int *istar;
 	int slack_cnt;
 	int cell_num;
-	int omega_cnt;
 	int cut_obs;
 	int row_num;
 	double alpha;
