@@ -36,6 +36,7 @@
 		696004AC1821A04200CD6831 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696004AB1821A04200CD6831 /* CoreFoundation.framework */; };
 		696004AE1821A04800CD6831 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696004AD1821A04800CD6831 /* IOKit.framework */; };
 		696004B01821A06100CD6831 /* libcplex.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 696004AF1821A06100CD6831 /* libcplex.a */; };
+		69A2FEC618A20EE600997825 /* resumeb.c in Sources */ = {isa = PBXBuildFile; fileRef = 69A2FEC518A20EE600997825 /* resumeb.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -110,6 +111,8 @@
 		696004AD1821A04800CD6831 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		696004AF1821A06100CD6831 /* libcplex.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcplex.a; path = "../../../../Applications/IBM/ILOG/CPLEX_Studio124/cplex/lib/x86-64_darwin9_gcc4.0/static_pic/libcplex.a"; sourceTree = "<group>"; };
 		696004B41821A2EA00CD6831 /* config.sd */ = {isa = PBXFileReference; lastKnownFileType = text; name = config.sd; path = "../../../../Library/Developer/Xcode/DerivedData/sdlb-aqzmdecdolvenjbvdyqijfayklfa/Build/Products/Debug/config.sd"; sourceTree = "<group>"; };
+		69A2FEC518A20EE600997825 /* resumeb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = resumeb.c; sourceTree = "<group>"; };
+		69A2FEC718A20F2500997825 /* resumeb.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = resumeb.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +204,8 @@
 				696004901821A00300CD6831 /* utility.h */,
 				695D165C1883B4CE0037891D /* resume.c */,
 				695D165E1883B57F0037891D /* resume.h */,
+				69A2FEC518A20EE600997825 /* resumeb.c */,
+				69A2FEC718A20F2500997825 /* resumeb.h */,
 			);
 			path = sdlb;
 			sourceTree = "<group>";
@@ -267,6 +272,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6960049E1821A00300CD6831 /* prob.c in Sources */,
+				69A2FEC618A20EE600997825 /* resumeb.c in Sources */,
 				6960049D1821A00300CD6831 /* parser.c in Sources */,
 				696004A21821A00300CD6831 /* sigma.c in Sources */,
 				6960049F1821A00300CD6831 /* quad.c in Sources */,

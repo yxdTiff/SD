@@ -35,6 +35,7 @@
 #include "cuts.h"
 #include "batch.h"
 #include "resume.h"
+#include "resumeb.h"
 #include <limits.h> 
 
 FILE *fix;
@@ -200,12 +201,14 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
     /* modified by Yifan 2014.01.12 */
     
     if (0) {
-        restore_sd_data(sd_global, prob, cell, soln);
+        restore_sd_data_b(sd_global, prob, cell, soln);
 
         
-		update_dual_size(cell, soln, prob);
-        read_problem_simple(cell->master, "rep_data.lp", "lp");
+        read_problem_simple(cell->master, "com.lp", "lp");
         write_prob(cell->master, "comp2.lp");
+        
+        //store_sd_data(sd_global, prob, cell, soln);
+        //write_prob(c->master,"com.lp");
         
         if (!solve_QP_master(sd_global, prob, cell, soln))
         {
@@ -247,7 +250,7 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 		/* Be careful here! Without this check the iteration will be off by
 		 one from the original code. zl, 08/09/08.
 		 And the number of optimality tests may be off. zl, 08/10/04. */
-		//printf("This is opt-flag: %d, s->flag: %d \n",soln->optimality_flag, *soln->dual_statble_flag);
+		printf("Iteration: %d\tThis is opt-flag: %d, s->flag: %d \n",cell->k, soln->optimality_flag, *soln->dual_statble_flag);
 		/*Update code in this "if statement" for Batch-mean Yifan 2012-09-05*/
 		if ((soln->optimality_flag && *soln->dual_statble_flag)
 				|| cell->k >= prob->num->iter)

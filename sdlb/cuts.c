@@ -616,13 +616,22 @@ void SD_cut(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
 
 		}
 
+    int start_position = 0; /* if SCAN_LEN < MAX_SCAN_LEN, need start_position to calculate variance of pi_ratio*/
 	if (pi_eval_flag == TRUE)
 	{
-		pi_ratio[num_samples % sd_global->config.SCAN_LEN] = argmax_dif_sum
+		pi_ratio[num_samples % sd_global->config.MAX_SCAN_LEN] = argmax_dif_sum
 				/ argmax_all_sum;
 		if (num_samples - sd_global->config.PI_EVAL_START
-				> sd_global->config.SCAN_LEN)
-			vari = calc_var(sd_global, pi_ratio, NULL, NULL, 0); /*added by Yifan return vari*/
+            > sd_global->config.SCAN_LEN){
+            if (sd_global->config.SCAN_LEN < sd_global->config.MAX_SCAN_LEN) {
+                start_position = num_samples % sd_global->config.MAX_SCAN_LEN - sd_global->config.SCAN_LEN;
+            }
+            else{
+                start_position = 0;
+            }
+            
+			vari = calc_var(sd_global, &(pi_ratio[start_position]), NULL, NULL, 0); /*added by Yifan return vari*/
+        }
 		if (DBL_ABS(vari) >= .000002
 				|| (pi_ratio[num_samples % sd_global->config.SCAN_LEN]) < 0.95)
 			*dual_statble_flag = FALSE;

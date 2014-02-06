@@ -83,6 +83,9 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
     for (idx = 0; idx < c->sigma->cnt; idx++) {
         fprintf(rep_data, "%d\n", c->sigma->ck[idx]);
     }
+    for (idx = 0; idx < c->sigma->cnt; idx++) {
+        fprintf(rep_data, "%d\n", c->sigma->lamb[idx]);
+    }
     
     /* 4. Start storing theta_type */
     fprintf(rep_data, "cnt: %d\n",c->theta->cnt);
@@ -140,7 +143,7 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
         
     }
     
-    /* 6. Start storing run_time */
+    /* 7. Start storing run_time */
     fprintf(rep_data, "%.17g\n", s->run_time->total_time);
     fprintf(rep_data, "%.17g\n", s->run_time->iteration_time);
     fprintf(rep_data, "%.17g\n", s->run_time->soln_master_iter);
@@ -222,7 +225,7 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
         fprintf(rep_data, "%.17g\n", s->pi_ratio[idx]);
     }
 
-    /* 9. Start storing the last seed used in getting observation */
+    /* 10. Start storing the last seed used in getting observation */
     fprintf(rep_data, "%lld\n", sd_global->config.RUN_SEED);
     
     fclose(rep_data);
@@ -306,6 +309,9 @@ int restore_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_t
     for (idx = 0; idx < c->sigma->cnt; idx++) {
         fscanf(rep_data, "%d\n", &c->sigma->ck[idx]);
     }
+    for (idx = 0; idx < c->sigma->cnt; idx++) {
+        fscanf(rep_data, "%d\n", &c->sigma->lamb[idx]);
+    }
     
     /* 4. Start restoring theta_type */
     fscanf(rep_data, "cnt: %d\n",&c->theta->cnt);
@@ -318,6 +324,7 @@ int restore_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_t
     for (idx = 0; idx < c->theta->cnt; idx++) {
         fscanf(rep_data, "%lg\n", &c->theta->p[idx]);
     }
+    
     
     /* 5. Start restoring delta_type */
     
@@ -423,6 +430,8 @@ int restore_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_t
         fscanf(rep_data, "%lg\n", &s->Pi[idx]);
     }
     fscanf(rep_data, "%lg\n", &s->subobj_est);
+    /* Update the dual size before restoring added by Yifan 2014.01.28*/
+    update_dual_size(c, s, p);
     for (idx = 0; idx <= p->num->mast_rows + c->cuts->cnt + c->feasible_cuts_added->cnt; idx++) {
         fscanf(rep_data, "%lg\n", &s->Master_pi[idx]);
     }
@@ -471,7 +480,7 @@ int restore_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_t
         fscanf(rep_data, "%lg\n", &s->pi_ratio[idx]);
     }
     
-    /* 9. Start restoring the last seed used in getting observation */
+    /* 10. Start restoring the last seed used in getting observation */
     fscanf(rep_data, "%lld\n", &sd_global->config.RUN_SEED);
     
     fclose(rep_data);
