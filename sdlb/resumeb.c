@@ -27,10 +27,26 @@
 int store_sd_data_b(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_type *s)
 {
     int idx, obs;
+    char buffer1[128], buffer2[128];
     FILE *rep_data;
+    
+    char rep_number[16];
+    sprintf(rep_number, "%d", p->current_batch_id);
+    
+    /* modified by Yifan 2014.02.26 Numbering resume data for different replications */
+    strcpy(buffer2, "resume");
+    strcat(buffer2, rep_number);
+    strcat(buffer2, ".lp");
+    write_prob(c->master,buffer2);
+    
+    /* modified by Yifan 2014.02.26 */
+    strcpy(buffer1, "resume_data");
+    strcat(buffer1, rep_number);
+    strcat(buffer1, ".txt");
+    
     /* Store all data structure necessary for resuming SD */
     /* modified by Yifan 2014.01.12 */
-    rep_data = fopen("resume_data.txt", "w");
+    rep_data = fopen(buffer1, "w");
     /* 1. Start storing omega_type */
     fwrite(&(s->omega->cnt), sizeof(int), 1, rep_data);
     fwrite(&(s->omega->next), sizeof(int), 1, rep_data);
@@ -229,6 +245,10 @@ int store_sd_data_b(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_t
     fwrite(&(sd_global->config.RUN_SEED), sizeof(sd_long), 1, rep_data);
     
     fclose(rep_data);
+    
+    /* 11. Set store_flag to TRUE indicating that no more stroring during this replication */
+    /* This will be reset to FALSE at the beginning of each replication */
+    sd_global->store_flag = TRUE;
     
     return 0;
 }

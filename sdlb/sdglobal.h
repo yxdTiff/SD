@@ -338,6 +338,7 @@ typedef struct
     int obj_flag;
     double obj_mean;
     double obj_stdev;
+    BOOL store_flag;
 } sdglobal_type;
 
 #endif /* SDGLOBAL_H_ */

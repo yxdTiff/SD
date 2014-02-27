@@ -448,7 +448,8 @@ int main(int argc, char *argv[])
 								 sd_global->config.SCAN_LEN = scan_len[idx];*/
 								sd_global->config.EVAL_SEED1 = seed2[0];
 								sd_global->config.RUN_SEED = seed1[cnt];
-
+                                /* modified by Yifan 2014.02.26 for storing resume data in optimal.c*/
+                                sd_global->store_flag = FALSE;
 								/* Take the mean value solution as the initial candidate solution 04/25/2013 Yifan */
 								copy_arr(x_k, original_x_k, probptr->mac);
 								solve_SD(sd_global, probptr, x_k, num_rv,
@@ -838,7 +839,7 @@ void sd_mv_output_files(char *buffer1, char *buffer2, char *fname)
 void sd_mv_resume_files(char *buffer3, char *buffer2, char *fname)
 {
     int status;
-    strcpy(buffer2, "mv resume_data.txt resume.lp ");
+    strcpy(buffer2, "mv resume_data*.txt resume*.lp ");
 	strcat(buffer2, buffer3);
 	status = system(buffer2);
     if(status == -1){

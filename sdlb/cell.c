@@ -202,13 +202,8 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
     
     if (0) {
         restore_sd_data_b(sd_global, prob, cell, soln);
-
-        
         read_problem_simple(cell->master, "com.lp", "lp");
-        write_prob(cell->master, "comp2.lp");
         
-        //store_sd_data(sd_global, prob, cell, soln);
-        //write_prob(c->master,"com.lp");
         
         if (!solve_QP_master(sd_global, prob, cell, soln))
         {
