@@ -250,7 +250,7 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 		/* Be careful here! Without this check the iteration will be off by
 		 one from the original code. zl, 08/09/08.
 		 And the number of optimality tests may be off. zl, 08/10/04. */
-		printf("Iteration: %d\tThis is opt-flag: %d, s->flag: %d \n",cell->k, soln->optimality_flag, *soln->dual_statble_flag);
+		//printf("Iteration: %d\tThis is opt-flag: %d, s->flag: %d \n",cell->k, soln->optimality_flag, *soln->dual_statble_flag);
 		/*Update code in this "if statement" for Batch-mean Yifan 2012-09-05*/
 		if ((soln->optimality_flag && *soln->dual_statble_flag)
 				|| cell->k >= prob->num->iter)

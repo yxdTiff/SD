@@ -37,11 +37,13 @@
 #ifdef SD_win
 #include <windows.h>
 #endif
-void sd_create_output_folder(char *buffer1, char *buffer2, char *fname);
+void sd_create_resume_folder(sdglobal_type* sd_global, char *buffer3, char *buffer2, char *fname);
+void sd_create_output_folder(sdglobal_type* sd_global, char *buffer1, char *buffer2, char *fname);
 #ifdef SD_win
-void sd_mv_files(char *fname);
+void sd_mv_output_files(char *fname);
 #else
-void sd_mv_files(char *buffer1, char *buffer2, char *fname);
+void sd_mv_resume_files(char *buffer1, char *buffer2, char *fname);
+void sd_mv_output_files(char *buffer1, char *buffer2, char *fname);
 #endif
 
 /* Begin SD */
@@ -73,7 +75,7 @@ int main(int argc, char *argv[])
 //	double eps[3];
 //	int scan_len[3];
 	int idx = 0;
-	char buffer1[128], buffer2[128];
+	char buffer1[128], buffer2[128],buffer3[128];
     
     sdglobal_type *sd_global;
     sd_global = (sdglobal_type *) mem_malloc(sizeof(sdglobal_type)); /* All global variables */
@@ -105,7 +107,8 @@ int main(int argc, char *argv[])
 	if (!load_config(sd_global, read_seeds, read_iters))
 		return 1;
 #ifdef SD_unix
-    sd_create_output_folder(buffer1,buffer2,fname);
+    sd_create_resume_folder(sd_global, buffer3,buffer2,fname);
+    sd_create_output_folder(sd_global, buffer1,buffer2,fname);
 #endif
 
   
@@ -573,9 +576,10 @@ else
 	/* Release the CPLEX environment. zl */
 	close_Solver();
 #ifdef SD_win
-    sd_mv_files(fname);
+    sd_mv_output_files(fname);
 #else
-    sd_mv_files(buffer1, buffer2, fname);
+    sd_mv_resume_files(buffer3, buffer2, fname);
+    sd_mv_output_files(buffer1, buffer2, fname);
 #endif
 	return 1;
 }
@@ -603,7 +607,7 @@ else
 
  }
  \****************************************************************************/
-void sd_create_output_folder(char *buffer1, char *buffer2, char *fname)
+void sd_create_output_folder(sdglobal_type* sd_global, char *buffer1, char *buffer2, char *fname)
 {
     int status;
     strcpy(buffer1, "mkdir ./sdoutput");
@@ -619,12 +623,83 @@ void sd_create_output_folder(char *buffer1, char *buffer2, char *fname)
         printf("system() call fails.\n");
         exit(1);
     }
+    strcat(buffer1, "/");
+    if (sd_global->config.EPSILON==0.01) {
+        strcat(buffer1, "loose");
+    }
+    else if (sd_global->config.EPSILON==0.001){
+        strcat(buffer1, "nominal");
+    }
+    else{
+        strcat(buffer1, "tight");
+    }
+	status = system(buffer1);
+    if(status == -1){
+        printf("system() call fails.\n");
+        exit(1);
+    }
 	strcpy(buffer1, "./sdoutput/");
 	strcat(buffer1, fname);
+    strcat(buffer1, "/");
+    if (sd_global->config.EPSILON==0.01) {
+        strcat(buffer1, "loose");
+    }
+    else if (sd_global->config.EPSILON==0.001){
+        strcat(buffer1, "nominal");
+    }
+    else{
+        strcat(buffer1, "tight");
+    }
+    
+}
+
+void sd_create_resume_folder(sdglobal_type* sd_global, char *buffer3, char *buffer2, char *fname)
+{
+    int status;
+    strcpy(buffer3, "mkdir ./sdresume");
+	status = system(buffer3);
+    if(status == -1){
+        printf("system() call fails.\n");
+        exit(1);
+    }
+	strcat(buffer3, "/");
+	strcat(buffer3, fname);
+	status = system(buffer3);
+    if(status == -1){
+        printf("system() call fails.\n");
+        exit(1);
+    }
+    strcat(buffer3, "/");
+    if (sd_global->config.EPSILON==0.01) {
+        strcat(buffer3, "loose");
+    }
+    else if (sd_global->config.EPSILON==0.001){
+        strcat(buffer3, "nominal");
+    }
+    else{
+        strcat(buffer3, "tight");
+    }
+	status = system(buffer3);
+    if(status == -1){
+        printf("system() call fails.\n");
+        exit(1);
+    }
+	strcpy(buffer3, "./sdresume/");
+	strcat(buffer3, fname);
+    strcat(buffer3, "/");
+    if (sd_global->config.EPSILON==0.01) {
+        strcat(buffer3, "loose");
+    }
+    else if (sd_global->config.EPSILON==0.001){
+        strcat(buffer3, "nominal");
+    }
+    else{
+        strcat(buffer3, "tight");
+    }
 }
 
 #ifdef SD_win
-void sd_mv_files(char *fname)
+void sd_mv_output_files(char *fname)
 {
     TCHAR path[BUFFER_SIZE];
     TCHAR inst_dir[BUFFER_SIZE];
@@ -749,11 +824,22 @@ void sd_mv_files(char *fname)
 	MoveFile(L_file_name, buff);
 }
 #else
-void sd_mv_files(char *buffer1, char *buffer2, char *fname)
+void sd_mv_output_files(char *buffer1, char *buffer2, char *fname)
 {
     int status;
     strcpy(buffer2, "mv *.out *.lp *.dat ");
 	strcat(buffer2, buffer1);
+	status = system(buffer2);
+    if(status == -1){
+        printf("system() call fails.\n");
+        exit(1);
+    }
+}
+void sd_mv_resume_files(char *buffer3, char *buffer2, char *fname)
+{
+    int status;
+    strcpy(buffer2, "mv resume_data.txt resume.lp ");
+	strcat(buffer2, buffer3);
 	status = system(buffer2);
     if(status == -1){
         printf("system() call fails.\n");

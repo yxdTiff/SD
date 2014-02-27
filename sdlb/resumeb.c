@@ -30,7 +30,7 @@ int store_sd_data_b(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_t
     FILE *rep_data;
     /* Store all data structure necessary for resuming SD */
     /* modified by Yifan 2014.01.12 */
-    rep_data = fopen("rep_data.txt", "w");
+    rep_data = fopen("resume_data.txt", "w");
     /* 1. Start storing omega_type */
     fwrite(&(s->omega->cnt), sizeof(int), 1, rep_data);
     fwrite(&(s->omega->next), sizeof(int), 1, rep_data);
@@ -239,7 +239,7 @@ int restore_sd_data_b(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
     FILE *rep_data;
     /* Store all data structure necessary for resuming SD */
     /* modified by Yifan 2014.01.12 */
-    rep_data = fopen("rep_data.txt", "r");
+    rep_data = fopen("resume_data.txt", "r");
     
     /* 1. Start restoring omega_type */
     fread(&(s->omega->cnt), sizeof(int), 1, rep_data);

@@ -59,9 +59,9 @@ BOOL optimal(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_type *s,
 	if (c->k > sd_global->config.MIN_ITER && *s->dual_statble_flag)
 	{
 
-        if (0) {
+        if (1) {
             store_sd_data_b(sd_global, p, c, s);
-            write_prob(c->master,"com.lp");
+            write_prob(c->master,"resume.lp");
         }
 
 		if (pre_test_1(sd_global, s))
