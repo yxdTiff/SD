@@ -15,6 +15,7 @@
 #include "utility.h"
 #include "log.h"
 #include "sdglobal.h"
+#include "batch.h"
 
 one_problem * new_batch_problem(one_problem * master, int max_cuts)
 {
@@ -187,10 +188,10 @@ one_problem * new_batch_problem(one_problem * master, int max_cuts)
 
 	for (i = 0; i < BATCH_SIZE; i++)
 	{
-		batch_name[0] = 'e';
-		batch_name[1] = 't';
-		batch_name[2] = 'a';
-		batch_name[3] = 'B';
+		batch_name[0] = 'x';
+		batch_name[1] = 'e';
+		batch_name[2] = 't';
+		batch_name[3] = 'a';
 		batch_name[4] = '0' + i / 10 % 10;
 		batch_name[5] = '0' + i / 1 % 10;
 

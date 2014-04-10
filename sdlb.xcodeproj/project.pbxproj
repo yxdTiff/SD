@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		695D165D1883B4CE0037891D /* resume.c in Sources */ = {isa = PBXBuildFile; fileRef = 695D165C1883B4CE0037891D /* resume.c */; };
 		696004911821A00300CD6831 /* batch.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960045D1821A00300CD6831 /* batch.c */; };
 		696004921821A00300CD6831 /* cell.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960045F1821A00300CD6831 /* cell.c */; };
 		696004931821A00300CD6831 /* cuts.c in Sources */ = {isa = PBXBuildFile; fileRef = 696004611821A00300CD6831 /* cuts.c */; };
@@ -35,7 +34,7 @@
 		696004AA1821A00300CD6831 /* utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960048F1821A00300CD6831 /* utility.c */; };
 		696004AC1821A04200CD6831 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696004AB1821A04200CD6831 /* CoreFoundation.framework */; };
 		696004AE1821A04800CD6831 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696004AD1821A04800CD6831 /* IOKit.framework */; };
-		696004B01821A06100CD6831 /* libcplex.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 696004AF1821A06100CD6831 /* libcplex.a */; };
+		698318A618EA86F900B2EB86 /* libcplex.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 698318A518EA86F900B2EB86 /* libcplex.a */; };
 		69A2FEC618A20EE600997825 /* resumeb.c in Sources */ = {isa = PBXBuildFile; fileRef = 69A2FEC518A20EE600997825 /* resumeb.c */; };
 /* End PBXBuildFile section */
 
@@ -109,8 +108,8 @@
 		696004901821A00300CD6831 /* utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utility.h; sourceTree = "<group>"; };
 		696004AB1821A04200CD6831 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		696004AD1821A04800CD6831 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		696004AF1821A06100CD6831 /* libcplex.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcplex.a; path = "../../../../Applications/IBM/ILOG/CPLEX_Studio124/cplex/lib/x86-64_darwin9_gcc4.0/static_pic/libcplex.a"; sourceTree = "<group>"; };
 		696004B41821A2EA00CD6831 /* config.sd */ = {isa = PBXFileReference; lastKnownFileType = text; name = config.sd; path = "../../../../Library/Developer/Xcode/DerivedData/sdlb-aqzmdecdolvenjbvdyqijfayklfa/Build/Products/Debug/config.sd"; sourceTree = "<group>"; };
+		698318A518EA86F900B2EB86 /* libcplex.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcplex.a; path = "../../../../Applications/IBM/ILOG/CPLEX_Studio126/cplex/lib/x86-64_osx/static_pic/libcplex.a"; sourceTree = "<group>"; };
 		69A2FEC518A20EE600997825 /* resumeb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = resumeb.c; sourceTree = "<group>"; };
 		69A2FEC718A20F2500997825 /* resumeb.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = resumeb.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -120,7 +119,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				696004B01821A06100CD6831 /* libcplex.a in Frameworks */,
+				698318A618EA86F900B2EB86 /* libcplex.a in Frameworks */,
 				696004AE1821A04800CD6831 /* IOKit.framework in Frameworks */,
 				696004AC1821A04200CD6831 /* CoreFoundation.framework in Frameworks */,
 			);
@@ -213,7 +212,7 @@
 		696004B11821A06C00CD6831 /* Framework */ = {
 			isa = PBXGroup;
 			children = (
-				696004AF1821A06100CD6831 /* libcplex.a */,
+				698318A518EA86F900B2EB86 /* libcplex.a */,
 				696004AD1821A04800CD6831 /* IOKit.framework */,
 				696004AB1821A04200CD6831 /* CoreFoundation.framework */,
 			);
@@ -292,7 +291,6 @@
 				696004931821A00300CD6831 /* cuts.c in Sources */,
 				6960049A1821A00300CD6831 /* memory.c in Sources */,
 				696004A31821A00300CD6831 /* soln.c in Sources */,
-				695D165D1883B4CE0037891D /* resume.c in Sources */,
 				6960049B1821A00300CD6831 /* omega.c in Sources */,
 				696004941821A00300CD6831 /* delta.c in Sources */,
 				696004AA1821A00300CD6831 /* utility.c in Sources */,
@@ -375,14 +373,24 @@
 		6960045B18219FE900CD6831 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
+				COMBINE_HIDPI_IMAGES = NO;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_INPUT_FILETYPE = sourcecode.c.c;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_SHADOW = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					/Users/yifanliu/Applications/IBM/ILOG/CPLEX_Studio124/cplex/include/ilcplex,
+					/Users/yifanliu/Applications/IBM/ILOG/CPLEX_Studio126/cplex/include/ilcplex,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(USER_APPS_DIR)/IBM/ILOG/CPLEX_Studio124/cplex/lib/x86-64_darwin9_gcc4.0/static_pic",
+					"$(USER_APPS_DIR)/IBM/ILOG/CPLEX_Studio126/cplex/lib/x86-64_osx/static_pic",
 				);
 				OTHER_LDFLAGS = "-Wl,-no_compact_unwind";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -392,15 +400,25 @@
 		6960045C18219FE900CD6831 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
+				COMBINE_HIDPI_IMAGES = NO;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_INPUT_FILETYPE = sourcecode.c.c;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_SHADOW = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					/Users/yifanliu/Applications/IBM/ILOG/CPLEX_Studio124/cplex/include/ilcplex,
+					/Users/yifanliu/Applications/IBM/ILOG/CPLEX_Studio126/cplex/include/ilcplex,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(USER_APPS_DIR)/IBM/ILOG/CPLEX_Studio124/cplex/lib/x86-64_darwin9_gcc4.0/static_pic",
+					"$(USER_APPS_DIR)/IBM/ILOG/CPLEX_Studio126/cplex/lib/x86-64_osx/static_pic",
 				);
 				OTHER_LDFLAGS = "-Wl,-no_compact_unwind";
 				PRODUCT_NAME = "$(TARGET_NAME)";

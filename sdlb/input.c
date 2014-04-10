@@ -1748,6 +1748,9 @@ int load_config(sdglobal_type* sd_global, BOOL read_seeds, BOOL read_iters)
 
 		fclose(f_in);
 	}
+    
+    /* For non-resume version of the code, make sure MAX_SCAN_LEN = SCAN_LEN */
+    // sd_global->config.MAX_SCAN_LEN = sd_global->config.SCAN_LEN;
 
 	if (sd_global->config.RUN_SEED1 < 0 || sd_global->config.RUN_SEED2 < 0
 			|| sd_global->config.EVAL_SEED1 < 0)

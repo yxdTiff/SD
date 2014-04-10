@@ -34,10 +34,13 @@
 #include "cuts.h"
 #include "sdglobal.h"
 #include "supomega.h"
+#include "unistd.h"
 #ifdef SD_win
 #include <windows.h>
 #endif
 void sd_create_resume_folder(sdglobal_type* sd_global, char *buffer3, char *buffer2, char *fname);
+BOOL sd_check_resume_folder(sdglobal_type* sd_global, char *fname);
+BOOL sd_check_resume_data(char *buffer2, char *tolerance);
 void sd_create_output_folder(sdglobal_type* sd_global, char *buffer1, char *buffer2, char *fname);
 #ifdef SD_win
 void sd_mv_output_files(char *fname);
@@ -84,7 +87,7 @@ int main(int argc, char *argv[])
 	sd_global->MALLOC = 0;
     sd_global->average_flag = 0;
     sd_global->obj_flag = 0;
-
+    sd_global->resume_flag = FALSE;
 	/* Initialize the CPLEX environment. zl */
 	open_Solver();
 
@@ -107,6 +110,7 @@ int main(int argc, char *argv[])
 	if (!load_config(sd_global, read_seeds, read_iters))
 		return 1;
 #ifdef SD_unix
+    sd_global->resume_flag = sd_check_resume_folder(sd_global, fname);
     sd_create_resume_folder(sd_global, buffer3,buffer2,fname);
     sd_create_output_folder(sd_global, buffer1,buffer2,fname);
 #endif
@@ -450,6 +454,9 @@ int main(int argc, char *argv[])
 								sd_global->config.RUN_SEED = seed1[cnt];
                                 /* modified by Yifan 2014.02.26 for storing resume data in optimal.c*/
                                 sd_global->store_flag = FALSE;
+                                sd_global->pi_flag[0] = FALSE;
+                                sd_global->pi_flag[1] = FALSE;
+                                sd_global->pi_flag[2] = FALSE;
 								/* Take the mean value solution as the initial candidate solution 04/25/2013 Yifan */
 								copy_arr(x_k, original_x_k, probptr->mac);
 								solve_SD(sd_global, probptr, x_k, num_rv,
@@ -699,6 +706,124 @@ void sd_create_resume_folder(sdglobal_type* sd_global, char *buffer3, char *buff
     }
 }
 
+BOOL sd_check_resume_folder(sdglobal_type* sd_global, char *fname)
+{   char buffer1[128],buffer2[128];
+    int usr_response=-1;
+    BOOL tight_flag = FALSE, nominal_flag = FALSE, loose_flag = FALSE;
+    
+    
+    strcpy(buffer1, "./sdresume/");
+    strcat(buffer1, fname);
+    strcat(buffer1, "/");
+
+
+    /* First check tight tolerance */
+    strcpy(buffer2, buffer1);
+    tight_flag = sd_check_resume_data(buffer2, "tight");
+    
+    if (tight_flag) {
+        printf("Data of tight tolerance is available for SD to resume from, type 1 to resume or 0 to start SD from scratch:");
+        if (scanf("%d", &usr_response) != 1) {
+            printf("Failed to read user_response");
+        }
+        while ((usr_response!=0)&&(usr_response!=1)) {
+            printf("Please type 1 to resume SD or 0 to start SD from scratch:");
+            if (scanf("%d", &usr_response) != 1) {
+                printf("Failed to read usr_response");
+            }
+        }
+    }
+    
+    /* Then check nominal tolerance */
+    strcpy(buffer2, buffer1);
+    nominal_flag = sd_check_resume_data(buffer2, "nominal");
+    
+    if (nominal_flag) {
+        printf("Data of nominal tolerance is available for SD to resume, type 1 to resume or 0 to start from scratch:");
+        if (scanf("%d", &usr_response) != 1) {
+            printf("Failed to read user_response");
+        }
+        while ((usr_response!=0)&&(usr_response!=1)) {
+            printf("Please type 1 to resume SD or 0 to start SD from scratch:");
+            if (scanf("%d", &usr_response) != 1) {
+                printf("Failed to read usr_response");
+            }
+        }
+    }
+    
+    /* Lastly, check loose tolerance */
+    strcpy(buffer2, buffer1);
+    loose_flag = sd_check_resume_data(buffer2, "loose");
+    
+    if (loose_flag) {
+        printf("Data of loose tolerance is available for SD to resume, type 1 to resume or 0 to start from scratch:");
+        if (scanf("%d", &usr_response) != 1) {
+            printf("Failed to read user_response");
+        }
+        while ((usr_response!=0)&&(usr_response!=1)) {
+            printf("Please type 1 to resume SD or 0 to start SD from scratch:");
+            if (scanf("%d", &usr_response) != 1) {
+                printf("Failed to read usr_response");
+            }
+        }
+    }
+    
+    if (usr_response == 1) {
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
+    
+}
+
+BOOL sd_check_resume_data(char *buffer2, char *tolerance)
+{
+    BOOL flag=FALSE;
+    char buffer3[128];
+    char temp_buffer[128];
+    int cnt;
+    char rep_number[16];
+
+    strcat(buffer2, tolerance);
+    strcat(buffer2, "/");
+    strcpy(buffer3, buffer2);
+    strcat(buffer2, "resume_data");
+    strcat(buffer3, "resume");
+    
+    for(cnt=0; cnt < BATCH_SIZE; cnt++) {
+        sprintf(rep_number, "%d", cnt);
+        
+        strcpy(temp_buffer, buffer2);
+        strcat(temp_buffer, rep_number);
+        strcat(temp_buffer, ".txt");
+        
+        if( access( temp_buffer, F_OK ) != -1 ) {
+            // file exists
+        } else {
+            break;
+        }
+        
+        strcpy(temp_buffer, buffer3);
+        strcat(temp_buffer, rep_number);
+        strcat(temp_buffer, ".lp");
+        
+        if( access( temp_buffer, F_OK ) != -1 ) {
+            // file exists
+        } else {
+            break;
+        }
+        
+        if (cnt==(BATCH_SIZE-1)) {
+            flag = TRUE;
+        }
+    }
+    
+    return flag;
+}
+
+
 #ifdef SD_win
 void sd_mv_output_files(char *fname)
 {
@@ -828,7 +953,7 @@ void sd_mv_output_files(char *fname)
 void sd_mv_output_files(char *buffer1, char *buffer2, char *fname)
 {
     int status;
-    strcpy(buffer2, "mv *.out *.lp *.dat ");
+    strcpy(buffer2, "mv resume_time store_time *.out *.lp *.dat ");
 	strcat(buffer2, buffer1);
 	status = system(buffer2);
     if(status == -1){

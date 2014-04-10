@@ -235,7 +235,7 @@ void *read_problem(one_problem *p, char *filename, char *filetype)
   CPXLPptr lp;
   int status;
   
-  printf("the filename is : %s\n", filename);
+  //printf("the filename is : %s\n", filename);
   lp = CPXcreateprob(env, &status, p->name);
   
   if (lp == NULL)
@@ -353,6 +353,8 @@ BOOL solve_problem(sdglobal_type* sd_global, one_problem *p)
 	}
 	else
 	{
+        // CPXsetintparam(env, CPX_PARAM_SCRIND, CPX_ON);
+        // CPXsetintparam(env, CPX_PARAM_BARDISPLAY, 1);
 		resolve_master: ans = !CPXbaropt(env, p->lp);
 		/* Set it back to default */
 		CPXsetintparam(env, CPX_PARAM_SCAIND, 0);
@@ -410,7 +412,7 @@ BOOL solve_problem(sdglobal_type* sd_global, one_problem *p)
 				{
 					/* Included for aggresive scaling by GJH 04/19/11*/
 					/* Yifan 03/25/2012 Solution Status 6 encountered. Change to Equilibration Scaling*/
-					/* printf("changing scaling strategy\n"); */
+					printf("-");
 					ctr++;
 					param = -param;
 					CPXsetintparam(env, CPX_PARAM_SCAIND, param);
@@ -870,6 +872,24 @@ BOOL change_coef(one_problem *p, sparse_matrix *coef)
 	return TRUE;
 }
 
+/* This function will change a singel coefficient of the problem */
+BOOL change_single_coef(one_problem *p, int row, int col, double coef)
+{
+    
+#ifdef TRACE
+	printf("Inside change_single_coef\n");
+#endif
+    
+    if (CPXchgcoef(env, p->lp, row, col, coef))
+        return FALSE;
+
+#ifdef TRACE
+	printf("Exiting change_single_coef\n");
+#endif
+    
+	return TRUE;
+}
+
 /***********************************************************************\
 ** This function will change the coefficients of one column of the
  ** constraint matrix (or the right hand side if column is specified as -1)
@@ -1240,8 +1260,9 @@ void write_prob(one_problem *p, char *file_name)
 #ifdef TRACE
 	printf("inside write_prob\n");
 #endif
-
-	status = CPXwriteprob(env, p->lp, file_name, NULL);
+    /* modified by Yifan 2014.02.28 to print out hight precision MPS file */
+    CPXsetintparam(env, CPX_PARAM_MPSLONGNUM, ON);
+	status = CPXwriteprob(env, p->lp, file_name, "lp");
 
 	if (status)
 	{
@@ -1400,6 +1421,7 @@ void change_solver_barrier(one_problem *p)
      6 [CPX_ALG_CONCURRENT] Concurrent (Dual, Barrier, and Primal)
      */
   status = set_intparam(NULL, PARAM_QPMETHOD, ALG_CONCURRENT); /* 2011.10.30 */
+
   if (status)
   {
     fprintf(stderr, "Failed to set the optimization method, error %d.\n",

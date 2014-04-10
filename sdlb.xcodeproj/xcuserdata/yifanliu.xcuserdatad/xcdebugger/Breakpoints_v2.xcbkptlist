@@ -9,28 +9,12 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "sdlb/improve.c"
-            timestampString = "412591226.853617"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "58"
-            endingLineNumber = "58"
-            landmarkName = "check_improvement()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "sdlb/optimal.c"
-            timestampString = "413274596.735882"
+            timestampString = "418155956.285984"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "63"
-            endingLineNumber = "63"
+            startingLineNumber = "72"
+            endingLineNumber = "72"
             landmarkName = "optimal()"
             landmarkType = "7">
          </BreakpointContent>
@@ -41,107 +25,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "sdlb/cell.c"
-            timestampString = "413274596.735882"
+            filePath = "sdlb/master.c"
+            timestampString = "418069013.546954"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "396"
-            endingLineNumber = "396"
-            landmarkName = "solve_cell()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "sdlb/resumeb.c"
-            timestampString = "415172588.513446"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "265"
-            endingLineNumber = "265"
-            landmarkName = "restore_sd_data_b()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "sdlb/resumeb.c"
-            timestampString = "415172588.513446"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "277"
-            endingLineNumber = "277"
-            landmarkName = "restore_sd_data_b()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "restore_sd_data_b"
-                  moduleName = "sdlb"
-                  urlString = "file:///Users/yifanliu/Developer/SDcode/sdlb/sdlb/sdlb/resumeb.c"
-                  timestampString = "413276267.891566"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "257"
-                  endingLineNumber = "257"
-                  offsetFromSymbolStart = "558">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "restore_sd_data_b"
-                  moduleName = "sdlb"
-                  urlString = "file:///Users/yifanliu/Developer/SDcode/sdlb/sdlb/sdlb/resumeb.c"
-                  timestampString = "413276267.892148"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "257"
-                  endingLineNumber = "257"
-                  offsetFromSymbolStart = "645">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "sdlb/resumeb.c"
-            timestampString = "415171893.192232"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
-            landmarkName = "store_sd_data_b()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "sdlb/optimal.c"
-            timestampString = "415171374.875103"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "63"
-            endingLineNumber = "63"
-            landmarkName = "optimal()"
+            startingLineNumber = "170"
+            endingLineNumber = "170"
+            landmarkName = "solve_QP_master()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -152,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "sdlb/cell.c"
-            timestampString = "413276208.574843"
+            timestampString = "418153722.926405"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "204"
-            endingLineNumber = "204"
+            startingLineNumber = "206"
+            endingLineNumber = "206"
             landmarkName = "solve_cell()"
             landmarkType = "7">
          </BreakpointContent>
@@ -164,81 +54,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "sdlb/resumeb.c"
-            timestampString = "415172588.513446"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "296"
-            endingLineNumber = "296"
-            landmarkName = "restore_sd_data_b()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            condition = "num_samples &gt; 250"
             continueAfterRunningActions = "No"
             filePath = "sdlb/cuts.c"
-            timestampString = "413346837.997124"
+            timestampString = "418162896.126308"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "622"
-            endingLineNumber = "622"
-            landmarkName = "SD_cut()"
+            startingLineNumber = "1877"
+            endingLineNumber = "1877"
+            landmarkName = "refresh_master()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "sdlb/sd.c"
-            timestampString = "415172588.513446"
+            timestampString = "418162918.159593"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "644"
-            endingLineNumber = "644"
-            landmarkName = "sd_create_output_folder()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "sdlb/sd.c"
-            timestampString = "415172588.513446"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "832"
-            endingLineNumber = "832"
-            landmarkName = "sd_mv_output_files()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "sdlb/resumeb.c"
-            timestampString = "415171872.204972"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "34"
-            endingLineNumber = "34"
-            landmarkName = "store_sd_data_b()"
+            startingLineNumber = "398"
+            endingLineNumber = "398"
+            landmarkName = "main()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -339,6 +339,8 @@ typedef struct
     double obj_mean;
     double obj_stdev;
     BOOL store_flag;
+    BOOL pi_flag[3];
+    BOOL resume_flag;
 } sdglobal_type;
 
 #endif /* SDGLOBAL_H_ */

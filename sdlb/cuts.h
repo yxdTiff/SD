@@ -9,10 +9,7 @@
 #define CUTS_H_
 #include "sdglobal.h"
 
-void SD_cut(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
-		omega_type *omega, num_type *num, one_cut *cut, vector Xvect,
-		double *pi_ratio, double max_ratio, double min_ratio, int num_samples,
-		BOOL *dual_statble_flag);
+void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type *soln, sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, one_cut *cut, vector Xvect, double *pi_ratio, double max_ratio, double min_ratio, int num_samples, BOOL *dual_statble_flag);
 i_type compute_istar(int obs, one_cut *cut, sigma_type *sigma,
 		delta_type *delta, vector Xvect, num_type *num, vector Pi_Tbar_X,
 		double *argmax, BOOL pi_eval, int ictr);
@@ -58,5 +55,5 @@ void add_cut_to_master(sdglobal_type* sd_global, one_cut *cut, prob_type *p,
 		cell_type *c, soln_type *s, int idx);
 batch_cut_type *new_bcuts(prob_type *p, int bsize, batch_cut_type *batch_cuts);
 void free_bcuts(batch_cut_type *bcuts);
-
+void refresh_master(sdglobal_type *sd_global,prob_type *prob, cell_type *cell, soln_type *soln);
 #endif /* CUTS_H_ */

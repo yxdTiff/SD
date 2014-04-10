@@ -22,13 +22,14 @@
 #include "rvgen.h"
 #include "sdconstants.h"
 #include "sdglobal.h"
-#include "resume.h"
+#include "resumeb.h"
 
 int store_sd_data_b(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_type *s)
 {
-    int idx, obs;
+    int idx, obs, cnt;
     char buffer1[128], buffer2[128];
     FILE *rep_data;
+    double coef_value;
     
     char rep_number[16];
     sprintf(rep_number, "%d", p->current_batch_id);
@@ -39,6 +40,7 @@ int store_sd_data_b(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_t
     strcat(buffer2, ".lp");
     write_prob(c->master,buffer2);
     
+    
     /* modified by Yifan 2014.02.26 */
     strcpy(buffer1, "resume_data");
     strcat(buffer1, rep_number);
@@ -47,6 +49,8 @@ int store_sd_data_b(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_t
     /* Store all data structure necessary for resuming SD */
     /* modified by Yifan 2014.01.12 */
     rep_data = fopen(buffer1, "w");
+    
+    
     /* 1. Start storing omega_type */
     fwrite(&(s->omega->cnt), sizeof(int), 1, rep_data);
     fwrite(&(s->omega->next), sizeof(int), 1, rep_data);
@@ -243,10 +247,63 @@ int store_sd_data_b(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_t
     
     /* 10. Start storing the last seed used in getting observation */
     fwrite(&(sd_global->config.RUN_SEED), sizeof(sd_long), 1, rep_data);
+    fwrite(&(sd_global->pi_flag[0]), sizeof(BOOL), 1, rep_data);
+    fwrite(&(sd_global->pi_flag[1]), sizeof(BOOL), 1, rep_data);
+    fwrite(&(sd_global->pi_flag[2]), sizeof(BOOL), 1, rep_data);
+    
+    /* 11. Start stroing the whole master problem */
+    /* get the objective coefficient */
+    for (idx = 0; idx <= p->master->mac; idx++) {
+        get_coef(c->master, -1, idx, &coef_value);
+        fwrite(&coef_value, sizeof(double), 1, rep_data);
+    }
+    
+    /* get the first stage origianl constraint coefficient */
+    for (cnt = 0; cnt < p->master->mar; cnt++) {
+        for (idx = 0; idx < p->master->mac; idx++) {
+            get_coef(c->master, cnt, idx, &coef_value);
+            fwrite(&coef_value, sizeof(double), 1, rep_data);
+        }
+    }
+    
+    /* get the first stage origianl constraint rhs */
+    for (cnt = 0; cnt < p->master->mar; cnt++) {
+        get_coef(c->master, cnt, -1, &coef_value);
+        fwrite(&coef_value, sizeof(double), 1, rep_data);
+    }
+    
+    /* get the first stage added cuts' coefficients */
+    for (cnt = p->master->mar; cnt < p->master->mar + c->cuts->cnt + c->feasible_cuts_added->cnt; cnt++) {
+        /* Do not foget to inlcude the eta column*/
+        for (idx = 0; idx <= p->master->mac; idx++) {
+            get_coef(c->master, cnt, idx, &coef_value);
+            fwrite(&coef_value, sizeof(double), 1, rep_data);
+        }
+        
+    }
+    
+    /* get the first stage added cuts' rhs */
+    for (cnt = p->master->mar; cnt < p->master->mar + c->cuts->cnt + c->feasible_cuts_added->cnt; cnt++) {
+        get_coef(c->master, cnt, -1, &coef_value);
+        fwrite(&coef_value, sizeof(double), 1, rep_data);
+    }
+    
+    /* get the first stage decisions' upper bounds */
+    for (idx = 0; idx < p->master->mac; idx++) {
+        get_ubound(c->master, &coef_value, idx, idx);
+        fwrite(&coef_value, sizeof(double), 1, rep_data);
+    }
+    
+    /* get the first stage decisions' lower bounds */
+    for (idx = 0; idx < p->master->mac; idx++) {
+        get_lbound(c->master, &coef_value, idx, idx);
+        fwrite(&coef_value, sizeof(double), 1, rep_data);
+    }
+
     
     fclose(rep_data);
     
-    /* 11. Set store_flag to TRUE indicating that no more stroring during this replication */
+    /* 12. Set store_flag to TRUE indicating that no more stroring during this replication */
     /* This will be reset to FALSE at the beginning of each replication */
     sd_global->store_flag = TRUE;
     
@@ -256,44 +313,86 @@ int store_sd_data_b(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_t
 int restore_sd_data_b(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_type *s)
 {
     int cnt, idx, obs;
+    int omega_cnt, cut_obs;
     FILE *rep_data;
+    double coef_value;
+    
+    char buffer1[128], buffer2[128];
+    char rep_number[16];
+    sprintf(rep_number, "%d", p->current_batch_id);
+    // sprintf(rep_number, "%d", 14);
+    
+    /* modified by Yifan 2014.02.26 Numbering resume data for different replications */
+    strcpy(buffer2, "./sdresume/pgp2/nominal/resume");
+    strcat(buffer2, rep_number);
+    strcat(buffer2, ".lp");
+    read_problem_simple(c->master, buffer2, "lp");
+    
+    /* modified by Yifan 2014.02.26 */
+    strcpy(buffer1, "./sdresume/pgp2/nominal/resume_data");
+    strcat(buffer1, rep_number);
+    strcat(buffer1, ".txt");
+    
+    
     /* Store all data structure necessary for resuming SD */
     /* modified by Yifan 2014.01.12 */
-    rep_data = fopen("resume_data.txt", "r");
+    rep_data = fopen(buffer1, "r");
     
     /* 1. Start restoring omega_type */
-    fread(&(s->omega->cnt), sizeof(int), 1, rep_data);
+    
+    if (fread(&(s->omega->cnt), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read s->omega->cnt");
+    }
     for (idx = 0; idx < s->omega->cnt; idx++) {
         s->omega->idx[idx] = arr_alloc(p->num->cipher+1, int);
     }
+    if (fread(&(s->omega->next), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read s->omega->next");
+    }
+    if ( fread(&(s->omega->most), sizeof(int), 1, rep_data)!= 1) {
+        printf("Failed to read s->omega->most");
+    }
+    if ( fread(&(s->omega->last), sizeof(int), 1, rep_data)!= 1) {
+        printf("Failed to read s->omega->last");
+    }
+    if ( fread(&(s->omega->k), sizeof(int), 1, rep_data)!= 1) {
+        printf("Failed to read s->omega->k");
+    }
     
-    fread(&(s->omega->next), sizeof(int), 1, rep_data);
-    fread(&(s->omega->most), sizeof(int), 1, rep_data);
-    fread(&(s->omega->last), sizeof(int), 1, rep_data);
-    fread(&(s->omega->k), sizeof(int), 1, rep_data);
-    
-    fread(s->omega->row, sizeof(int), p->num->rv+1, rep_data);
-
-
-    fread(s->omega->col, sizeof(int), p->num->rv+1, rep_data);
+    if (fread(s->omega->row, sizeof(int), p->num->rv+1, rep_data) != p->num->rv+1) {
+        printf("Failed to read s->omega->row");
+    }
+    if (fread(s->omega->col, sizeof(int), p->num->rv+1, rep_data) != p->num->rv+1) {
+        printf("Failed to read s->omega->col");
+    }
     
     for (idx = 0; idx < s->omega->cnt; idx++) {
         
-        fread(s->omega->idx[idx], sizeof(int), p->num->cipher+1, rep_data);
+        if (fread(s->omega->idx[idx], sizeof(int), p->num->cipher+1, rep_data) != p->num->cipher+1) {
+            printf("Failed to read s->omega->idx");
+        }
         
     }
     
-    fread(s->omega->weight, sizeof(int), s->omega->cnt, rep_data);
+    if (fread(s->omega->weight, sizeof(int), s->omega->cnt, rep_data) != s->omega->cnt) {
+        printf("Failed to read s->omega->weight");
+    }
     
     
-    fread(s->omega->filter, sizeof(int), s->omega->cnt, rep_data);
+    if (fread(s->omega->filter, sizeof(int), s->omega->cnt, rep_data) != s->omega->cnt) {
+        printf("Failed to read s->omega->filter");
+    }
     
     
-    fread(s->omega->RT+1, sizeof(double), sd_global->omegas.num_omega, rep_data);
+    if (fread(s->omega->RT+1, sizeof(double), sd_global->omegas.num_omega, rep_data) != sd_global->omegas.num_omega) {
+        printf("Failed to read s->omega->RT+1");
+    }
     
     
     /* 2. Start restoring lambda_type */
-    fread(&(c->lambda->cnt), sizeof(int), 1, rep_data);
+    if (fread(&(c->lambda->cnt), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read c->lambda->cnt");
+    }
     
     /* Dynamically allocate memory space for lambda */
     for (cnt = 0; cnt < c->lambda->cnt; cnt++)
@@ -301,16 +400,22 @@ int restore_sd_data_b(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
 			err_msg("Allocation", "restore_lambda", "lambda->val[cnt]");
     
 
-    fread(c->lambda->row, sizeof(int), p->num->rv_rows+1, rep_data);
+    if (fread(c->lambda->row, sizeof(int), p->num->rv_rows+1, rep_data) != p->num->rv_rows+1) {
+        printf("Failed to read c->lambda->row");
+    }
 
     for (idx = 0; idx < c->lambda->cnt; idx++) {
         
-        fread(c->lambda->val[idx], sizeof(double), p->num->rv_rows+1, rep_data);
+        if (fread(c->lambda->val[idx], sizeof(double), p->num->rv_rows+1, rep_data) != p->num->rv_rows+1) {
+            printf("Failed to read c->lambda->val");
+        }
         
     }
     
     /* 3. Start restoring sigma_type */
-    fread(&(c->sigma->cnt), sizeof(int), 1, rep_data);
+    if (fread(&(c->sigma->cnt), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read c->sigma->cnt");
+    }
     
     /* Dynamically allocate memory space for sigma */
     for (cnt = 0; cnt < c->sigma->cnt && cnt < sd_global->config.MAX_ITER; cnt++)
@@ -318,31 +423,49 @@ int restore_sd_data_b(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
 			err_msg("Allocation", "resotre_sigma", "sigma->val[cnt]");
     
     
-    fread(c->sigma->col, sizeof(int), p->num->nz_cols+1, rep_data);
+    if (fread(c->sigma->col, sizeof(int), p->num->nz_cols+1, rep_data) != p->num->nz_cols+1) {
+        printf("Failed to read c->sigma->col");
+    }
 
     for (idx = 0; idx < c->sigma->cnt; idx++) {
-        fread(&(c->sigma->val[idx].R), sizeof(double), 1, rep_data);
+        if (fread(&(c->sigma->val[idx].R), sizeof(double), 1, rep_data) != 1) {
+            printf("Failed to read c->sigma->val[idx].R");
+        }
         
-        fread(c->sigma->val[idx].T, sizeof(double), p->num->nz_cols+1, rep_data);
+        if (fread(c->sigma->val[idx].T, sizeof(double), p->num->nz_cols+1, rep_data) != p->num->nz_cols+1) {
+            printf("Failed to read c->sigma->val[idx].T");
+        }
         
     }
     
-    fread(c->sigma->ck, sizeof(int), c->sigma->cnt, rep_data);
+    if (fread(c->sigma->ck, sizeof(int), c->sigma->cnt, rep_data) != c->sigma->cnt) {
+        printf("Failed to read c->sigma->ck");
+    }
 
     
-    fread(c->sigma->lamb, sizeof(int), c->sigma->cnt, rep_data);
+    if (fread(c->sigma->lamb, sizeof(int), c->sigma->cnt, rep_data) != c->sigma->cnt) {
+        printf("Failed to read c->sigma->lamb");
+    }
 
     
     /* 4. Start restoring theta_type */
-    fread(&(c->theta->cnt), sizeof(int), 1, rep_data);
+    if (fread(&(c->theta->cnt), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read c->theta->cnt");
+    }
     
-    fread(c->theta->last, sizeof(int), c->theta->cnt, rep_data);
+    if (fread(c->theta->last, sizeof(int), c->theta->cnt, rep_data) != c->theta->cnt) {
+        printf("Failed to read c->theta->last");
+    }
 
     
-    fread(c->theta->k, sizeof(double), c->theta->cnt, rep_data);
+    if (fread(c->theta->k, sizeof(double), c->theta->cnt, rep_data) != c->theta->cnt) {
+        printf("Failed to read c->theta->k");
+    }
 
     
-    fread(c->theta->p, sizeof(double), c->theta->cnt, rep_data);
+    if (fread(c->theta->p, sizeof(double), c->theta->cnt, rep_data) != c->theta->cnt) {
+        printf("Failed to read c->theta->p");
+    }
 
     
     
@@ -361,148 +484,366 @@ int restore_sd_data_b(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
     
     
     
-    fread(s->delta->col, sizeof(int), p->num->rv_cols+1, rep_data);
+    if (fread(s->delta->col, sizeof(int), p->num->rv_cols+1, rep_data) != p->num->rv_cols+1) {
+        printf("Failed to read s->delta->col");
+    }
 
     for (idx = 0; idx < c->lambda->cnt; idx++) {
         for (obs = 0; obs < s->omega->most; obs++) {
             if (valid_omega_idx(s->omega, obs)) {
-                fread(&(s->delta->val[idx][obs].R), sizeof(double), 1, rep_data);
+                if (fread(&(s->delta->val[idx][obs].R), sizeof(double), 1, rep_data) != 1) {
+                    printf("Failed to read s->delta->val[idx][obs].R");
+                }
                 
-                fread(s->delta->val[idx][obs].T, sizeof(double), p->num->rv_cols+1, rep_data);
+                if (fread(s->delta->val[idx][obs].T, sizeof(double), p->num->rv_cols+1, rep_data) != p->num->rv_cols+1) {
+                    printf("Failed to read s->delta->val[idx][obs].T");
+                }
                 
             }
         }
     }
     
     /* 6. Start restoring cuts */
-    fread(&(c->cuts->cnt), sizeof(int), 1, rep_data);
+    if (fread(&(c->cuts->cnt), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read c->cuts->cnt");
+    }
     
     /* Dynamically allocate memory space for cuts */
     
-    int omega_cnt, cut_obs;
     for (idx = 0; idx < c->cuts->cnt; idx++) {
-        fread(&(omega_cnt), sizeof(int), 1, rep_data);
-        fread(&(cut_obs), sizeof(int), 1, rep_data);
+        if (fread(&(omega_cnt), sizeof(int), 1, rep_data) != 1) {
+            printf("Failed to read omega_cnt");
+        }
+        if (fread(&(cut_obs), sizeof(int), 1, rep_data) != 1) {
+            printf("Failed to read cut_obs");
+        }
         c->cuts->val[idx] = new_cut(p->num->mast_cols, omega_cnt, cut_obs);
         c->cuts->val[idx]->omega_cnt = omega_cnt;
         c->cuts->val[idx]->cut_obs = cut_obs;
         
-        fread(c->cuts->val[idx]->istar, sizeof(int), c->cuts->val[idx]->omega_cnt, rep_data);
+        if (fread(c->cuts->val[idx]->istar, sizeof(int), c->cuts->val[idx]->omega_cnt, rep_data) != c->cuts->val[idx]->omega_cnt) {
+            printf("Failed to read c->cuts->val[idx]->istar");
+        }
         
-        fread(&(c->cuts->val[idx]->slack_cnt), sizeof(int), 1, rep_data);
-        fread(&(c->cuts->val[idx]->cell_num), sizeof(int), 1, rep_data);
-        fread(&(c->cuts->val[idx]->row_num), sizeof(int), 1, rep_data);
-        fread(&(c->cuts->val[idx]->alpha), sizeof(double), 1, rep_data);
-        fread(&(c->cuts->val[idx]->alpha_incumb), sizeof(double), 1, rep_data);
+        if (fread(&(c->cuts->val[idx]->slack_cnt), sizeof(int), 1, rep_data) != 1) {
+            printf("Failed to read c->cuts->val[idx]->slack_cnt");
+        }
+        if (fread(&(c->cuts->val[idx]->cell_num), sizeof(int), 1, rep_data) != 1) {
+            printf("Failed to read c->cuts->val[idx]->cell_num");
+        }
+        if (fread(&(c->cuts->val[idx]->row_num), sizeof(int), 1, rep_data) != 1) {
+            printf("Failed to read c->cuts->val[idx]->row_num");
+        }
+        if (fread(&(c->cuts->val[idx]->alpha), sizeof(double), 1, rep_data) != 1) {
+            printf("Failed to read c->cuts->val[idx]->alpha");
+        }
+        if (fread(&(c->cuts->val[idx]->alpha_incumb), sizeof(double), 1, rep_data) != 1) {
+            printf("Failed to read c->cuts->val[idx]->alpha_incumb");
+        }
         
-        fread(c->cuts->val[idx]->beta, sizeof(double), p->num->mast_cols+1, rep_data);
+        if (fread(c->cuts->val[idx]->beta, sizeof(double), p->num->mast_cols+1, rep_data) != p->num->mast_cols+1) {
+            printf("Failed to read c->cuts->val[idx]->beta");
+        }
         
-        fread(&(c->cuts->val[idx]->subfeaflag), sizeof(BOOL), 1, rep_data);
-        fread(&(c->cuts->val[idx]->is_incumbent), sizeof(BOOL), 1, rep_data);
+        if (fread(&(c->cuts->val[idx]->subfeaflag), sizeof(BOOL), 1, rep_data) != 1) {
+            printf("Failed to read c->cuts->val[idx]->subfeaflag");
+        }
+        if (fread(&(c->cuts->val[idx]->is_incumbent), sizeof(BOOL), 1, rep_data) != 1) {
+            printf("Failed to read c->cuts->val[idx]->is_incumbent");
+        }
         if (c->cuts->val[idx]->is_incumbent) {
             if (!(c->cuts->val[idx]->subobj_omega = arr_alloc( c->cuts->val[idx]->omega_cnt+1, double)))
                 err_msg("Allocation", "SD_cut", "subobj_omega");
             if (!(c->cuts->val[idx]->subobj_freq = arr_alloc( c->cuts->val[idx]->omega_cnt+1, int)))
                 err_msg("Allocation", "SD_cut", "subobj_freq");
             
-            fread(c->cuts->val[idx]->subobj_omega, sizeof(double), c->cuts->val[idx]->omega_cnt, rep_data);
+            if (fread(c->cuts->val[idx]->subobj_omega, sizeof(double), c->cuts->val[idx]->omega_cnt, rep_data) != c->cuts->val[idx]->omega_cnt) {
+                printf("Failed to read c->cuts->val[idx]->subobj_omega");
+            }
             
             
-            fread(c->cuts->val[idx]->subobj_freq, sizeof(int), c->cuts->val[idx]->omega_cnt, rep_data);
+            if (fread(c->cuts->val[idx]->subobj_freq, sizeof(int), c->cuts->val[idx]->omega_cnt, rep_data) != c->cuts->val[idx]->omega_cnt) {
+                printf("Failed to read c->cuts->val[idx]->subobj_freq");
+            }
             
         }
         
     }
     
     /* 7. Start restoring run_time */
-    fread(&(s->run_time->total_time), sizeof(double), 1, rep_data);
-    fread(&(s->run_time->iteration_time), sizeof(double), 1, rep_data);
-    fread(&(s->run_time->soln_master_iter), sizeof(double), 1, rep_data);
-    fread(&(s->run_time->soln_subprob_iter), sizeof(double), 1, rep_data);
-    fread(&(s->run_time->full_test_iter), sizeof(double), 1, rep_data);
-    fread(&(s->run_time->argmax_iter), sizeof(double), 1, rep_data);
-    fread(&(s->run_time->iteration_accum), sizeof(double), 1, rep_data);
-    fread(&(s->run_time->soln_master_accum), sizeof(double), 1, rep_data);
-    fread(&(s->run_time->soln_subprob_accum), sizeof(double), 1, rep_data);
-    fread(&(s->run_time->full_test_accum), sizeof(double), 1, rep_data);
-    fread(&(s->run_time->argmax_accum), sizeof(double), 1, rep_data);
+    if (fread(&(s->run_time->total_time), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->run_time->total_time");
+    }
+    if (fread(&(s->run_time->iteration_time), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->run_time->iteration_time");
+    }
+    if (fread(&(s->run_time->soln_master_iter), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->run_time->soln_master_iter");
+    }
+    if (fread(&(s->run_time->soln_subprob_iter), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->run_time->soln_subprob_iter");
+    }
+    if (fread(&(s->run_time->full_test_iter), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->run_time->full_test_iter");
+    }
+    if (fread(&(s->run_time->argmax_iter), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->run_time->argmax_iter");
+    }
+    if (fread(&(s->run_time->iteration_accum), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->run_time->iteration_accum");
+    }
+    if (fread(&(s->run_time->soln_master_accum), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->run_time->soln_master_accum");
+    }
+    if (fread(&(s->run_time->soln_subprob_accum), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->run_time->soln_subprob_accum");
+    }
+    if (fread(&(s->run_time->full_test_accum), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->run_time->full_test_accum");
+    }
+    if (fread(&(s->run_time->argmax_accum), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->run_time->argmax_accum");
+    }
     
     
     
     /* 8. Start restoring the remaining of cell structure */
-    fread(&(c->id_num), sizeof(int), 1, rep_data);
-    fread(&(c->num_members), sizeof(int), 1, rep_data);
+    if (fread(&(c->id_num), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read c->id_num");
+    }
+    if (fread(&(c->num_members), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read c->num_members");
+    }
     
-    fread(c->members, sizeof(int), c->num_members, rep_data);
+    if (fread(c->members, sizeof(int), c->num_members, rep_data) != c->num_members) {
+        printf("Failed to read c->members");
+    }
     
-    fread(&(c->quad_scalar), sizeof(double), 1, rep_data);
-    fread(&(c->LP_cnt), sizeof(int), 1, rep_data);
-    fread(&(c->LP_test), sizeof(int), 1, rep_data);
-    fread(&(c->N), sizeof(int), 1, rep_data);
-    fread(&(c->P), sizeof(double), 1, rep_data);
-    fread(&(c->k), sizeof(int), 1, rep_data);
-    fread(&(c->opt_mode), sizeof(BOOL), 1, rep_data);
-    fread(&(c->incumb_infea), sizeof(BOOL), 1, rep_data);
-    fread(&(c->fea_count), sizeof(int), 1, rep_data);
+    if (fread(&(c->quad_scalar), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read c->quad_scalar");
+    }
+    if (fread(&(c->LP_cnt), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read c->LP_cnt");
+    }
+    if (fread(&(c->LP_test), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read c->LP_test");
+    }
+    if (fread(&(c->N), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read c->N");
+    }
+    if (fread(&(c->P), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read c->P");
+    }
+    if (fread(&(c->k), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read c->k");
+    }
+    if (fread(&(c->opt_mode), sizeof(BOOL), 1, rep_data) != 1) {
+        printf("Failed to read c->opt_mode");
+    }
+    if (fread(&(c->incumb_infea), sizeof(BOOL), 1, rep_data) != 1) {
+        printf("Failed to read c->incumb_infea");
+    }
+    if (fread(&(c->fea_count), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read c->fea_count");
+    }
     
     /* 9. Start restoring the remaining of soln structure */
     
-    fread(s->Pi, sizeof(double), p->num->sub_rows+1, rep_data);
+    if (fread(s->Pi, sizeof(double), p->num->sub_rows+1, rep_data) != p->num->sub_rows+1) {
+        printf("Failed to read s->Pi");
+    }
     
-    fread(&(s->subobj_est), sizeof(double), 1, rep_data);
+    if (fread(&(s->subobj_est), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->subobj_est");
+    }
     /* Update the dual size before restoring added by Yifan 2014.01.28*/
     update_dual_size(c, s, p);
     
-    fread(s->Master_pi, sizeof(double), p->num->mast_rows + c->cuts->cnt + c->feasible_cuts_added->cnt + 1, rep_data);
+    if (fread(s->Master_pi, sizeof(double), p->num->mast_rows + c->cuts->cnt + c->feasible_cuts_added->cnt + 1, rep_data) != p->num->mast_rows + c->cuts->cnt + c->feasible_cuts_added->cnt + 1) {
+        printf("Failed to read s->Master_pi");
+    }
     
 
     
-    fread(s->Master_dj, sizeof(double), p->num->mast_cols + 1, rep_data);
+    if (fread(s->Master_dj, sizeof(double), p->num->mast_cols + 1, rep_data) != p->num->mast_cols + 1) {
+        printf("Failed to read s->Master_dj");
+    }
     
     
-    fread(s->candid_x, sizeof(double), p->num->mast_cols + 1, rep_data);
+    if (fread(s->candid_x, sizeof(double), p->num->mast_cols + 1, rep_data) != p->num->mast_cols + 1) {
+        printf("Failed to read s->candid_x");
+    }
     
-    fread(&(s->candid_est), sizeof(double), 1, rep_data);
+    if (fread(&(s->candid_est), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->candid_est");
+    }
     
-    fread(s->incumb_x, sizeof(double), p->num->mast_cols + 1, rep_data);
+    if (fread(s->incumb_x, sizeof(double), p->num->mast_cols + 1, rep_data) != p->num->mast_cols + 1) {
+        printf("Failed to read s->incumb_x");
+    }
     
-    fread(&(s->incumb_k), sizeof(int), 1, rep_data);
+    if (fread(&(s->incumb_k), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read s->incumb_k");
+    }
     
-    fread(s->incumb_d, sizeof(double), p->num->mast_cols + 1, rep_data);
+    if (fread(s->incumb_d, sizeof(double), p->num->mast_cols + 1, rep_data) != p->num->mast_cols + 1) {
+        printf("Failed to read s->incumb_d");
+    }
     
     
-    fread(s->incumb_avg, sizeof(double), p->num->mast_cols + 1, rep_data);
+    if (fread(s->incumb_avg, sizeof(double), p->num->mast_cols + 1, rep_data) != p->num->mast_cols + 1) {
+        printf("Failed to read s->incumb_avg");
+    }
     
-    fread(&(s->alpha), sizeof(double), 1, rep_data);
+    if (fread(&(s->alpha), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->alpha");
+    }
     
-    fread(s->beta, sizeof(double), p->num->mast_cols + 1, rep_data);
+    if (fread(s->beta, sizeof(double), p->num->mast_cols + 1, rep_data) != p->num->mast_cols + 1) {
+        printf("Failed to read s->beta");
+    }
     
-    fread(&(s->incumb_est), sizeof(double), 1, rep_data);
-    fread(&(s->opt_value), sizeof(double), 1, rep_data);
-    fread(&(s->norm_d_k_1), sizeof(double), 1, rep_data);
-    fread(&(s->norm_d_k), sizeof(double), 1, rep_data);
-    fread(&(s->incumb_stdev), sizeof(double), 1, rep_data);
-    fread(&(s->incumb_cut), sizeof(int), 1, rep_data);
-    fread(&(s->last_update), sizeof(int), 1, rep_data);
-    fread(&(s->gamma), sizeof(double), 1, rep_data);
-    fread(&(s->optimality_flag), sizeof(BOOL), 1, rep_data);
-    fread(&(s->smpl_ever_flag), sizeof(BOOL), 1, rep_data);
-    fread(&(s->smpl_test_flag), sizeof(BOOL), 1, rep_data);
-    fread(&(s->incumbent_change), sizeof(BOOL), 1, rep_data);
-    fread((s->dual_statble_flag), sizeof(BOOL), 1, rep_data);
+    if (fread(&(s->incumb_est), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->incumb_est");
+    }
+    if (fread(&(s->opt_value), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->opt_value");
+    }
+    if (fread(&(s->norm_d_k_1), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->norm_d_k_1");
+    }
+    if (fread(&(s->norm_d_k), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->norm_d_k");
+    }
+    if (fread(&(s->incumb_stdev), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->incumb_stdev");
+    }
+    if (fread(&(s->incumb_cut), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read s->incumb_cut");
+    }
+    if (fread(&(s->last_update), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read s->last_update");
+    }
+    if (fread(&(s->gamma), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->gamma");
+    }
+    if (fread(&(s->optimality_flag), sizeof(BOOL), 1, rep_data) != 1) {
+        printf("Failed to read s->optimality_flag");
+    }
+    if (fread(&(s->smpl_ever_flag), sizeof(BOOL), 1, rep_data) != 1) {
+        printf("Failed to read s->smpl_ever_flag");
+    }
+    if (fread(&(s->smpl_test_flag), sizeof(BOOL), 1, rep_data) != 1) {
+        printf("Failed to read s->smpl_test_flag");
+    }
+    if (fread(&(s->incumbent_change), sizeof(BOOL), 1, rep_data) != 1) {
+        printf("Failed to read s->incumbent_change");
+    }
+    if (fread((s->dual_statble_flag), sizeof(BOOL), 1, rep_data) != 1) {
+        printf("Failed to read s->dual_statble_flag");
+    }
     /* make sure dual_stable_flag is turned to NO */
     *s->dual_statble_flag = 0;
-    fread(&(s->full_test_error), sizeof(double), 1, rep_data);
-    fread(&(s->passed), sizeof(int), 1, rep_data);
-    fread(&(s->sub_lb_checker), sizeof(double), 1, rep_data);
-    fread(&(s->max_ratio), sizeof(double), 1, rep_data);
-    fread(&(s->min_ratio), sizeof(double), 1, rep_data);
+    if (fread(&(s->full_test_error), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->full_test_error");
+    }
+    if (fread(&(s->passed), sizeof(int), 1, rep_data) != 1) {
+        printf("Failed to read s->passed");
+    }
+    if (fread(&(s->sub_lb_checker), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->sub_lb_checker");
+    }
+    if (fread(&(s->max_ratio), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->max_ratio");
+    }
+    if (fread(&(s->min_ratio), sizeof(double), 1, rep_data) != 1) {
+        printf("Failed to read s->min_ratio");
+    }
     
-    fread(s->pi_ratio, sizeof(double), sd_global->config.MAX_SCAN_LEN, rep_data);
+    if (fread(s->pi_ratio, sizeof(double), sd_global->config.MAX_SCAN_LEN, rep_data) != sd_global->config.MAX_SCAN_LEN) {
+        printf("Failed to read s->pi_ratio");
+    }
     
     
     /* 10. Start restoring the last seed used in getting observation */
-    fread(&(sd_global->config.RUN_SEED), sizeof(sd_long), 1, rep_data);
+    if (fread(&(sd_global->config.RUN_SEED), sizeof(sd_long), 1, rep_data) != 1) {
+        printf("Failed to read sd_global->config.RUN_SEED");
+    }
+    if (fread(&(sd_global->pi_flag[0]), sizeof(BOOL), 1, rep_data) != 1) {
+        printf("Failed to read sd_global->pi_flag[0]");
+    }
+    if (fread(&(sd_global->pi_flag[1]), sizeof(BOOL), 1, rep_data) != 1) {
+        printf("Failed to read sd_global->pi_flag[1]");
+    }
+    if (fread(&(sd_global->pi_flag[2]), sizeof(BOOL), 1, rep_data) != 1) {
+        printf("Failed to read sd_global->pi_flag[2]");
+    }
+    
+    /* 11. Start stroing the whole master problem */
+    if (0) {
+        /* get the objective coefficient */
+        for (idx = 0; idx <= p->master->mac; idx++) {
+            if (fread(&coef_value, sizeof(double), 1, rep_data) != 1) {
+                printf("Failed to read obj coef_value");
+            }
+            change_single_coef(c->master, -1, idx, coef_value);
+        }
+        
+        /* get the first stage origianl constraint coefficient */
+        for (cnt = 0; cnt < p->master->mar; cnt++) {
+            for (idx = 0; idx < p->master->mac; idx++) {
+                if (fread(&coef_value, sizeof(double), 1, rep_data) != 1) {
+                    printf("Failed to read constraint coef_value");
+                }
+                change_single_coef(c->master, cnt, idx, coef_value);
+            }
+        }
+        
+        /* get the first stage origianl constraint rhs */
+        for (cnt = 0; cnt < p->master->mar; cnt++) {
+            if (fread(&coef_value, sizeof(double), 1, rep_data) != 1) {
+                printf("Failed to read rhs");
+            }
+            change_single_coef(c->master, cnt, -1, coef_value);
+        }
+        
+        /* get the first stage added cuts' coefficients */
+        for (cnt = p->master->mar; cnt < p->master->mar + c->cuts->cnt + c->feasible_cuts_added->cnt; cnt++) {
+            /* Do not foget to inlcude the eta column*/
+            for (idx = 0; idx <= p->master->mac; idx++) {
+                if (fread(&coef_value, sizeof(double), 1, rep_data) != 1) {
+                    printf("Failed to read eta coef_value");
+                }
+                change_single_coef(c->master, cnt, idx, coef_value);
+            }
+            
+        }
+        
+        /* get the first stage added cuts' rhs */
+        for (cnt = p->master->mar; cnt < p->master->mar + c->cuts->cnt + c->feasible_cuts_added->cnt; cnt++) {
+            if (fread(&coef_value, sizeof(double), 1, rep_data) != 1) {
+                printf("Failed to read cut rhs");
+            }
+            change_single_coef(c->master, cnt, -1, coef_value);
+        }
+        
+        /* get the first stage decisions' upper bounds */
+        for (idx = 0; idx < p->master->mac; idx++) {
+            if (fread(&coef_value, sizeof(double), 1, rep_data) != 1) {
+                printf("Failed to read x's upper bound");
+            }
+            change_bound(c->master, 1, &idx, "U", &coef_value);
+        }
+        
+        /* get the first stage decisions' lower bounds */
+        for (idx = 0; idx < p->master->mac; idx++) {
+            if (fread(&coef_value, sizeof(double), 1, rep_data) != 1) {
+                printf("Failed to read x's lower bound");
+            }
+            change_bound(c->master, 1, &idx, "L", &coef_value);
+        }
+    }
+
     
     fclose(rep_data);
     

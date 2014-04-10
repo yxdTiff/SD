@@ -32,6 +32,7 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
     /* modified by Yifan 2014.01.12 */
     rep_data = fopen("rep_data.txt", "w");
     /* 1. Start storing omega_type */
+    fprintf(rep_data, "1. Start storing omega_type\n");
     fprintf(rep_data, "%d\n",s->omega->cnt);
     fprintf(rep_data, "%d\n",s->omega->next);
     fprintf(rep_data, "%d\n",s->omega->most);
@@ -59,6 +60,7 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
     }
     
     /* 2. Start storing lambda_type */
+    fprintf(rep_data, "2. Start storing lambda_type\n");
     fprintf(rep_data, "%d\n",c->lambda->cnt);
     for (cnt = 0; cnt <= p->num->rv_rows; cnt++) {
         fprintf(rep_data, "%d\n", c->lambda->row[cnt]);
@@ -70,6 +72,7 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
     }
     
     /* 3. Start storing sigma_type */
+    fprintf(rep_data, "3. Start storing sigma_type\n");
     fprintf(rep_data, "%d\n",c->sigma->cnt);
     for (cnt = 0; cnt <= p->num->nz_cols; cnt++) {
         fprintf(rep_data, "%d\n", c->sigma->col[cnt]);
@@ -88,6 +91,7 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
     }
     
     /* 4. Start storing theta_type */
+    fprintf(rep_data, "4. Start storing theta_type\n");
     fprintf(rep_data, "cnt: %d\n",c->theta->cnt);
     for (idx = 0; idx < c->theta->cnt; idx++) {
         fprintf(rep_data, "%d\n", c->theta->last[idx]);
@@ -100,6 +104,7 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
     }
     
     /* 5. Start storing delta_type */
+    fprintf(rep_data, "5. Start storing delta_type\n");
     for (cnt = 0; cnt <= p->num->rv_cols; cnt++) {
         fprintf(rep_data, "%d\n", s->delta->col[cnt]);
     }
@@ -115,6 +120,7 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
     }
 
     /* 6. Start storing cuts */
+    fprintf(rep_data, "6. Start storing cuts\n");
     fprintf(rep_data, "cnt: %d\n", c->cuts->cnt);
     for (idx = 0; idx < c->cuts->cnt; idx++) {
         fprintf(rep_data, "%d\n", c->cuts->val[idx]->omega_cnt);
@@ -144,6 +150,7 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
     }
     
     /* 7. Start storing run_time */
+    fprintf(rep_data, "7. Start storing run_time\n");
     fprintf(rep_data, "%.17g\n", s->run_time->total_time);
     fprintf(rep_data, "%.17g\n", s->run_time->iteration_time);
     fprintf(rep_data, "%.17g\n", s->run_time->soln_master_iter);
@@ -159,6 +166,7 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
 
 
     /* 8. Start storing the remaining of cell structure */
+    fprintf(rep_data, "8. Start storing the remaining of cell structure\n");
     fprintf(rep_data, "%d\n", c->id_num);
     fprintf(rep_data, "%d\n", c->num_members);
     for (idx = 0; idx < c->num_members; idx++) {
@@ -175,34 +183,48 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
     fprintf(rep_data, "%d\n", c->fea_count);
     
     /* 9. Start storing the remaining of soln structure */
+    fprintf(rep_data, "9. Start storing the remaining of soln structure\n");
+    fprintf(rep_data, "9-1. Start storing s->Pi\n");
     for (idx = 0; idx <= p->num->sub_rows; idx++) {
         fprintf(rep_data, "%.17g\n", s->Pi[idx]);
     }
+    fprintf(rep_data, "9-1. Start storing s->subobj_est\n");
     fprintf(rep_data, "%.17g\n", s->subobj_est);
+    fprintf(rep_data, "9-1. Start storing s->Master_pi\n");
     for (idx = 0; idx <= p->num->mast_rows + c->cuts->cnt + c->feasible_cuts_added->cnt; idx++) {
         fprintf(rep_data, "%.17g\n", s->Master_pi[idx]);
     }
+    fprintf(rep_data, "9-1. Start storing s->Master_dj\n");
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
         fprintf(rep_data, "%.17g\n", s->Master_dj[idx]);
     }
+    fprintf(rep_data, "9-1. Start storing s->candid_x\n");
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
         fprintf(rep_data, "%.17g\n", s->candid_x[idx]);
     }
+    fprintf(rep_data, "9-1. Start storing s->candid_est\n");
     fprintf(rep_data, "%.17g\n", s->candid_est);
+    fprintf(rep_data, "9-1. Start storing s->incumb_x\n");
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
         fprintf(rep_data, "%.17g\n", s->incumb_x[idx]);
     }
+    fprintf(rep_data, "9-1. Start storing s->incumb_k\n");
     fprintf(rep_data, "%d\n", s->incumb_k);
+    fprintf(rep_data, "9-1. Start storing s->incumb_d\n");
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
         fprintf(rep_data, "%.17g\n", s->incumb_d[idx]);
     }
+    fprintf(rep_data, "9-1. Start storing s->incumb_avg\n");
     for (idx = 0; idx <= p->num->mast_cols; idx++) {
         fprintf(rep_data, "%.17g\n", s->incumb_avg[idx]);
     }
+    fprintf(rep_data, "9-1. Start storing s->alpha\n");
     fprintf(rep_data, "%.17g\n", s->alpha);
+    fprintf(rep_data, "9-1. Start storing s->beta\n");
     for (cnt = 0; cnt <= p->num->mast_cols; cnt++) {
         fprintf(rep_data, "%.17g\n", s->beta[cnt]);
     }
+    fprintf(rep_data, "9-1. Start storing single value\n");
     fprintf(rep_data, "%.17g\n", s->incumb_est);
     fprintf(rep_data, "%.17g\n", s->opt_value);
     fprintf(rep_data, "%.17g\n", s->norm_d_k_1);
@@ -221,11 +243,13 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
     fprintf(rep_data, "%.17g\n", s->sub_lb_checker);
     fprintf(rep_data, "%.17g\n", s->max_ratio);
     fprintf(rep_data, "%.17g\n", s->min_ratio);
+    fprintf(rep_data, "9-1. Start storing s->pi_ratio\n");
     for (idx = 0; idx < sd_global->config.MAX_SCAN_LEN; idx++) {
         fprintf(rep_data, "%.17g\n", s->pi_ratio[idx]);
     }
 
     /* 10. Start storing the last seed used in getting observation */
+    fprintf(rep_data, "10. Start storing the last seed used in getting observation\n");
     fprintf(rep_data, "%lld\n", sd_global->config.RUN_SEED);
     
     fclose(rep_data);
@@ -236,6 +260,7 @@ int store_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_typ
 int restore_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_type *s)
 {
     int cnt, idx, obs;
+    int omega_cnt, cut_obs;
     FILE *rep_data;
     /* Store all data structure necessary for resuming SD */
     /* modified by Yifan 2014.01.12 */
@@ -359,7 +384,6 @@ int restore_sd_data(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_t
     
     /* Dynamically allocate memory space for cuts */
 		
-    int omega_cnt, cut_obs;
     for (idx = 0; idx < c->cuts->cnt; idx++) {
         fscanf(rep_data, "%d\n", &omega_cnt);
         fscanf(rep_data, "%d\n", &cut_obs);

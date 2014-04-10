@@ -645,6 +645,27 @@ double calc_var(sdglobal_type* sd_global, double *x, double *mean_value,
 	return vari;
 
 }
+/* This function is used to specifically calculated variance of pi ratio */
+double calc_pi_var(sdglobal_type* sd_global, double *x, int start, int length)
+{
+	double mean, vari, temp;
+	int count;
+	temp = 0.0;
+	mean = x[start];
+	vari = 0.0;
+    
+    
+	for (count = 1; count < length; count++)
+	{
+		temp = mean;
+		mean = mean + (x[(start + count) % sd_global->config.MAX_SCAN_LEN] - mean) / (double) (count + 1);
+		vari = (1 - 1 / (double) count) * vari
+        + (count + 1) * (mean - temp) * (mean - temp);
+	}
+    
+	return vari;
+    
+}
 
 void calc_mean_stdev(vector *x, vector mean_value, vector stdev_value,
 		int num_element, int batch_size)

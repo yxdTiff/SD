@@ -34,7 +34,6 @@
 #include "master.h"
 #include "cuts.h"
 #include "batch.h"
-#include "resume.h"
 #include "resumeb.h"
 #include <limits.h> 
 
@@ -74,6 +73,8 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 	clock_t iter_start_time, iter_end_time; /* zl 06/29/04 */
 	clock_t argmax_start, argmax_end; /* zl 06/30/04 */
     clock_t batch_start, batch_end; /* modified by Yifan 2013.10.31 */
+    clock_t resume_start_time, resume_end_time; /* modified by Yifan 2014.04.02 */
+    FILE *resume_time;
     double batch_time;
 	FILE *time_file, *obj_file; /* zl 06/29/04 */
 	char time_fname[NAME_SIZE * 2], obj_fname[NAME_SIZE * 2]; /* modified by Yifan to store longer names */
@@ -199,25 +200,64 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
     write_statistics(sd_global, prob, cell, soln);
 
     /* modified by Yifan 2014.01.12 */
-    
-    if (0) {
+    if (sd_global->resume_flag) {
+        resume_start_time = clock();
         restore_sd_data_b(sd_global, prob, cell, soln);
-        read_problem_simple(cell->master, "com.lp", "lp");
-        
-        
-        if (!solve_QP_master(sd_global, prob, cell, soln))
-        {
-            cplex_err_msg(sd_global, "QP_Master", prob, cell, soln);
-            return;
+        resume_end_time = clock();
+        resume_time = fopen("resume_time", "a");
+        if (prob->current_batch_id == 0) {
+            fprintf(resume_time, "Resume from EPSILON: %f\n",sd_global->config.TOLERANCE);
         }
-        
+        fprintf(resume_time, "Replication %2d:%f\n",prob->current_batch_id,((double) (resume_end_time-resume_start_time)/CLOCKS_PER_SEC));
+        fclose(resume_time);
+        if (0) {
+            /* Now update cuts coefficiets with data from cuts structure */
+            for (i = prob->num->mast_rows + 1; i <= prob->num->mast_rows + cell->cuts->cnt; i++) {
+                for (j = 0; j < cell->cuts->cnt; j++) {
+                    if (i == cell->cuts->val[j]->row_num) {
+                        for (cnt = 0 ; cnt < prob->master->mac; cnt++) {
+                            change_single_coef(cell->master, i, cnt, cell->cuts->val[j]->beta[cnt+1]);
+                        }
+                        change_single_coef(cell->master, i, -1, cell->cuts->val[j]->alpha_incumb);
+                    }
+                }
+            }
+            
+            
+            /* Update master's rhs and bounds */
+            if (sd_global->config.MASTER_TYPE == SDQP)
+            {
+                change_rhs(prob, cell, soln);
+                change_bounds(prob, cell, soln);
+            }
+            
+            construct_QP(prob, cell, cell->quad_scalar);
+            
+            change_solver_barrier(cell->master);
+            
+            /* Update eta coefficient on all cuts, based on cut_obs */
+            change_eta_col(cell->master, cell->cuts, cell->k, soln, prob->num);
+            
+            if (sd_global->config.LB_TYPE == 1)
+            {
+                update_rhs(sd_global, prob, cell, soln);
+            }
+            
+            
+            if (!solve_problem(sd_global, cell->master))
+            {
+                cplex_err_msg(sd_global, "QP_Master", prob, cell, soln);
+                return;
+            }
+        }
+
     }
 
 
 	while (TRUE)
 	{
 		//for (batch_id=0; batch_id<1; batch_id++) {
-
+        //printf("Iteration %d\n. soln->Master_pi[0]: %.17g\n soln->Master_pi[1]: %.17g\n soln->Master_pi[2]: %.17g\n soln->Master_pi[3]: %.17g\n soln->Master_pi[4]: %.17g\n soln->Master_pi[5]: %.17g\n soln->Master_pi[6]: %.17g\n soln->Master_pi[7]: %.17g\n soln->Master_pi[8]: %.17g\n soln->Master_pi[9]: %.17g\n", cell->k, soln->Master_pi[0], soln->Master_pi[1], soln->Master_pi[2], soln->Master_pi[3], soln->Master_pi[4], soln->Master_pi[5], soln->Master_pi[6], soln->Master_pi[7], soln->Master_pi[8], soln->Master_pi[9]);
 		iter_start_time = clock(); /* zl, 06/29/04. */
 		/* The argmax procedures involve in two functions, namely,
 		 form_new_cut and form_incumb_cut; solve_subprob() function is 
@@ -246,6 +286,7 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 		 one from the original code. zl, 08/09/08.
 		 And the number of optimality tests may be off. zl, 08/10/04. */
 		//printf("Iteration: %d\tThis is opt-flag: %d, s->flag: %d \n",cell->k, soln->optimality_flag, *soln->dual_statble_flag);
+        //printf("Candid-est: %f, Incumbent-est: %f\n", soln->candid_est, soln->incumb_est);
 		/*Update code in this "if statement" for Batch-mean Yifan 2012-09-05*/
 		if ((soln->optimality_flag && *soln->dual_statble_flag)
 				|| cell->k >= prob->num->iter)
@@ -481,6 +522,7 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 #endif
 
 		/* 9. Solve QP master */
+
 		/* Modified for regularized QP method. zl */
 		if (sd_global->config.MASTER_TYPE == SDLP)
 		{
@@ -498,6 +540,7 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 				break;
 			}
 		}
+
 
 		write_statistics(sd_global, prob, cell, soln);
 

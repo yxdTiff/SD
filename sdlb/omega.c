@@ -319,6 +319,7 @@ omega_type *new_omega(int num_iter, int num_rv, coord_type *coord)
 	omega->col = coord->omega_col;
 	omega->row = coord->omega_row;
     omega->fidx[0] = 0;
+    omega->last = 0;
 
 	return omega;
 }

@@ -155,7 +155,7 @@ prob_type *new_prob(sdglobal_type* sd_global, one_problem *original, int num_rv,
     /* modified by Yifan 2013.10.14 */
 	for (c = 1; c <= num_rv; c++)
 		if (++p->coord->omega_col[c])
-        {   if (p->coord->omega_col[c] < col)
+        {   if (p->coord->omega_col[c] <= col)
                 ++p->num->rv_T;
             else if (++p->coord->omega_row[c])
                 ++p->num->rv_W;

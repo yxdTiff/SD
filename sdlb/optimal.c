@@ -28,7 +28,6 @@
 #include "master.h"
 #include "cuts.h"
 #include "rvgen.h"
-#include "resume.h"
 #include "resumeb.h"
 #include "sdconstants.h"
 #include "sdglobal.h"
@@ -51,7 +50,8 @@ BOOL optimal(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_type *s,
 #ifdef TRACE
 	printf("Inside optimal\n");
 #endif
-
+    clock_t store_start_time, store_end_time; /* modified by Yifan 2014.04.02 */
+    FILE *store_time;
 
 	/*
 	 printf("In optimal.c, full_test(), MIN = %d\n", sd_global->config.MIN_ITER);
@@ -59,8 +59,16 @@ BOOL optimal(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_type *s,
 	if (c->k > sd_global->config.MIN_ITER && *s->dual_statble_flag)
 	{
 
-        if (!sd_global->store_flag) {
+        if (!sd_global->store_flag && TRUE) {
+            store_start_time = clock();
             store_sd_data_b(sd_global, p, c, s);
+            store_end_time = clock();
+            store_time = fopen("store_time", "a");
+            if (p->current_batch_id == 0) {
+                fprintf(store_time, "Resume from EPSILON: %f\n",sd_global->config.TOLERANCE);
+            }
+            fprintf(store_time, "Replication %2d:%f\n",p->current_batch_id,((double) (store_end_time-store_start_time)/CLOCKS_PER_SEC));
+            fclose(store_time);
         }
 
 		if (pre_test_1(sd_global, s))

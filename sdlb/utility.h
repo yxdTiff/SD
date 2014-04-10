@@ -16,6 +16,7 @@ double *duplic_arr(double *a, int len);
 double *reduce_vect(double *f_vect, int *row, int num_elem);
 double calc_var(sdglobal_type* sd_global, double *x, double *mean_value,
 		double *stdev_value, int batch_size);
+double calc_pi_var(sdglobal_type* sd_global, double *x, int start, int length);
 double compute_Mu(one_problem *p, int sub_cols);
 double CxX(vector c, vector x, int len);
 double MuxR(one_problem *p, int sub_cols, vector dj);

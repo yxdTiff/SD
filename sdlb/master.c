@@ -166,6 +166,17 @@ BOOL solve_QP_master(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 	printf("Saving file: %s\n", fname);
 #endif
 
+    if (c->k >= 303 && FALSE) {
+        write_prob(c->master, "testtest_sc.lp");
+        //change_barrier_algorithm(c->master, 3);
+        CPXwriteparam (env, "myparams.prm");
+//        CPXLPptr lp = NULL;
+//        lp = CPXcreateprob(env, NULL, "Master");
+//        CPXreadcopyprob(env, lp, "readthis1.lp", NULL);
+//        CPXbaropt(env, lp);
+        
+    }
+    
 	/* Recording the time for solving master QPs. zl, 06/29/04. */
 	start = clock();
 	ans = solve_problem(sd_global, c->master);
@@ -181,11 +192,12 @@ BOOL solve_QP_master(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 	 */
 	/* Get the most recent optimal solution to master program */
 	get_primal(s->candid_x, c->master, p->num->mast_cols);
-
+/*
 	if (s->opt_value > s->incumb_est)
 	{
-		//printf("!!!\n");
+		printf("!!!\n");
 	}
+*/
 #ifdef CAL_CHECK
 	/* Print out d[] for checking purpose. */
 	for (i=1; i<=p->num->mast_cols+1; i++)
@@ -610,7 +622,8 @@ one_problem *new_master(one_problem *master, cut_type *cuts, int extra_cuts,
 	 ** Initialize information for the extra column in the new master.
 	 */
 
-	strcpy(copy->cstore + master->cstorsz, "eta");
+    /* modified by Yifan 2014.03.31 Crazy bug, no name sholud start with "e" in cplex */
+	strcpy(copy->cstore + master->cstorsz, "xeta");
 	copy->cname[master->mac] = copy->cstore + master->cstorsz;
 	copy->objx[master->mac] = 1.0;
 	/* Change from cplex70 to cplex81. zl 04/13/05. */
@@ -825,7 +838,8 @@ one_problem *orig_new_master(one_problem *master, cut_type *cuts,
 	 ** Initialize information for the extra column in the new master.
 	 */
 
-	strcpy(copy->cstore + master->cstorsz, "eta");
+    /* modified by Yifan 2014.03.31 Crazy bug, no name sholud start with "e" in cplex */
+	strcpy(copy->cstore + master->cstorsz, "xeta");
 	copy->cname[master->mac] = copy->cstore + master->cstorsz;
 	copy->objx[master->mac] = 1.0;
 	/* Change from cplex70 to cplex81. zl 04/13/05. */

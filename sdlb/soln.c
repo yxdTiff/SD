@@ -156,6 +156,7 @@ soln_type * new_soln(sdglobal_type* sd_global, prob_type *p, vector x_k)
 
 	if (!(s->xc_height = arr_alloc(BATCH_SIZE, double)))
 		err_msg("Allocation", "new_soln", "xc_height");
+    s->alpha = 0.0;
 	/*beta is used to store cut coefficients*/
 	if (!(s->beta = arr_alloc(p->num->mast_cols+1, double)))
 		err_msg("Allocation", "new_soln", "beta");
@@ -180,6 +181,8 @@ soln_type * new_soln(sdglobal_type* sd_global, prob_type *p, vector x_k)
 	s->run_time->soln_subprob_accum = 0.0;
 	s->run_time->full_test_accum = 0.0;
 	s->run_time->argmax_accum = 0.0;
+    s->full_test_error = 0.0;
+    s->passed = 0;
 	s->max_ratio = 0.0;
 	s->min_ratio = 1.0;
 
@@ -190,6 +193,10 @@ soln_type * new_soln(sdglobal_type* sd_global, prob_type *p, vector x_k)
 	*s->dual_statble_flag = FALSE; /*added by Yifan 09/27/2011*/
 	s->incumbent_change = FALSE;
 
+    /* modified by Yifan 2014.03.31 */
+    s->full_test_error = 0.0;
+    s->passed = 0;
+    
 	/* Initialize the lower bound checker of the subproblem objective
 	 function values. zl, 07/01/04. */
 	s->sub_lb_checker = sd_global->config.SUBPROB_LB;

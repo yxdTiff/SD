@@ -70,6 +70,7 @@ int set_qp_nzreadlim(int nzreadlim);
 void close_Solver(void);
 void open_Solver(void);
 BOOL change_coef(one_problem *p, sparse_matrix *coef);
+BOOL change_single_coef(one_problem *p, int row, int col, double coef);
 BOOL get_lb(vector lb, one_problem *p, int length);
 BOOL get_ub(vector ub, one_problem *p, int length);
 

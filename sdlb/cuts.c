@@ -56,6 +56,8 @@
 #include "log.h"
 #include "cuts.h"
 #include "sdglobal.h"
+#include "quad.h"
+#include "master.h"
 
 #include <float.h>
 #include <stdlib.h>
@@ -100,7 +102,7 @@ void form_new_cut(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 	stochastic_updates(sd_global, c, c->lambda, c->sigma, s->delta, s->omega,
 			p->num, p->Rbar, p->Tbar, c->subprob, s->Pi, omeg_idx, new_omega);
 
-	SD_cut(sd_global, c->sigma, s->delta, s->omega, p->num, cut, s->candid_x,
+	SD_cut(sd_global, p, c, s, c->sigma, s->delta, s->omega, p->num, cut, s->candid_x,
 			s->pi_ratio, s->max_ratio, s->min_ratio, c->k,
 			s->dual_statble_flag);
     
@@ -316,7 +318,7 @@ BOOL form_incumb_cut(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 			stochastic_updates(sd_global, c, c->lambda, c->sigma, s->delta,
 					s->omega, p->num, p->Rbar, p->Tbar, c->subprob, s->Pi,
 					omeg_idx, FALSE);
-			SD_cut(sd_global, c->sigma, s->delta, s->omega, p->num, cut,
+			SD_cut(sd_global, p, c, s, c->sigma, s->delta, s->omega, p->num, cut,
 					s->incumb_x, s->pi_ratio, s->max_ratio, s->min_ratio, c->k,
 					s->dual_statble_flag);
 			s->incumb_cut = add_cut(sd_global, cut, p, c, s);
@@ -464,13 +466,11 @@ BOOL stochastic_updates(sdglobal_type* sd_global, cell_type *c,
  ** Need to store Pi x Tbar x X for all Pi in a separate array ahead
  ** of time.  This way it isn't re-calculated for each omega...
  \***********************************************************************/
-void SD_cut(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
-		omega_type *omega, num_type *num, one_cut *cut, vector Xvect,
-		double *pi_ratio, double max_ratio, double min_ratio, int num_samples,
-		BOOL *dual_statble_flag)
+void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type *soln, sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, one_cut *cut, vector Xvect, double *pi_ratio, double max_ratio, double min_ratio, int num_samples, BOOL *dual_statble_flag)
 {
 	int c, cnt;
 	int obs; /* Observation of omega being used */
+    int start_position;
 	i_type istar; /* Index to optimizing Pi's */
 	vector pi_Tbar_x; /* Array of PixTbarxX scalars for all Pi */
 	BOOL pi_eval_flag = FALSE; /*TRUE for testing the impact of the new PI's */
@@ -481,13 +481,16 @@ void SD_cut(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
 	double argmax_dif_sum = 0;
 	double argmax_all_sum = 0;
 	double vari = 1.0;
+    int scan_len[3];
 	i_type istar_new;
 	i_type istar_old;
 	FILE *fptr;
 #ifdef RECOURSE_OBJ
 	FILE *subobj_ptr; /* by Yifan 02/02/12 */
 #endif
-
+    scan_len[0] = 64;
+    scan_len[1] = 256;
+    scan_len[2] = 512;
 #ifdef TRACE
 	printf("Inside SD_cut\n");
 #endif
@@ -513,7 +516,7 @@ void SD_cut(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
 
 	//added by Yifan 09/21/2011
 	/*Calculate pi_eval_flag to determine the way of computing argmax*/
-	if (num_samples > sd_global->config.PI_EVAL_START
+	if (num_samples >= sd_global->config.PI_EVAL_START
 			&& !(num_samples % sd_global->config.PI_CYCLE))
 		pi_eval_flag = TRUE; //modified by Yifan for testing
 
@@ -616,27 +619,53 @@ void SD_cut(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
 
 		}
 
-    int start_position = 0; /* if SCAN_LEN < MAX_SCAN_LEN, need start_position to calculate variance of pi_ratio*/
 	if (pi_eval_flag == TRUE)
 	{
-		pi_ratio[num_samples % sd_global->config.MAX_SCAN_LEN] = argmax_dif_sum
+		pi_ratio[(num_samples-1) % sd_global->config.MAX_SCAN_LEN] = argmax_dif_sum
 				/ argmax_all_sum;
-		if (num_samples - sd_global->config.PI_EVAL_START
-            > sd_global->config.SCAN_LEN){
-            if (sd_global->config.SCAN_LEN < sd_global->config.MAX_SCAN_LEN) {
-                start_position = num_samples % sd_global->config.MAX_SCAN_LEN - sd_global->config.SCAN_LEN;
+        
+        for ( cnt = 0; cnt < 3; cnt++) {
+            start_position = 0; /* if SCAN_LEN < MAX_SCAN_LEN, need start_position to calculate variance of pi_ratio*/
+            if (scan_len[cnt] <= sd_global->config.SCAN_LEN && !(sd_global-> pi_flag[cnt])) {
+                if (num_samples - sd_global->config.PI_EVAL_START + 1  >= scan_len[cnt]){
+                    start_position = num_samples % sd_global->config.MAX_SCAN_LEN - scan_len[cnt] ;
+                    if (start_position < 0) {
+                        start_position = start_position + sd_global->config.MAX_SCAN_LEN;
+                    }
+                    vari = calc_pi_var(sd_global, pi_ratio, start_position, scan_len[cnt]);
+                }
+                if (DBL_ABS(vari) >= .000002
+                    || (pi_ratio[num_samples % scan_len[cnt]]) < 0.95)
+                    sd_global-> pi_flag[cnt]= FALSE;
+                else
+                {
+                    sd_global-> pi_flag[cnt] = TRUE;
+                    /* Now start refreshing master problem in CPLEX */
+                    refresh_master(sd_global, prob, cell, soln);
+                }
             }
-            else{
-                start_position = 0;
-            }
-            
-			vari = calc_var(sd_global, &(pi_ratio[start_position]), NULL, NULL, 0); /*added by Yifan return vari*/
         }
-		if (DBL_ABS(vari) >= .000002
+        if (!(*dual_statble_flag)) {
+            start_position = 0;
+            if (num_samples - sd_global->config.PI_EVAL_START + 1  >= sd_global->config.SCAN_LEN){
+                start_position = num_samples % sd_global->config.MAX_SCAN_LEN - sd_global->config.SCAN_LEN ;
+                if (start_position < 0) {
+                    start_position = start_position + sd_global->config.MAX_SCAN_LEN;
+                }
+                /*added by Yifan return vari*/
+                // vari = calc_var(sd_global, &(pi_ratio[start_position]), NULL, NULL, 0);
+                vari = calc_pi_var(sd_global, pi_ratio, start_position, sd_global->config.SCAN_LEN);
+            }
+            if (DBL_ABS(vari) >= .000002
 				|| (pi_ratio[num_samples % sd_global->config.SCAN_LEN]) < 0.95)
-			*dual_statble_flag = FALSE;
-		else
-			*dual_statble_flag = TRUE;
+                *dual_statble_flag = FALSE;
+            else
+            {
+                *dual_statble_flag = TRUE;
+                /* start refreshing master problem in CPLEX */
+                //refresh_master(sd_global, prob, cell, soln);
+            }
+        }
 	}
 
 	if (0)
@@ -1081,7 +1110,13 @@ void reduce_cuts(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 
 	/* Original rows and all the added cuts.  The eta row isn't needed */
 	dual = arr_alloc(p->num->mast_rows+c->cuts->cnt+1, double);
-	get_dual(dual, c->master, p->num, p->num->mast_rows + c->cuts->cnt);
+    
+    /* modified by Yifan 2014.03.29 */
+	// get_dual(dual, c->master, p->num, p->num->mast_rows + c->cuts->cnt);
+    for (idx = 0 ; idx < p->num->mast_rows+c->cuts->cnt+1; idx++) {
+        dual[idx] = s->Master_pi[idx];
+    }
+    
 
 	min_cut_obs = c->k;
 	oldest_cut = c->cuts->cnt;
@@ -1834,5 +1869,49 @@ void print_cut_info(cell_type *c, num_type *num, char *phrase)
 		fprintf(g_FilePointer, "\n\n");
 	}
 	fclose(g_FilePointer);
+}
+
+void refresh_master(sdglobal_type *sd_global,prob_type *prob, cell_type *cell, soln_type *soln)
+{
+//    int i,j,cnt;
+    write_prob(cell->master, "master_prob.lp");
+    remove_problem(cell->master);
+    cell->master->lp = read_problem(cell->master, "master_prob", "lp");
+    write_prob(cell->master, "check_master.lp");
+    
+//    for (i = prob->num->mast_rows + 1; i <= prob->num->mast_rows + cell->cuts->cnt; i++) {
+//        for (j = 0; j < cell->cuts->cnt; j++) {
+//            if (i == cell->cuts->val[j]->row_num) {
+//                for (cnt = 0 ; cnt < prob->master->mac; cnt++) {
+//                    change_single_coef(cell->master, i, cnt, cell->cuts->val[j]->beta[cnt+1]);
+//                }
+//                change_single_coef(cell->master, i, -1, cell->cuts->val[j]->alpha_incumb);
+//            }
+//        }
+//    }
+    
+    
+    /* Update master's rhs and bounds */
+//    if (sd_global->config.MASTER_TYPE == SDQP)
+//    {
+//        change_rhs(prob, cell, soln);
+//        change_bounds(prob, cell, soln);
+//    }
+    
+//    construct_QP(prob, cell, cell->quad_scalar);
+    
+    /* Update eta coefficient on all cuts, based on cut_obs */
+//    change_eta_col(cell->master, cell->cuts, cell->k, soln, prob->num);
+//    
+//    if (sd_global->config.LB_TYPE == 1)
+//    {
+//        update_rhs(sd_global, prob, cell, soln);
+//    }
+//    
+//    if (!solve_problem(sd_global, cell->master))
+//    {
+//        cplex_err_msg(sd_global, "QP_Master", prob, cell, soln);
+//        return;
+//    }
 }
 
