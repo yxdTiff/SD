@@ -210,9 +210,12 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
         }
         fprintf(resume_time, "Replication %2d:%f\n",prob->current_batch_id,((double) (resume_end_time-resume_start_time)/CLOCKS_PER_SEC));
         fclose(resume_time);
-        if (0) {
+        if (1) {
+            free_master(cell->master);
+            if (!(cell->master = new_master(prob->master, cell->cuts, prob->num->max_cuts, NULL)))
+                err_msg("Copy", "solve_cell", "cell->master");
             /* Now update cuts coefficiets with data from cuts structure */
-            for (i = prob->num->mast_rows + 1; i <= prob->num->mast_rows + cell->cuts->cnt; i++) {
+            for (i = prob->num->mast_rows; i <= prob->num->mast_rows + cell->cuts->cnt; i++) {
                 for (j = 0; j < cell->cuts->cnt; j++) {
                     if (i == cell->cuts->val[j]->row_num) {
                         for (cnt = 0 ; cnt < prob->master->mac; cnt++) {
@@ -233,22 +236,20 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
             
             construct_QP(prob, cell, cell->quad_scalar);
             
-            change_solver_barrier(cell->master);
-            
-            /* Update eta coefficient on all cuts, based on cut_obs */
+            /* Update eta coefficient on all cuts, based on cut_obs , now use k, sicne it is previous iteration number*/
             change_eta_col(cell->master, cell->cuts, cell->k, soln, prob->num);
             
-            if (sd_global->config.LB_TYPE == 1)
-            {
-                update_rhs(sd_global, prob, cell, soln);
-            }
-            
-            
-            if (!solve_problem(sd_global, cell->master))
-            {
-                cplex_err_msg(sd_global, "QP_Master", prob, cell, soln);
-                return;
-            }
+//            if (sd_global->config.LB_TYPE == 1)
+//            {
+//                update_rhs(sd_global, prob, cell, soln);
+//            }
+//            
+//            
+//            if (!solve_problem(sd_global, cell->master))
+//            {
+//                cplex_err_msg(sd_global, "QP_Master", prob, cell, soln);
+//                return;
+//            }
         }
 
     }
@@ -650,6 +651,7 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 
 	fclose(fix);
 #endif
+
 
 	if (sd_global->config.EVAL_FLAG == 1)
 	{

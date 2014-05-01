@@ -185,6 +185,10 @@ soln_type * new_soln(sdglobal_type* sd_global, prob_type *p, vector x_k)
     s->passed = 0;
 	s->max_ratio = 0.0;
 	s->min_ratio = 1.0;
+    s->a = 0.0;
+    s->b = 0.0;
+    s->lipschitz_lambda = 0.0;
+    s->hoeff_prob = 0.0;
 
 	/* Initialize the boolean _optimal_flag_. zl, 06/30/04. */
 	s->optimality_flag = FALSE;

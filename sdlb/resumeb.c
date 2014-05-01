@@ -317,16 +317,17 @@ int restore_sd_data_b(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
     FILE *rep_data;
     double coef_value;
     
-    char buffer1[128], buffer2[128];
+    char buffer1[128];
+//    char buffer2[128];
     char rep_number[16];
     sprintf(rep_number, "%d", p->current_batch_id);
     // sprintf(rep_number, "%d", 14);
     
     /* modified by Yifan 2014.02.26 Numbering resume data for different replications */
-    strcpy(buffer2, "./sdresume/pgp2/nominal/resume");
-    strcat(buffer2, rep_number);
-    strcat(buffer2, ".lp");
-    read_problem_simple(c->master, buffer2, "lp");
+//    strcpy(buffer2, "./sdresume/pgp2/nominal/resume");
+//    strcat(buffer2, rep_number);
+//    strcat(buffer2, ".lp");
+//    read_problem_simple(c->master, buffer2, "lp");
     
     /* modified by Yifan 2014.02.26 */
     strcpy(buffer1, "./sdresume/pgp2/nominal/resume_data");

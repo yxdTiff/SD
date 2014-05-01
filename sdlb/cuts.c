@@ -481,6 +481,7 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 	double argmax_dif_sum = 0;
 	double argmax_all_sum = 0;
 	double vari = 1.0;
+    double temp_max = -10^20;
     int scan_len[3];
 	i_type istar_new;
 	i_type istar_old;
@@ -534,7 +535,7 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 	}
 
 	/* Assume the cut's fields were initialized to zero.  */
-
+    temp_max = 0.0;
 	/* Yifan 03/20/2012 Test for omega issues*/
 	for (obs = 0; obs < omega->most; obs++)
 		if (valid_omega_idx(omega, obs))
@@ -562,6 +563,10 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 					istar.sigma = istar_old.sigma;
 					istar.delta = istar_old.delta;
 				}
+                
+                if (*argmax_all > temp_max) {
+                    temp_max = *argmax_all;
+                }
 				//printf("argmax:%f and finalistar(%d,%d) and ck %d\n",*argmax_all, istar.sigma, istar.delta, sigma->ck[istar.sigma]);
 				/* modified by Yifan 2013.02.15 */
 
@@ -576,10 +581,15 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 
 				// printf("This is argmax NSD for obs %d : %f and istar(%d,%d) and sigma from %d iteration \n", obs, *argmax_all, istar.sigma, istar.delta, sigma->ck[istar.sigma]);
 			}
-			else
+			else{
 				istar = compute_istar(obs, cut, sigma, delta, Xvect, num,
-						pi_Tbar_x, argmax_all, pi_eval_flag, num_samples);
-
+                                      pi_Tbar_x, argmax_all, pi_eval_flag, num_samples);
+                
+                if (*argmax_all > temp_max) {
+                    temp_max = *argmax_all;
+                }
+            }
+            
 			cut->istar[obs] = istar.sigma;
 
 			/* by Yifan 02/02/12 */
@@ -618,6 +628,12 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 						* omega->weight[obs];
 
 		}
+    
+    soln->a = 0.0;
+    soln->b = temp_max;
+    soln->lipschitz_lambda = 1.0/cell->k;
+    soln->hoeff_prob = 2*exp((-2*pow(sd_global->config.TOLERANCE,2))/(soln->lipschitz_lambda*pow(soln->b, 2)));
+    
 
 	if (pi_eval_flag == TRUE)
 	{
@@ -672,10 +688,10 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 	{
 		/*printf("c->k=%d  STABLE_FLAG: %d, max: %f, min: %f, diff: %f, This is new pi's impact ratio # %d: %f \n", num_samples, *dual_statble_flag,max_ratio, min_ratio, max_ratio-min_ratio, num_samples %sd_global->config.SCAN_LEN,  pi_ratio[num_samples %sd_global->config.SCAN_LEN]);*/
 		fptr = fopen("pi_ratio.log", "a");
-		fprintf(fptr, "c->k=%d, %d:%f, vari:%.9f, dual_stable_flag: %d\n",
+		fprintf(fptr, "c->k=%d, %d:%f, soln->hoeff_prob:%.9f, soln->norm_d_k: %.9f, soln->candid_est: %.9f, soln->incumb_est: %.9f\n",
 				num_samples, num_samples % sd_global->config.SCAN_LEN,
-				pi_ratio[num_samples % sd_global->config.SCAN_LEN], vari,
-				*dual_statble_flag);
+				pi_ratio[(num_samples-1) % sd_global->config.MAX_SCAN_LEN],
+				soln->hoeff_prob,soln->norm_d_k, soln->candid_est, soln->incumb_est);
 		fclose(fptr);
 	}
 
@@ -1873,41 +1889,42 @@ void print_cut_info(cell_type *c, num_type *num, char *phrase)
 
 void refresh_master(sdglobal_type *sd_global,prob_type *prob, cell_type *cell, soln_type *soln)
 {
-//    int i,j,cnt;
-    write_prob(cell->master, "master_prob.lp");
-    remove_problem(cell->master);
-    cell->master->lp = read_problem(cell->master, "master_prob", "lp");
-    write_prob(cell->master, "check_master.lp");
+    int i,j,cnt;
+    //write_prob(cell->master, "master_prob.lp");
+
+    free_master(cell->master);
+    if (!(cell->master = new_master(prob->master, cell->cuts, prob->num->max_cuts, NULL)))
+		err_msg("Copy", "solve_cell", "cell->master");
     
-//    for (i = prob->num->mast_rows + 1; i <= prob->num->mast_rows + cell->cuts->cnt; i++) {
-//        for (j = 0; j < cell->cuts->cnt; j++) {
-//            if (i == cell->cuts->val[j]->row_num) {
-//                for (cnt = 0 ; cnt < prob->master->mac; cnt++) {
-//                    change_single_coef(cell->master, i, cnt, cell->cuts->val[j]->beta[cnt+1]);
-//                }
-//                change_single_coef(cell->master, i, -1, cell->cuts->val[j]->alpha_incumb);
-//            }
-//        }
-//    }
+    for (i = prob->num->mast_rows; i <= prob->num->mast_rows + cell->cuts->cnt; i++) {
+        for (j = 0; j < cell->cuts->cnt; j++) {
+            if (i == cell->cuts->val[j]->row_num) {
+                for (cnt = 0 ; cnt < prob->master->mac; cnt++) {
+                    change_single_coef(cell->master, i, cnt, cell->cuts->val[j]->beta[cnt+1]);
+                }
+                change_single_coef(cell->master, i, -1, cell->cuts->val[j]->alpha_incumb);
+            }
+        }
+    }
     
     
     /* Update master's rhs and bounds */
-//    if (sd_global->config.MASTER_TYPE == SDQP)
-//    {
-//        change_rhs(prob, cell, soln);
-//        change_bounds(prob, cell, soln);
-//    }
+    if (sd_global->config.MASTER_TYPE == SDQP)
+    {
+        change_rhs(prob, cell, soln);
+        change_bounds(prob, cell, soln);
+    }
     
-//    construct_QP(prob, cell, cell->quad_scalar);
+    construct_QP(prob, cell, cell->quad_scalar);
+    /*Since we are doing this for master at the previous iteration, k-1 is the third input argument*/
+    change_eta_col(cell->master, cell->cuts, cell->k-1, soln, prob->num);
     
     /* Update eta coefficient on all cuts, based on cut_obs */
-//    change_eta_col(cell->master, cell->cuts, cell->k, soln, prob->num);
-//    
+    //write_prob(cell->master, "check_master.lp");
 //    if (sd_global->config.LB_TYPE == 1)
 //    {
 //        update_rhs(sd_global, prob, cell, soln);
 //    }
-//    
 //    if (!solve_problem(sd_global, cell->master))
 //    {
 //        cplex_err_msg(sd_global, "QP_Master", prob, cell, soln);

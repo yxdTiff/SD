@@ -166,16 +166,6 @@ BOOL solve_QP_master(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 	printf("Saving file: %s\n", fname);
 #endif
 
-    if (c->k >= 303 && FALSE) {
-        write_prob(c->master, "testtest_sc.lp");
-        //change_barrier_algorithm(c->master, 3);
-        CPXwriteparam (env, "myparams.prm");
-//        CPXLPptr lp = NULL;
-//        lp = CPXcreateprob(env, NULL, "Master");
-//        CPXreadcopyprob(env, lp, "readthis1.lp", NULL);
-//        CPXbaropt(env, lp);
-        
-    }
     
 	/* Recording the time for solving master QPs. zl, 06/29/04. */
 	start = clock();

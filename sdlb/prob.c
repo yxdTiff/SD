@@ -64,6 +64,7 @@ void solve_SD(sdglobal_type* sd_global, one_problem *original, vector x_k,
 	printf("\n\n-------------------- Replication No.%d --------------------\n",
 			batch_id);
 	solve_cell(sd_global, cell, prob, x_k, fname);
+
 	print_contents(prob->master, "final_master.lp");
 
 	free_cell(cell, prob->num);
@@ -123,8 +124,9 @@ prob_type *new_prob(sdglobal_type* sd_global, one_problem *original, int num_rv,
 	 ** Obtain the master and subproblem from the original LP.  This will
 	 ** initialize num, Rbar, Tbar, and c, as well as master and subprob.
 	 */
-	decompose(sd_global, original, p, row, col);
 
+	decompose(sd_global, original, p, row, col);
+    
 	/* 
 	 ** Initialize the coord structure according to the locations
 	 ** of the random variables in omega.  Also initialize some

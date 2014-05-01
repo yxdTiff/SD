@@ -210,6 +210,10 @@ typedef struct
     double max_ratio; /*added by Yifan 09/27/2011*/
 	double min_ratio; /*added by Yifan 09/27/2011*/
     double *pi_ratio; /*added by Yifan 09/27/2011*/
+    double a;
+    double b;
+    double lipschitz_lambda;
+    double hoeff_prob;
 	omega_type *omega;
 	delta_type *delta;
 	delta_type *feasible_delta;

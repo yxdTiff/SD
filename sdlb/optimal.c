@@ -59,7 +59,7 @@ BOOL optimal(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_type *s,
 	if (c->k > sd_global->config.MIN_ITER && *s->dual_statble_flag)
 	{
 
-        if (!sd_global->store_flag && TRUE) {
+        if (!sd_global->store_flag && FALSE) {
             store_start_time = clock();
             store_sd_data_b(sd_global, p, c, s);
             store_end_time = clock();
