@@ -36,6 +36,7 @@
 		696004AE1821A04800CD6831 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696004AD1821A04800CD6831 /* IOKit.framework */; };
 		698318A618EA86F900B2EB86 /* libcplex.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 698318A518EA86F900B2EB86 /* libcplex.a */; };
 		69A2FEC618A20EE600997825 /* resumeb.c in Sources */ = {isa = PBXBuildFile; fileRef = 69A2FEC518A20EE600997825 /* resumeb.c */; };
+		69FE2109195C85E200DA3CA3 /* rc.c in Sources */ = {isa = PBXBuildFile; fileRef = 69FE2108195C85E200DA3CA3 /* rc.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -112,6 +113,8 @@
 		698318A518EA86F900B2EB86 /* libcplex.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcplex.a; path = "../../../../Applications/IBM/ILOG/CPLEX_Studio126/cplex/lib/x86-64_osx/static_pic/libcplex.a"; sourceTree = "<group>"; };
 		69A2FEC518A20EE600997825 /* resumeb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = resumeb.c; sourceTree = "<group>"; };
 		69A2FEC718A20F2500997825 /* resumeb.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = resumeb.h; sourceTree = "<group>"; };
+		69FE2108195C85E200DA3CA3 /* rc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rc.c; sourceTree = "<group>"; };
+		69FE210A195C862A00DA3CA3 /* rc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rc.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,6 +208,8 @@
 				695D165E1883B57F0037891D /* resume.h */,
 				69A2FEC518A20EE600997825 /* resumeb.c */,
 				69A2FEC718A20F2500997825 /* resumeb.h */,
+				69FE2108195C85E200DA3CA3 /* rc.c */,
+				69FE210A195C862A00DA3CA3 /* rc.h */,
 			);
 			path = sdlb;
 			sourceTree = "<group>";
@@ -280,6 +285,7 @@
 				696004A11821A00300CD6831 /* sd.c in Sources */,
 				696004911821A00300CD6831 /* batch.c in Sources */,
 				696004A41821A00300CD6831 /* solverc.c in Sources */,
+				69FE2109195C85E200DA3CA3 /* rc.c in Sources */,
 				696004A61821A00300CD6831 /* subprob.c in Sources */,
 				696004961821A00300CD6831 /* input.c in Sources */,
 				696004991821A00300CD6831 /* master.c in Sources */,

@@ -552,7 +552,7 @@ void change_bounds(prob_type *p, cell_type *c, soln_type *s)
 	/* Change the Lower Bound GJH 06/24/11 */
 	for (cnt = 0; cnt < p->num->mast_cols; cnt++)
 	{
-		lbounds[cnt] = -s->incumb_x[cnt + 1]; //Yifan, notice this!!!
+		lbounds[cnt] = c->master->bdl[cnt] -s->incumb_x[cnt + 1]; //Yifan, notice this!!! zero might not be a lower bound
 		lindices[cnt] = cnt;
 		llu[cnt] = 'L';
 #ifdef CAL_CHECK

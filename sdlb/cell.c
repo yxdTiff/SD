@@ -36,7 +36,7 @@
 #include "batch.h"
 #include "resumeb.h"
 #include <limits.h> 
-
+#include "rc.h"
 FILE *fix;
 /************************************************************************\
 ** This function represents the SD algorithm, as solved for a
@@ -418,12 +418,14 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 			cplex_err_msg(sd_global, "Subproblem", prob, cell, soln);
 			break;
 		}
+        
+        /* Check the index set of the subproblem updated by Yifan 2014.06.26 */
+        get_index_number(sd_global, prob, cell, soln);
 
 		/* 4. Enter Feasibility Mode */
 		if (prob->subprob->feaflag == FALSE)
 		{
-			resolve_infeasibility(sd_global, cell, prob, soln, omeg_idx,
-					new_omega, phi);
+			resolve_infeasibility(sd_global, cell, prob, soln, omeg_idx, new_omega, phi);
 		}
 
 		/* 5. Form and update optimality cut */
