@@ -152,8 +152,6 @@ BOOL valid_omega_idx(omega_type *omega, int idx)
 #ifdef LOOP
 	printf("Inside valid_omega_idx()");
 #endif
-	if (idx < 0 || idx >= omega->most)
-		return FALSE;
 
 	/* Check the range of valid indices */
 	if (idx < 0 || idx >= omega->most)
