@@ -222,7 +222,9 @@ void init_R_T_G_omega(sparse_vect *Romega, sparse_matrix *Tomega, sparse_vect *G
     
     /* Start C(omega) arrays where the R(omega) and T(omega) arrays left off */
 	Gomega->cnt = num->rv_g;
-	Gomega->row = omega->row + num->rv_R + num->rv_T;
+    /* modified by Yifan 2014.06.11 */
+    /* This Gomega->row is tricky since sparse_vect is a row vector, here we sholud have Gomega->col */
+	Gomega->row = omega->col + num->rv_R + num->rv_T;
 	Gomega->val = omega->RT + num->rv_R + num->rv_T;
 
 #ifdef TRACE

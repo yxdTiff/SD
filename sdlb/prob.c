@@ -100,6 +100,9 @@ prob_type *new_prob(sdglobal_type* sd_global, one_problem *original, int num_rv,
 
 	if (!(p->Tbar = (sparse_matrix *) mem_malloc (sizeof(sparse_matrix))))
 		err_msg("Allocation", "new_prob", "prob->Tbar");
+    
+    if (!(p->Gbar = (sparse_vect *) mem_malloc (sizeof(sparse_vect))))
+		err_msg("Allocation", "new_prob", "prob->Gbar");
 
 	/* In the regularized QP method, we need master's A matrix too. zl */
 	if (sd_global->config.MASTER_TYPE == SDQP)
@@ -211,7 +214,9 @@ void free_prob(sdglobal_type* sd_global, prob_type *p)
 	mem_free(p->Rbar->row);
 	mem_free(p->Rbar->val);
 	mem_free(p->Rbar);
-
+	mem_free(p->Gbar->row);
+	mem_free(p->Gbar->val);
+	mem_free(p->Gbar);
 	/* In regularized QP method, we also need to free A matrix. zl */
 	if (sd_global->config.MASTER_TYPE == SDQP)
 	{
@@ -435,6 +440,7 @@ int decompose(sdglobal_type* sd_global, one_problem *orig, prob_type *p,
 
 	p->Tbar->cnt = 0;
 	p->Rbar->cnt = 0;
+    p->Gbar->cnt = 0;
 	p->num->rv_R = 0;
 	p->num->rv_T = 0;
     p->num->rv_g = 0;   /* modified by Yifan 2013.10.14 */
@@ -482,6 +488,10 @@ int decompose(sdglobal_type* sd_global, one_problem *orig, prob_type *p,
 		err_msg("Allocation", "decompose", "Rbar->row");
 	if (!(p->Rbar->val = arr_alloc(orig->marsz+1, double)))
 		err_msg("Allocation", "decompose", "Rbar->val");
+    if (!(p->Gbar->row = arr_alloc(orig->macsz+1, int)))
+		err_msg("Allocation", "decompose", "Gbar->row");
+	if (!(p->Gbar->val = arr_alloc(orig->macsz+1, double)))
+		err_msg("Allocation", "decompose", "Gbar->val");
 	if (!(p->c = arr_alloc(orig->macsz+1, double)))
 		err_msg("Allocation", "decompose", "p->c");
 
@@ -681,6 +691,13 @@ int decompose(sdglobal_type* sd_global, one_problem *orig, prob_type *p,
 			}
 		}
 	}
+    
+    /* modified by Yifan 2014.06.11 */
+    for (c = col; c < orig->mac; c++) {
+        p->Gbar->val[p->Gbar->cnt + 1] = orig->objx[c];
+		p->Gbar->row[p->Gbar->cnt + 1] = c - col + 1;
+		++p->Gbar->cnt;
+    }
 
 	/*
 	 ** Copy the names of each constraint row for
@@ -753,6 +770,10 @@ int decompose(sdglobal_type* sd_global, one_problem *orig, prob_type *p,
 			(int *) mem_realloc (p->Rbar->row, (p->Rbar->cnt+1)*sizeof(int));
 	p->Rbar->val = (double *) mem_realloc (p->Rbar->val,
 			(p->Rbar->cnt+1)*sizeof(double));
+    p->Gbar->row =
+    (int *) mem_realloc (p->Gbar->row, (p->Gbar->cnt+1)*sizeof(int));
+	p->Gbar->val = (double *) mem_realloc (p->Gbar->val,
+                                           (p->Gbar->cnt+1)*sizeof(double));
 
 	/* While in regularized QP method, we need to reallocate the space for
 	 master's A matrix too.  zl */

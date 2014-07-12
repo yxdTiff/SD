@@ -7,7 +7,7 @@
  **
  **
  ** solve_subprob()
- ** compute_rhs()
+ ** compute_rhs_cost()
  **
  ** History:
  **   20 Jan 1992 - <Jason Mai> - created.
@@ -44,6 +44,7 @@ int solve_subprob(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 		soln_type *s, vector Xvect, int omeg_idx)
 {
 	vector rhs;
+    vector cost;
 	BOOL ans;
 	clock_t start, end; /* Recording solution time for solving
 	 subproblem LPs. added by zl, 06/29/04. */
@@ -58,13 +59,27 @@ int solve_subprob(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 #ifdef TRACE
 	printf("Inside solve_subprob\n");
 #endif
+    if (!(rhs = arr_alloc(p->num->sub_rows+1, double)))
+		err_msg("Allocation", "compute_rhs", "rhs");
+    if (!(cost = arr_alloc(p->num->sub_cols+1, double)))
+		err_msg("Allocation", "compute_rhs", "rhs");
 
-	rhs = compute_rhs(sd_global, p->num, p->Rbar, p->Tbar, Xvect, s->omega, omeg_idx);
+	compute_rhs_cost(sd_global, p->num, p->Rbar, p->Tbar, p->Gbar, Xvect, rhs, cost, s->omega, omeg_idx);
 	if (!change_col(c->subprob, RHS_COL, rhs + 1, 0, p->num->sub_rows))
 	{
 		print_contents(c->subprob, "contents.out");
 		err_msg("change_col", "solve_subprob", "returned FALSE");
 	}
+    
+    /* modified by Yifan 2014.06.11 */
+    if (p->num->rv_g > 0) {
+        if (!change_row(c->subprob, -1, cost + 1, 0, p->num->sub_cols))
+        {
+            print_contents(c->subprob, "contents.out");
+            err_msg("change_col", "solve_subprob", "returned FALSE");
+        }
+    }
+    print_problem(c->subprob, "testing_sub.lp");
 
 #ifdef DEBUG
 	print_vect(rhs, p->num->sub_rows, "Rhs");
@@ -80,6 +95,7 @@ int solve_subprob(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 #endif
 
 	mem_free(rhs);
+    mem_free(cost);
 	/* Recording the time for solving subproblem LPs. zl, 06/29/04. */
 	start = clock();
 	c->subprob->feaflag = TRUE; /*added by Yifan to generate feasibility cut 08/11/2011*/
@@ -118,21 +134,17 @@ int solve_subprob(sdglobal_type* sd_global, prob_type *p, cell_type *c,
  ** freed by the customer.  Also, the zeroth position of this rhs vector
  ** is reserved, and the actual values begin at rhs[1].
  \***********************************************************************/
-vector compute_rhs(sdglobal_type* sd_global, num_type *num, sparse_vect *Rbar,
-		sparse_matrix *Tbar, vector X, omega_type *omega, int omeg_idx)
+void compute_rhs_cost(sdglobal_type* sd_global, num_type *num, sparse_vect *Rbar,
+		sparse_matrix *Tbar, sparse_vect *Gbar, vector X, vector rhs, vector cost, omega_type *omega, int omeg_idx)
 {
 	int cnt;
-	vector rhs;
 	sparse_vect Romega;
 	sparse_matrix Tomega;
     sparse_vect Gomega;
 
 #ifdef TRACE
-	printf("Inside compute_rhs\n");
+	printf("Inside compute_rhs_cost\n");
 #endif
-
-	if (!(rhs = arr_alloc(num->sub_rows+1, double)))
-		err_msg("Allocation", "compute_rhs", "rhs");
 
 	init_R_T_G_omega(&Romega, &Tomega, &Gomega, omega, num);
 	get_R_T_G_omega(sd_global, omega, omeg_idx);
@@ -161,11 +173,17 @@ vector compute_rhs(sdglobal_type* sd_global, num_type *num, sparse_vect *Rbar,
 	TxX(&Tomega, X, rhs);
 
 	/* This rhs vector is one element too large. */
+    
+    /* modified by Yifan 2014.06.11 */
+    /* End with the values of G(omega) -- both fixed and varying */
+	for (cnt = 1; cnt <= Gbar->cnt; cnt++)
+		cost[Gbar->row[cnt]] += Gbar->val[cnt];
+	for (cnt = 1; cnt <= Gomega.cnt; cnt++)
+		cost[Gomega.row[cnt]] += Gomega.val[cnt];
 
 #ifdef TRACE
-	printf("Exiting compute_rhs\n");
+	printf("Exiting compute_rhs_cost\n");
 #endif
-	return rhs;
 }
 
 /***********************************************************************\

@@ -12,8 +12,8 @@
 int solve_subprob(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 		soln_type *s, vector Xvect, int omeg_idx);
 one_problem *new_subprob(one_problem *subprob);
-vector compute_rhs(sdglobal_type* sd_global, num_type *num, sparse_vect *Rbar, sparse_matrix *Tbar,
-		vector X, omega_type *omega, int omeg_idx);
+void compute_rhs_cost(sdglobal_type* sd_global, num_type *num, sparse_vect *Rbar,
+                      sparse_matrix *Tbar, sparse_vect *Gbar, vector X, vector rhs, vector cost, omega_type *omega, int omeg_idx);
 void free_subprob(one_problem *subprob);
 
 #endif /* SUBPROB_H_ */

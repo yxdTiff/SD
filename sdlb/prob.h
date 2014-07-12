@@ -148,6 +148,7 @@ typedef struct
 	one_problem *subprob;
 	sparse_vect *Rbar;
 	sparse_matrix *Tbar;
+    sparse_vect *Gbar;
 	sparse_matrix *A; /* to store the A matrix in regularized QP method. zl */
 	coord_type *coord;
 	num_type *num;
