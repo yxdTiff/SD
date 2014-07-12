@@ -8,8 +8,8 @@
  ** equal_obs()
  ** valid_omega_idx()
  ** next_omega_idx()
- ** init_R_T_omega()
- ** get_R_T_omega()
+ ** init_R_T_G_omega()
+ ** get_R_T_G_omega()
  ** print_omega()
  ** new_omega()
  ** free_omega()
@@ -201,12 +201,12 @@ int next_omega_idx(omega_type *omega)
  ** omega will alloc and free, so pointers will become invalid.
  ** Just keep it this way.
  \***********************************************************************/
-void init_R_T_omega(sparse_vect *Romega, sparse_matrix *Tomega,
+void init_R_T_G_omega(sparse_vect *Romega, sparse_matrix *Tomega, sparse_vect *Gomega,
 		omega_type *omega, num_type *num)
 {
 
 #ifdef TRACE
-	printf("Inside init_R_T_omega\n");
+	printf("Inside init_R_T_G_omega\n");
 #endif
 
 	/* Assume the R(omega) values come first in all arrays of omega */
@@ -219,11 +219,17 @@ void init_R_T_omega(sparse_vect *Romega, sparse_matrix *Tomega,
 	Tomega->row = omega->row + num->rv_R;
 	Tomega->col = omega->col + num->rv_R;
 	Tomega->val = omega->RT + num->rv_R;
+    
+    /* Start C(omega) arrays where the R(omega) and T(omega) arrays left off */
+	Gomega->cnt = num->rv_g;
+	Gomega->row = omega->row + num->rv_R + num->rv_T;
+	Gomega->val = omega->RT + num->rv_R + num->rv_T;
 
 #ifdef TRACE
-	printf("Exiting init_R_T_omega\n");
+	printf("Exiting init_R_T_G_omega\n");
 #endif
 }
+
 
 /***********************************************************************\
 ** This function updates the values referenced by Romega and Tomega
@@ -236,11 +242,11 @@ void init_R_T_omega(sparse_vect *Romega, sparse_matrix *Tomega,
  ** Eventually, it must also decode the observations, which have been
  ** stored in a bitwise manner.
  \***********************************************************************/
-void get_R_T_omega(sdglobal_type* sd_global, omega_type *omega, int obs_idx)
+void get_R_T_G_omega(sdglobal_type* sd_global, omega_type *omega, int obs_idx)
 {
 
 #ifdef LOOP
-	printf("Inside get_R_T_omega");
+	printf("Inside get_R_T_G_omega");
 #endif
 #ifdef OMEGA_FILE
   omega->RT[0] = get_omega_vals_from_file(sd_global, obs_idx, omega->RT+1, omega->fidx);

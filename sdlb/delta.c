@@ -48,6 +48,7 @@ void calc_delta_row(sdglobal_type* sd_global, delta_type *delta,
 	int obs;
 	sparse_vect Romega;
 	sparse_matrix Tomega;
+    sparse_vect Gomega;
 	vector lamb_pi;
 	vector pi_cross_T;
 
@@ -62,7 +63,7 @@ void calc_delta_row(sdglobal_type* sd_global, delta_type *delta,
 	}
 
 	/* Initialize all vectors for calculations */
-	init_R_T_omega(&Romega, &Tomega, omega, num);
+	init_R_T_G_omega(&Romega, &Tomega, &Gomega, omega, num);
 
 	if (!(delta->val[pi_idx] = arr_alloc(num->iter, pi_R_T_type)))
 		err_msg("Allocation", "calc_delta_row", "delta->val");
@@ -74,7 +75,7 @@ void calc_delta_row(sdglobal_type* sd_global, delta_type *delta,
 	for (obs = 0; obs < omega->most; obs++)
 		if (valid_omega_idx(omega, obs))
 		{
-			get_R_T_omega(sd_global, omega, obs);
+			get_R_T_G_omega(sd_global, omega, obs);
 
 			/* Multiply the new dual vector by previous observations of omega */
 			/* Reduce the vector resulting from Pi x T to its sparse form */
@@ -103,6 +104,7 @@ void calc_delta_col(sdglobal_type* sd_global, delta_type *delta,
 	int pi_idx;
 	sparse_vect Romega;
 	sparse_matrix Tomega;
+    sparse_vect Gomega;
 	vector lamb_pi;
 	vector pi_cross_T;
 
@@ -111,8 +113,8 @@ void calc_delta_col(sdglobal_type* sd_global, delta_type *delta,
 #endif
 
 	/* Initialize vectors for calculations */
-	init_R_T_omega(&Romega, &Tomega, omega, num);
-	get_R_T_omega(sd_global, omega, obs);
+	init_R_T_G_omega(&Romega, &Tomega, &Gomega, omega, num);
+	get_R_T_G_omega(sd_global, omega, obs);
 
 	/* For all dual vectors, lambda(pi), calculate pi X Romega and pi X Tomega */
 	for (pi_idx = 0; pi_idx < lambda->cnt; pi_idx++)

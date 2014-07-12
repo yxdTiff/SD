@@ -28,11 +28,11 @@
 
 int get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_type *s)
 {
-    FILE *index_number;
+    /*FILE *index_number;
+    int sum = 0;*/
     int j;
     int *cstat;
     int *rstat;
-    int sum = 0;
     double *y;
     char *basismsg;
 	cstat = (int *) malloc((p->num->sub_cols + 1) * sizeof(int));
@@ -75,6 +75,7 @@ int get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_
 		}
         
 	}
+    /*
     index_number = fopen("indexNumber.txt", "a");
     for (j = 1; j <= p->num->sub_cols; j++) {
         fprintf(index_number, "%d", cstat[j]);
@@ -86,7 +87,7 @@ int get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_
     }
     printf("%d\n",sum);
     fprintf(index_number, "\n");
-    fclose(index_number);
+    fclose(index_number);*/
     
     return 0;
 }

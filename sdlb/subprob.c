@@ -125,6 +125,7 @@ vector compute_rhs(sdglobal_type* sd_global, num_type *num, sparse_vect *Rbar,
 	vector rhs;
 	sparse_vect Romega;
 	sparse_matrix Tomega;
+    sparse_vect Gomega;
 
 #ifdef TRACE
 	printf("Inside compute_rhs\n");
@@ -133,8 +134,8 @@ vector compute_rhs(sdglobal_type* sd_global, num_type *num, sparse_vect *Rbar,
 	if (!(rhs = arr_alloc(num->sub_rows+1, double)))
 		err_msg("Allocation", "compute_rhs", "rhs");
 
-	init_R_T_omega(&Romega, &Tomega, omega, num);
-	get_R_T_omega(sd_global, omega, omeg_idx);
+	init_R_T_G_omega(&Romega, &Tomega, &Gomega, omega, num);
+	get_R_T_G_omega(sd_global, omega, omeg_idx);
 
 #ifdef DEBUG
 	printf("\n\n");
