@@ -112,6 +112,10 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 
 	phi[2] = 0;
 	soln = new_soln(sd_global, prob, x_k);
+    
+    /* modified by Yifan 2014.06.17 Keep track of the column of random cost */
+    get_omega_index(prob, soln);
+    
 	if (!(cell->master = new_master(prob->master, cell->cuts,
 			prob->num->max_cuts, x_k)))
 		err_msg("Copy", "solve_cell", "cell->master");
@@ -302,10 +306,9 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 			/* change_rhs_back(prob, cell, soln);*//*Keep the decisions as d instead of chaning them to x*/
 			/* write_prob(cell->master, "final.lp"); */
 			/* write_prob(sd_global->batch_problem, "final-1cut-a.lp");*/
-			update_batch_rhs(sd_global, prob, cell, soln,
-					prob->current_batch_id);
-			update_batch_bounds(sd_global, prob, cell, soln,
-					prob->current_batch_id);
+			update_batch_rhs(sd_global, prob, cell, soln, prob->current_batch_id);
+			update_batch_bounds(sd_global, prob, cell, soln, prob->current_batch_id);
+            // change_rhs_back(prob, cell, soln);
 			save_batch_incumb(sd_global, prob, cell, soln,
 					prob->current_batch_id);
 
@@ -420,7 +423,7 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 		}
         
         /* Check the index set of the subproblem updated by Yifan 2014.06.26 */
-        get_index_number(sd_global, prob, cell, soln);
+        // get_index_number(sd_global, prob, cell, soln);
 
 		/* 4. Enter Feasibility Mode */
 		if (prob->subprob->feaflag == FALSE)
@@ -544,6 +547,13 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 			}
 		}
 
+/* modified by Yifan 2014.06.17 */
+#if 0
+        FILE *incumb;
+        incumb = fopen("candid_est.txt", "a");
+        fprintf(incumb, "%f\n",soln->candid_est);
+        fclose(incumb);
+#endif
 
 		write_statistics(sd_global, prob, cell, soln);
 
@@ -609,6 +619,25 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 			((double)(total_term_time.tms_cutime-total_init_time.tms_cutime))/CLK_TCK,
 			((double)(total_term_time.tms_cstime-total_init_time.tms_cstime))/CLK_TCK);
 #endif
+    
+    
+#if 0
+
+    /* modified by Yifan 2014.06.17 */
+    /* This part of the code is used for printing the origial LP problem in terms of x */
+    int static idx=0;
+	char name[20] = "master   .lp";
+    name[6] = '0' + idx / 10 % 10;
+	name[7] = '0' + idx / 1 % 10;
+    change_rhs_back(prob, cell, soln);
+    change_bounds_back(prob,cell,soln);
+    /* By setting sigma=0, we destroy the q term */
+    construct_QP(prob, cell, 0);
+    write_prob(cell->master, name);
+    idx++;
+    
+#endif
+    
 
 	/*  JH summarizing output for Arlie and Brett ... 3/12/98 */
 

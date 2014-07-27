@@ -999,6 +999,11 @@ void get_lower_bound(sdglobal_type* sd_global, one_problem *p, int row, int col)
 
 	lower_bound = get_objective(copy);
 	sd_global->Eta0 = lower_bound + sd_global->Abar;
+    
+    if (sd_global->Eta0 >= 0) {
+        zero_lb = TRUE;
+        sd_global->Eta0 = 0.0;
+    }
 
 	printf("lower_bound is %f\n", lower_bound);
 	printf("Eta0 is %f\n", sd_global->Eta0);

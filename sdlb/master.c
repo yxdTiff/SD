@@ -74,6 +74,7 @@ BOOL solve_master(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 	print_problem(c->master, fname);
 	printf("Saving file: %s\n", fname);
 #endif
+    
 
 	/* Recording the time for solving master LPs. zl, 06/29/04. */
 	start = clock();
@@ -166,6 +167,20 @@ BOOL solve_QP_master(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 	printf("Saving file: %s\n", fname);
 #endif
 
+#if 0
+    /* modified by Yifan 2014.06.17 messing around for a nice plot and animation */
+    FILE *plot;
+    int idx;
+    double mut;
+    plot = fopen("master_cuts.txt", "a");
+    for (idx = 0; idx < c->cuts->cnt; idx++) {
+        mut = (double) c->cuts->val[idx]->cut_obs / (double) c->k;
+        fprintf(plot, "%f\t%f\t%d\n",mut * c->cuts->val[idx]->alpha,mut * c->cuts->val[idx]->beta[1], c->cuts->val[idx]->is_incumbent);
+    }
+    fprintf(plot, "\n");
+    fclose(plot);
+#endif
+
     
 	/* Recording the time for solving master QPs. zl, 06/29/04. */
 	start = clock();
@@ -174,7 +189,9 @@ BOOL solve_QP_master(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 	s->run_time->soln_master_iter = ((double) (end - start)) / CLOCKS_PER_SEC;
 	s->run_time->soln_master_accum += s->run_time->soln_master_iter;
 
-	c->LP_cnt++; /* # of LPs solved increase by 1. zl 06/30/02 */
+    /* modified by Yifan 2014.06.17 Since this is a QP solve*/
+	// c->LP_cnt++;
+    /* # of LPs solved increase by 1. zl 06/30/02 */
 
 	s->opt_value = get_objective(c->master);
 	/*

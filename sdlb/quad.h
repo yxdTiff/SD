@@ -10,6 +10,7 @@
 #include "sdglobal.h"
 
 void change_bounds(prob_type *p, cell_type *c, soln_type *s);
+void change_bounds_back(prob_type *p, cell_type *c, soln_type *s);
 void change_prob_type(one_problem *m);
 void change_rhs_b(prob_type *p, cell_type *c, soln_type *s);
 void change_rhs_back(prob_type *p, cell_type *c, soln_type *s);

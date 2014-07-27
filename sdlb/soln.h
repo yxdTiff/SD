@@ -133,6 +133,30 @@ typedef struct
 	double argmax_accum;
 } time_type;
 
+typedef struct
+{
+    unsigned long *val;
+    int first_c_k;
+    int freq;
+} id_type, *id_ptr;
+
+typedef struct
+{
+    int cnt;
+    int num_word;
+    id_type **index;
+    unsigned long *omega_index;
+} ids_type, *ids_ptr;
+
+typedef struct
+{
+    int *col_num;
+    int *phi_col_num;
+    int *lhs_col_num;
+    unsigned long *phi_col;
+    unsigned long *lhs_chl;
+} rc_type;
+
 /**************************************************************************\
 **   Whereas the prob and cell structures contain relatively permanent data,
  ** the soln structure contains temporary data necessary for solving a 
@@ -215,6 +239,8 @@ typedef struct
     double lipschitz_lambda;
     double hoeff_prob;
 	omega_type *omega;
+    ids_type *ids;
+    rc_type *rcdata;
 	delta_type *delta;
 	delta_type *feasible_delta;
     time_type *run_time; /* added by zl, 06/29/04. */

@@ -79,7 +79,19 @@ int solve_subprob(sdglobal_type* sd_global, prob_type *p, cell_type *c,
             err_msg("change_col", "solve_subprob", "returned FALSE");
         }
     }
-    print_problem(c->subprob, "testing_sub.lp");
+    /* print_problem(c->subprob, "testing_sub.lp"); */
+    
+    /* modified by Yifan 2014.06.17 */
+#if 1
+    FILE *rhs_value;
+    rhs_value =fopen("rhs_value.txt", "a");
+    fprintf(rhs_value, "%f\t%f\n",rhs[1],rhs[2]);
+    fclose(rhs_value);
+    FILE *cost_value;
+    cost_value =fopen("cost_value.txt", "a");
+    fprintf(cost_value, "%f\n",cost[3]);
+    fclose(cost_value);
+#endif
 
 #ifdef DEBUG
 	print_vect(rhs, p->num->sub_rows, "Rhs");
@@ -94,8 +106,7 @@ int solve_subprob(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 	printf("Saving file: %s\n", fname);
 #endif
 
-	mem_free(rhs);
-    mem_free(cost);
+
 	/* Recording the time for solving subproblem LPs. zl, 06/29/04. */
 	start = clock();
 	c->subprob->feaflag = TRUE; /*added by Yifan to generate feasibility cut 08/11/2011*/
@@ -111,6 +122,9 @@ int solve_subprob(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 		s->sub_lb_checker = sub_obj;
 
 	c->LP_cnt++; /* # of LPs solved increase by 1. zl 06/30/02 */
+    
+    mem_free(rhs);
+    mem_free(cost);
 
 #ifdef TRACE
 	printf("Exiting solve_subprob\n");
@@ -179,7 +193,7 @@ void compute_rhs_cost(sdglobal_type* sd_global, num_type *num, sparse_vect *Rbar
 	for (cnt = 1; cnt <= Gbar->cnt; cnt++)
 		cost[Gbar->row[cnt]] += Gbar->val[cnt];
 	for (cnt = 1; cnt <= Gomega.cnt; cnt++)
-		cost[Gomega.row[cnt]] += Gomega.val[cnt];
+		cost[Gomega.row[cnt]-num->mast_cols] += Gomega.val[cnt];
 
 #ifdef TRACE
 	printf("Exiting compute_rhs_cost\n");

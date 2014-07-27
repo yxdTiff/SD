@@ -69,6 +69,7 @@
 #define BUFFER_SIZE 248
 /* If you wish to run fewer than 30 replications, the normality property of CLT may not be questionable. */
 #define BATCH_SIZE 30
+#define WORD_LENGTH 64
 
 #define ITER_DAT	"iter.dat"
 #define CNT_DAT		"cnt.mat"

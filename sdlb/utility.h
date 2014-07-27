@@ -12,6 +12,7 @@
 BOOL decode(int *cipher, one_key *key, int *plain, int len);
 BOOL encode(int *plain, one_key *key, int *cipher, int len);
 BOOL equal_arr(double *a, double *b, int len, double tolerance);
+BOOL equal_ulong_arr(unsigned long *a, unsigned long *b, int len);
 double *duplic_arr(double *a, int len);
 double *reduce_vect(double *f_vect, int *row, int num_elem);
 double calc_var(sdglobal_type* sd_global, double *x, double *mean_value,

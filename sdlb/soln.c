@@ -207,6 +207,9 @@ soln_type * new_soln(sdglobal_type* sd_global, prob_type *p, vector x_k)
 
 	length = p->num->iter + p->num->iter / p->tau + 1;
 	s->omega = new_omega(p->num->iter, p->num->rv, p->coord);
+    s->ids = new_ids(p->num->iter,p->num->sub_cols);
+    s->rcdata = new_rcdata(p->num->sub_rows, p->num->rv_g, s->ids->num_word);
+    
 	s->delta = new_delta(length, p->coord);
 
 	/* Yifan 03/04/2012 Updated for Feasibility Cuts*/
@@ -275,6 +278,9 @@ void free_soln(prob_type *p, cell_type *c, soln_type *s)
 	free_delta(s->feasible_delta, s->omega, c->feasible_lambda->cnt);
 	/* Yifan 03/04/2012 Updated for Feasibility Cuts*/
 	free_omega(s->omega);
+    /* modified by Yifan 2014.06.17 */
+    free_ids(s->ids);
+    free_rcdata(s->rcdata);
 	mem_free(s->run_time);
 	/* added by zl, 06/29/04. */
 	mem_free(s->dual_statble_flag);

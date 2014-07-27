@@ -580,8 +580,91 @@ void change_bounds(prob_type *p, cell_type *c, soln_type *s)
 
 }
 
+
+void change_bounds_back(prob_type *p, cell_type *c, soln_type *s)
+{
+	int status = 0;
+	int cnt;
+	double *lbounds;
+	double *ubounds;
+	int *lindices;
+	int *uindices;
+	char *llu;
+	char *ulu;
+    
+#ifdef TRACE
+	printf ("Inside change bounds.\n");
+#endif
+    
+	if (!(lbounds = arr_alloc(p->num->mast_cols, double)))
+		err_msg("Allocation", "change_bounds", "lbounds");
+	if (!(lindices = arr_alloc(p->num->mast_cols, int)))
+		err_msg("Allocation", "change_bounds", "lindices");
+	if (!(llu = arr_alloc(p->num->mast_cols, char)))
+		err_msg("Allocation", "change_bounds", "llu");
+    
+	if (!(ubounds = arr_alloc(p->num->mast_cols, double)))
+		err_msg("Allocation", "change_bounds", "ubounds");
+	if (!(uindices = arr_alloc(p->num->mast_cols, int)))
+		err_msg("Allocation", "change_bounds", "uindices");
+	if (!(ulu = arr_alloc(p->num->mast_cols, char)))
+		err_msg("Allocation", "change_bounds", "ulu");
+    
+#ifdef CAL_CHECK
+	fprintf(g_FilePointer, "\n");
+#endif
+    
+	/* Change the Upper Bound GJH 06/24/11 */
+	for (cnt = 0; cnt < p->num->mast_cols; cnt++)
+	{
+		ubounds[cnt] = c->master->bdu[cnt];
+		uindices[cnt] = cnt;
+		ulu[cnt] = 'U';
+#ifdef CAL_CHECK
+		fprintf(g_FilePointer, "indices[%d] = %d, lu[%d] = %c, bounds[%d] = %f,\n",cnt, uindices[cnt], cnt, ulu[cnt], cnt, ubounds[cnt]);
+#endif
+	}
+    
+	status = change_bound(c->master, p->num->mast_cols, uindices, ulu, ubounds); /* 2011.10.30 */
+	if (status)
+	{
+		fprintf(stderr, "Failed to change bounds in CPLEX.\n");
+		exit(1);
+	}
+    
+	/* Change the Lower Bound GJH 06/24/11 */
+	for (cnt = 0; cnt < p->num->mast_cols; cnt++)
+	{
+		lbounds[cnt] = c->master->bdl[cnt]; //Yifan, notice this!!! zero might not be a lower bound
+		lindices[cnt] = cnt;
+		llu[cnt] = 'L';
+#ifdef CAL_CHECK
+		fprintf(g_FilePointer, "indices[%d] = %d, lu[%d] = %c, bounds[%d] = %f,\n",cnt, lindices[cnt], cnt, llu[cnt], cnt, lbounds[cnt]);
+#endif
+	}
+    
+	status = change_bound(c->master, p->num->mast_cols, lindices, llu, lbounds); /* 2011.10.30 */
+	if (status)
+	{
+		fprintf(stderr, "Failed to change bounds in CPLEX.\n");
+		exit(1);
+	}
+    
+	mem_free(lbounds);
+	mem_free(lindices);
+	mem_free(llu);
+	mem_free(ubounds);
+	mem_free(uindices);
+	mem_free(ulu);
+    
+#ifdef TRACE
+	printf ("Exiting change bounds.\n");
+#endif
+    
+}
+
 /****************************************************************************\
- When we print the final problem, we need to change the rhs from d back to x. The
+ When we print the final problem, we need to change the rhs from d back to x.
  Since x = xbar + d, and
  A * d = b - A * xbar
  eta + beta * d >= alpha - beta * xbar

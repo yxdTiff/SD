@@ -76,6 +76,17 @@ BOOL equal_arr(double *a, double *b, int len, double tolerance)
 	return TRUE;
 }
 
+BOOL equal_ulong_arr(unsigned long *a, unsigned long *b, int len)
+{
+	int cnt;
+    
+	for (cnt = 0; cnt < len; cnt++)
+		if (a[cnt] !=  b[cnt])
+			return FALSE;
+    
+	return TRUE;
+}
+
 /*
  ** Are functions passing in len or len+1 ???
  */
@@ -514,7 +525,8 @@ double compute_Mu(one_problem *p, int sub_cols)
 		{
 			printf("***This is reduced cost for y[%d]: %+f\n", i, dj[i]);
 		}
-	}mem_free(dj);
+	}
+    mem_free(dj);
 	return Mu_R;
 
 }

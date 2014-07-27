@@ -1507,4 +1507,12 @@ int get_coef(one_problem *p, int row, int col, double *coef)
   return CPXgetcoef(env, p->lp, row, col, coef);
 }
 
+int get_basis_head(one_problem *p, int *newhead)
+{
+    return CPXgetbhead(env, p->lp, newhead, NULL);
+}
 
+int get_basis_row(one_problem *p, int i, double *phi)
+{
+return CPXbinvrow(env, p->lp, i, phi);
+}

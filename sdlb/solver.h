@@ -29,6 +29,8 @@ int get_rows(one_problem *p, int *pnzcnt, int *rmatbeg, int *rmatind,
 int get_cols(one_problem *p, int *pnzcnt, int *cmatbeg, int *cmatind,
 		double *cmatval, int cmatspace, int *psurplus, int begin, int end);
 int get_coef(one_problem *p, int row, int col, double *coef);
+int get_basis_head(one_problem *p, int *newhead);
+int get_basis_row(one_problem *p, int i, double *phi);
 void *read_problem(one_problem *p, char *filename, char *filetype);
 void read_problem_simple(one_problem *p, char *filename, char *filetype);
 int get_obj(one_problem *p, double *obj, int begin, int end);

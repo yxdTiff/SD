@@ -326,8 +326,93 @@ omega_type *new_omega(int num_iter, int num_rv, coord_type *coord)
 	omega->row = coord->omega_row;
     omega->fidx[0] = 0;
     omega->last = 0;
+    
+#ifdef TRACE
+	printf("Exiting new_omega\n");
+#endif
 
 	return omega;
+}
+
+/* modified by Yifan 2014.06.17 */
+/***********************************************************************\
+ ** This function allocates memory for an ids structure.  It
+ ** allocates the structure itself, the *id, and intializes cnt and num_word.
+ ** However, the actual arrays of id for each index are
+ ** NOT allocated, since this is done as each index is encountered.
+ \***********************************************************************/
+ids_type *new_ids(int num_iter, int sub_col)
+{
+    ids_type *ids;
+#ifdef TRACE
+	printf("Inside new_id\n");
+#endif
+    if (!(ids = (ids_type *) mem_malloc (sizeof(ids_type))))
+		err_msg("Allocation", "new_ids", "ids");
+    
+    if (!(ids->index = arr_alloc(num_iter, id_ptr)))
+		err_msg("Allocation", "new_ids", "ids->index");
+    
+    ids->cnt=0;
+    /* Zero-th word is used to store the sup-norm of the following words*/
+    ids->num_word = sub_col/WORD_LENGTH + 2;;
+    
+    if (!(ids->omega_index = arr_alloc(ids->num_word, unsigned long)))
+		err_msg("Allocation", "new_ids", "ids->omega_index");
+    
+#ifdef TRACE
+	printf("Exiting new_id\n");
+#endif
+    return ids;
+}
+id_type *new_id(void)
+{
+    id_type *index;
+    index = (id_type *) mem_malloc(sizeof(id_type));
+    index->freq = 1;
+    index->first_c_k = 0;
+    return index;
+}
+
+rc_type *new_rcdata(int sub_rows, int rv_g, int num_word)
+{
+    rc_type *rc_data;
+    
+    if (!(rc_data = (rc_type *) mem_malloc (sizeof(rc_type))))
+		err_msg("Allocation", "new_rcdata", "rc_data");
+    if (!(rc_data->col_num = arr_alloc(sub_rows, int)))
+		err_msg("Allocation", "new_rcdata", "rc_data->col_num");
+    if (!(rc_data->phi_col_num = arr_alloc(rv_g, int)))
+		err_msg("Allocation", "new_rcdata", "rc_data->phi_col_num");
+    if (!(rc_data->lhs_col_num = arr_alloc(rv_g, int)))
+		err_msg("Allocation", "new_rcdata", "rc_data->lhs_col_num");
+    if (!(rc_data->phi_col = arr_alloc(num_word, unsigned long)))
+		err_msg("Allocation", "new_rcdata", "rc_data->phi_col");
+    if (!(rc_data->lhs_chl = arr_alloc(num_word, unsigned long)))
+		err_msg("Allocation", "new_rcdata", "rc_data->lhs_chl");
+    
+    return rc_data;
+}
+
+/* modified by Yifan 2014.06.17 */
+/* Keep track of the column of random cost */
+int get_omega_index(prob_type *p, soln_type *s)
+{
+    int Gomega_cnt = p->num->rv_g;
+    int *Gomega_col;
+    int group,shift;
+    unsigned long temp;
+    int j;
+    Gomega_col = s->omega->col + p->num->rv_R + p->num->rv_T;
+    
+    for (j = 1; j <= Gomega_cnt; j++) {
+        group = (Gomega_col[j]-p->num->mast_cols)/WORD_LENGTH + 1;
+        shift = WORD_LENGTH - (Gomega_col[j]-p->num->mast_cols)%WORD_LENGTH;
+        temp = (unsigned long) 1 << shift;
+        s->ids->omega_index[group] |= temp;
+        s->ids->omega_index[0]++;
+    }
+    return 0;
 }
 
 /***********************************************************************\
@@ -354,5 +439,49 @@ void free_omega(omega_type *omega)
 	mem_free(omega->RT);
     mem_free(omega->fidx);
 	mem_free(omega);
+#ifdef TRACE
+	printf("Exiting free_omega\n");
+#endif
 }
+
+/* modified by Yifan 2014.06.17 */
+/***********************************************************************\
+ ** This function frees ALL the memory associated with
+ ** the ids structure, including the structure itself.
+ \***********************************************************************/
+void free_ids(ids_type *ids)
+{
+    int cnt;
+#ifdef TRACE
+	printf("Inside free_ids\n");
+#endif
+    for (cnt = 0; cnt < ids->cnt; cnt++) {
+        free_id(ids->index[cnt]);
+    }
+    mem_free(ids->omega_index);
+    mem_free(ids);
+    
+#ifdef TRACE
+	printf("Exiting free_ids\n");
+#endif
+}
+
+void free_id(id_type *index)
+{
+    if (index) {
+        mem_free(index->val);
+    }
+    mem_free(index);
+}
+
+void free_rcdata(rc_type *rc_data)
+{
+    mem_free(rc_data->col_num);
+    mem_free(rc_data->phi_col_num);
+    mem_free(rc_data->lhs_col_num);
+    mem_free(rc_data->phi_col);
+    mem_free(rc_data->lhs_chl);
+    mem_free(rc_data);
+}
+
 /*  */
