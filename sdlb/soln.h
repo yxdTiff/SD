@@ -144,8 +144,12 @@ typedef struct
 {
     int cnt;
     int num_word;
+    int current_index_idx; // record the idx number of the index set found in the most rencent subproblem solve
     id_type **index;
-    unsigned long *omega_index;
+    int *sig_idx;  //record the location of the sigma
+    int *lam_idx;  //record the location of the lambda
+    unsigned long *omega_index; // record the location of random cost
+    BOOL NewIndex; //indicate that whether a new index is found in the most recent subproblem solve
 } ids_type, *ids_ptr;
 
 typedef struct

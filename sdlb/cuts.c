@@ -99,7 +99,7 @@ void form_new_cut(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 
 	cut = new_cut(p->num->mast_cols, s->omega->most, c->k);
 
-	stochastic_updates(sd_global, c, c->lambda, c->sigma, s->delta, s->omega,
+	stochastic_updates(sd_global, c, s, c->lambda, c->sigma, s->delta, s->omega,
 			p->num, p->Rbar, p->Tbar, c->subprob, s->Pi, omeg_idx, new_omega);
 
 	SD_cut(sd_global, p, c, s, c->sigma, s->delta, s->omega, p->num, cut, s->candid_x,
@@ -170,7 +170,7 @@ void form_fea_cut(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 	printf("Inside form_fea_cut; %d cuts now\n", c->cuts->cnt);
 #endif    
 
-	new_sigma = stochastic_updates(sd_global, c, c->feasible_lambda,
+	new_sigma = stochastic_updates(sd_global, c, s, c->feasible_lambda,
 			c->feasible_sigma, s->feasible_delta, s->omega, p->num, p->Rbar,
 			p->Tbar, c->subprob, s->Pi, omeg_idx, new_omega);
 
@@ -285,7 +285,7 @@ BOOL form_incumb_cut(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 		solve_subprob(sd_global, p, c, s, s->incumb_x, omeg_idx);
         
         /* modified by Yifan 2014.06.11 */
-        // get_index_number(sd_global, p, c, s);
+        s->ids->NewIndex = get_index_number(sd_global, p, c, s);
 
 		/* Record time spent on argmax procedures without counting the time
 		 on solving the subproblem LP. zl, 06/30/04. */
@@ -318,7 +318,7 @@ BOOL form_incumb_cut(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 			start = clock(); /* zl, 06/30/04. */
 			cut = new_cut(p->num->mast_cols, s->omega->most, c->k);
 			cut->is_incumbent = TRUE; /*added by Yifan 02/02/2012 indentify a new incumbent cut*/
-			stochastic_updates(sd_global, c, c->lambda, c->sigma, s->delta,
+			stochastic_updates(sd_global, c, s, c->lambda, c->sigma, s->delta,
 					s->omega, p->num, p->Rbar, p->Tbar, c->subprob, s->Pi,
 					omeg_idx, FALSE);
 			SD_cut(sd_global, p, c, s, c->sigma, s->delta, s->omega, p->num, cut,
@@ -372,7 +372,7 @@ void decrease_feacut_rownum(cell_type *c)
  ** so that the intersection of the new row and new column in delta is
  ** only computed once (they overlap at the bottom, right-hand corner).
  \***********************************************************************/
-BOOL stochastic_updates(sdglobal_type* sd_global, cell_type *c,
+BOOL stochastic_updates(sdglobal_type* sd_global, cell_type *c, soln_type *s,
 		lambda_type *lambda, sigma_type *sigma, delta_type *delta,
 		omega_type *omega, num_type *num, sparse_vect *Rbar,
 		sparse_matrix *Tbar, one_problem *subprob, vector Pi, int omeg_idx,
@@ -407,29 +407,35 @@ BOOL stochastic_updates(sdglobal_type* sd_global, cell_type *c,
 	print_vect(Pi, num->sub_rows, "Dual vector");
 	printf("\n");
 #endif
-
-	lamb_idx = calc_lambda(sd_global, lambda, num, Pi, &new_lamb);
-
-	// new_Mu???????????  added by Yifan to find out whether a new Mu has been generated!
-
-	/* Do this afterwards because you need to have index to lambda */
-	calc_sigma(sd_global, c, sigma, num, Pi, Rbar, Tbar, lamb_idx, new_lamb,
-			&new_sigma);
-	if (sd_global->MALLOC)
-	{
-		printf("After return from sigma\n");
-		/* malloc_verify(); */
-	}
-
-	/* Only need to calculate row if a distinct lambda was found */
-	/* We could use Pi, instead of lambda(Pi), for this calculation, */
-	/* and save the time for expanding/reducing vector.  But for clarity... */
-
-	/*Commented by Yifan: even though the lambda is the same, the current Pi might be a 
-	 distinct one due to the variations in sigma*/
-	if (new_lamb)
-		calc_delta_row(sd_global, delta, lambda, omega, num, lamb_idx);
-
+/* For "Nu" calculation (or "Pi" in case of no random cost ) If an old 
+    index set shows up, then simply skip the lambda and sigma calculation */
+    if (s->ids->NewIndex) {
+        lamb_idx = calc_lambda(sd_global, lambda, num, Pi, &new_lamb);
+        s->ids->lam_idx[s->ids->current_index_idx] = lamb_idx;
+        
+        // new_Mu???????????  added by Yifan to find out whether a new Mu has been generated!
+        
+        /* Do this afterwards because you need to have index to lambda */
+        /* This indicates that the sigma identified here */
+        /* is associated with the s->ids->cnt index */
+        s->ids->sig_idx[s->ids->current_index_idx] = calc_sigma(sd_global, c, sigma, num, Pi, Rbar, Tbar, lamb_idx, new_lamb,
+                                                                &new_sigma);
+        if (sd_global->MALLOC)
+        {
+            printf("After return from sigma\n");
+            /* malloc_verify(); */
+        }
+        
+        /* Only need to calculate row if a distinct lambda was found */
+        /* We could use Pi, instead of lambda(Pi), for this calculation, */
+        /* and save the time for expanding/reducing vector.  But for clarity... */
+        
+        /*Commented by Yifan: even though the lambda is the same, the current Pi might be a
+         distinct one due to the variations in sigma*/
+        if (new_lamb)
+            calc_delta_row(sd_global, delta, lambda, omega, num, lamb_idx);
+    }
+    
 #ifdef DEBUG
 	for(idx=0;idx<lambda->cnt;idx++)
 	for(obs=0;obs<omega->most;obs++)

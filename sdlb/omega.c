@@ -353,9 +353,20 @@ ids_type *new_ids(int num_iter, int sub_col)
     if (!(ids->index = arr_alloc(num_iter, id_ptr)))
 		err_msg("Allocation", "new_ids", "ids->index");
     
+    
+    if (!(ids->sig_idx = arr_alloc(num_iter, int)))
+        err_msg("Allocation", "new_ids", "ids->sig_idx");
+    
+    
+    if (!(ids->lam_idx = arr_alloc(num_iter, int)))
+        err_msg("Allocation", "new_ids", "ids->sig_idx");
+    
     ids->cnt=0;
     /* Zero-th word is used to store the sup-norm of the following words*/
-    ids->num_word = sub_col/WORD_LENGTH + 2;;
+    ids->num_word = sub_col/WORD_LENGTH + 2;
+    
+    ids->current_index_idx = 0;
+    ids->NewIndex = TRUE;
     
     if (!(ids->omega_index = arr_alloc(ids->num_word, unsigned long)))
 		err_msg("Allocation", "new_ids", "ids->omega_index");
@@ -458,6 +469,8 @@ void free_ids(ids_type *ids)
     for (cnt = 0; cnt < ids->cnt; cnt++) {
         free_id(ids->index[cnt]);
     }
+    mem_free(ids->sig_idx);
+    mem_free(ids->lam_idx);
     mem_free(ids->omega_index);
     mem_free(ids);
     

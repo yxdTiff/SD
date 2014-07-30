@@ -47,7 +47,7 @@
 #undef RECOURSE_OBJ
 #undef OMEGA_FILE
 #undef REC_OMEGA
-
+#undef CHECK_PHI
 /*
  ** Some constants used in various places
  */

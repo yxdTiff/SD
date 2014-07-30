@@ -28,12 +28,9 @@
 
 BOOL get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln_type *s)
 {
-    FILE *index_number;
-
     int i,j;
     int *cstat;
     int *rstat;
-    double *y;
     char *basismsg;
     unsigned long *plain;
     static int basis_rv_cnt = 0;
@@ -46,15 +43,15 @@ BOOL get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
     
 	cstat = (int *) malloc((p->num->sub_cols + 1) * sizeof(int));
     rstat = (int *) malloc((p->num->sub_rows + 1) * sizeof(int));
-	y = (double *) malloc((p->num->sub_cols + 1) * sizeof(double));
     
 	get_basis(c->subprob, cstat + 1, rstat + 1); /* 2011.10.30 */
-	get_x(c->subprob, y + 1, 0, p->num->sub_cols - 1); /* 2011.10.30 */
     
 	if (0)
 	{
 		/* Write out the solution */
-        
+        double *y;
+        y = (double *) malloc((p->num->sub_cols + 1) * sizeof(double));
+        get_x(c->subprob, y + 1, 0, p->num->sub_cols - 1); /* 2011.10.30 */
 		for (j = 1; j <= p->num->sub_cols; j++)
 		{
 			printf("y[%d] = %17.10g", j, y[j]);
@@ -85,10 +82,12 @@ BOOL get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
         
 	}
     
+#if CHECK_PHI
     for (j = 1; j <= p->num->sub_cols; j++) {
         printf("%d", cstat[j]);
     }
     printf("\t %d\n",c->k);
+#endif
     
 
     encode_col(p, plain, cstat, WORD_LENGTH);
@@ -100,6 +99,7 @@ BOOL get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
         if (equal_ulong_arr(plain, s->ids->index[i]->val, s->ids->num_word)) {
             New_index = FALSE;
             s->ids->index[i]->freq++;
+            s->ids->current_index_idx = i;
         }
     }
     
@@ -108,10 +108,13 @@ BOOL get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
         s->ids->index[s->ids->cnt]->val = plain;
         s->ids->index[s->ids->cnt]->first_c_k = c->k;
         s->ids->index[s->ids->cnt]->freq = 1;
+        s->ids->current_index_idx = s->ids->cnt;
         s->ids->cnt++;
     }
     
+#ifdef CHECK_PHI
     printf("%lu\n",s->ids->omega_index[1]);
+#endif
     
     for (j = 1; j<=s->ids->num_word; j++) {
         /* Bitwise "B and O" */
@@ -120,59 +123,54 @@ BOOL get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
         s->rcdata->lhs_chl[j] = (~plain[j]) & s->ids->omega_index[j];
     }
     
+#ifdef CHECK_PHI
     printf("Here are the Basis columns:\n");
+#endif
     decode_col(p, s->rcdata->col_num, plain, WORD_LENGTH);
     /* Let's decode Phi column. Note: phi_col's zero-th location store the actual norm */
+#ifdef CHECK_PHI
     printf("Here are the Phi columns:\n");
+#endif
     s->rcdata->phi_col[0] = decode_col(p, s->rcdata->phi_col_num, s->rcdata->phi_col, WORD_LENGTH);
     /* Let's decode lhs column. Note: lhs_col's zero-th location store the actual norm */
+#ifdef CHECK_PHI
     printf("Here are the Nonbasis random columns:\n");
+#endif
     s->rcdata->lhs_chl[0] = decode_col(p, s->rcdata->lhs_col_num, s->rcdata->lhs_chl, WORD_LENGTH);
     if (s->rcdata->phi_col[0]) {
         basis_rv_cnt++;
     }
     
+#ifdef CHECK_PHI
     int newhead[2];
     double phi[2];
     int k;
     /* Let's print out all the phi value */
-    get_basis_head(p->subprob, newhead);
-    printf("newhead[%d]=%d\n", 0, newhead[0]);
-    printf("newhead[%d]=%d\n", 1, newhead[1]);
-    for (i = 0; i < p->num->sub_rows; i++) {
-        for (j = 0; j < p->num->rv_g; j++) {
-            /* Note the newhead starts with 0 while s->rcdata->phi_col_num starts with 1 */
-            if (newhead[i] == s->rcdata->phi_col_num[j]-1) {
-                get_basis_row(p->subprob, i, phi);
-                printf("The following is the phi we want:\n");
-                for(k = 0; k < 2; k++) {
-                    printf("phi[%d]:%f\n", k, phi[k]);
+    if (p->num->rv_g) {
+        get_basis_head(p->subprob, newhead);
+        printf("newhead[%d]=%d\n", 0, newhead[0]);
+        printf("newhead[%d]=%d\n", 1, newhead[1]);
+        for (i = 0; i < p->num->sub_rows; i++) {
+            for (j = 0; j < p->num->rv_g; j++) {
+                /* Note the newhead starts with 0 while s->rcdata->phi_col_num starts with 1 */
+                if (newhead[i] == s->rcdata->phi_col_num[j]-1) {
+                    get_basis_row(p->subprob, i, phi);
+                    printf("The following is the phi we want:\n");
+                    for(k = 0; k < 2; k++) {
+                        printf("phi[%d]:%f\n", k, phi[k]);
+                    }
+                    printf("\n");
                 }
-                printf("\n");
             }
         }
     }
+#endif
+//    FILE *index_number;
+//    index_number = fopen("col.txt", "a");
+//    fprintf(index_number, "%f",(double) basis_rv_cnt/c->LP_cnt);
+//    fprintf(index_number, "\n");
+//    fclose(index_number);
 
-    
-    index_number = fopen("col.txt", "a");
-    fprintf(index_number, "%f",(double) basis_rv_cnt/c->LP_cnt);
-//    for (j = 1; j <= p->num->sub_cols; j++) {
-//        fprintf(index_number, "%d\t", cstat[j]);
-//    }
-    fprintf(index_number, "\n");
-    fclose(index_number);
-    /*
-    for (j = 1; j <= p->num->sub_cols; j++) {
-        fprintf(index_number, "%d", cstat[j]);
-        sum = sum + cstat[j];
-    }
-    for (j = 1; j <= p->num->sub_rows; j++) {
-        fprintf(index_number, "%d", rstat[j]);
-        sum = sum + rstat[j];
-    }
-    printf("%d\n",sum);
-    fprintf(index_number, "\n");
-    fclose(index_number);*/
     if (!New_index) {
         mem_free(plain);
     }
@@ -198,12 +196,16 @@ int decode_col(prob_type *p, int *col_num, unsigned long *col, int word_length)
         temp = temp & mask;
         if (temp) {
             col_num[cnt] = j;
+#ifdef CHECK_PHI
             printf("column number is %d\n", col_num[cnt]);
+#endif
             cnt++;
         }
     }
     if (!cnt) {
+#ifdef CHECK_PHI
         printf("None!\n");
+#endif
     }
     
     return cnt;

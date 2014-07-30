@@ -423,7 +423,7 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 		}
         
         /* Check the index set of the subproblem updated by Yifan 2014.06.26 */
-        // get_index_number(sd_global, prob, cell, soln);
+        soln->ids->NewIndex = get_index_number(sd_global, prob, cell, soln);
 
 		/* 4. Enter Feasibility Mode */
 		if (prob->subprob->feaflag == FALSE)
