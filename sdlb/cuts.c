@@ -556,10 +556,22 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 				//istar = compute_istar(obs, cut, sigma, delta, Xvect, num, pi_Tbar_x, argmax_all, FALSE, num_samples);
 				//printf("This is argmax OSD for obs %d : %f and istar(%d,%d)\n", obs, *argmax_all, istar.sigma, istar.delta);
 
-				istar_old = compute_istar(obs, cut, sigma, delta, Xvect, num,
-						pi_Tbar_x, argmax_old, pi_eval_flag, num_samples);
-				istar_new = compute_new_istar(obs, cut, sigma, delta, Xvect,
-						num, pi_Tbar_x, argmax_new, num_samples);
+                /* Testing the index argmax */
+                if (TEST_INDEX) {
+                    /* modified by Yifan 2014.07.30 */
+                    istar_old = compute_istar_index(soln, obs, cut, sigma, delta, Xvect, num,
+                                                    pi_Tbar_x, argmax_old, pi_eval_flag, num_samples);
+                    istar_new = compute_new_istar_index(soln, obs, cut, sigma, delta, Xvect,
+                                                    num, pi_Tbar_x, argmax_new, num_samples);
+                }
+                else{
+                    istar_old = compute_istar(obs, cut, sigma, delta, Xvect, num,
+                                                    pi_Tbar_x, argmax_old, pi_eval_flag, num_samples);
+                    istar_new = compute_new_istar(obs, cut, sigma, delta, Xvect,
+                                                    num, pi_Tbar_x, argmax_new, num_samples);
+                }
+                
+                
 				if (*argmax_new > *argmax_old)
 				{
 					*argmax_all = *argmax_new;
@@ -591,8 +603,17 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 				// printf("This is argmax NSD for obs %d : %f and istar(%d,%d) and sigma from %d iteration \n", obs, *argmax_all, istar.sigma, istar.delta, sigma->ck[istar.sigma]);
 			}
 			else{
-				istar = compute_istar(obs, cut, sigma, delta, Xvect, num,
-                                      pi_Tbar_x, argmax_all, pi_eval_flag, num_samples);
+                /* Testing the index argmax */
+                if (TEST_INDEX) {
+                    /* modified by Yifan 2014.07.30 */
+                    istar = compute_istar_index(soln, obs, cut, sigma, delta, Xvect, num,
+                                                pi_Tbar_x, argmax_all, pi_eval_flag, num_samples);
+                }
+                else{
+                    istar = compute_istar(obs, cut, sigma, delta, Xvect, num,
+                                          pi_Tbar_x, argmax_all, pi_eval_flag, num_samples);
+                }
+
                 
                 if (*argmax_all > temp_max) {
                     temp_max = *argmax_all;

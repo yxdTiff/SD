@@ -8,6 +8,7 @@
 
 
 #include <time.h>
+#include <float.h>
 #include "prob.h"
 #include "cell.h"
 #include "soln.h"
@@ -224,5 +225,140 @@ int encode_col(prob_type *p, unsigned long *col, int *cstat, int word_length)
     return 0;
 }
 
+/***********************************************************************\
+ ** This function loops through all the dual vectors found so far
+ ** and returns the index of the one which satisfies the expression:
+ **
+ **	argmax { Pi x (R - T x X) | all Pi }
+ **
+ ** where X, R, and T are given.  It is calculated in this form:
+ **
+ ** 	Pi x Rbar + Pi x Romega + (Pi x Tbar) x X + (Pi x Tomega) x X
+ **
+ ** Since the Pi's are indexed by the index sets which point to two
+ ** different structures (sigma and delta). The following procedure goes
+ ** through all the index set and retrieves all sigma and delta needed
+ ** for the calculation.
+ \***********************************************************************/
+i_type compute_istar_index(soln_type *s, int obs, one_cut *cut, sigma_type *sigma,
+                     delta_type *delta, vector Xvect, num_type *num, vector Pi_Tbar_X,
+                     double *argmax, BOOL pi_eval, int ictr)
+{
+    double arg;
+    //  double	argmax;             //modified by Yifan to return argmax value 09/22/2011
+    int sig_pi, del_pi, index_idx;
+    int c, new_pisz;
+    i_type ans;
+    
+#ifdef LOOP
+    printf("Inside compute_istar_index\n");
+#endif
+    //printf("\n***IN COMPUTE ISTAR ...\n");
+    if (pi_eval == TRUE)
+    {
+        //new_pisz =sd_global->config.PI_EVAL_START;
+        new_pisz = ictr / 10 + 1;
+    }
+    else
+        new_pisz = 0;
+    
+    ictr -= new_pisz; /*evaluate the pi's generated in the first 90% iterations */
+    
+    *argmax = -DBL_MAX;
+    
+    /*added by Yifan to enable parallel process*/
+    // #pragma omp for private(sig_pi,del_pi, arg)
+    for (index_idx = 0 ; index_idx < s->ids->cnt; index_idx++) {
+        sig_pi = s->ids->sig_idx[index_idx];
+        if (sigma->ck[sig_pi] <= ictr) {
+            /* Find the row in delta corresponding to this row in sigma */
+            del_pi = sigma->lamb[sig_pi];
+            
+            /* Start with (Pi x Rbar) + (Pi x Romega) + (Pi x Tbar) x X */
+            arg = sigma->val[sig_pi].R + delta->val[del_pi][obs].R
+            - Pi_Tbar_X[sig_pi];
+            
+            /* Subtract (Pi x Tomega) x X. Multiply only non-zero VxT values */
+            
+            for (c = 1; c <= num->rv_cols; c++)
+                arg -= delta->val[del_pi][obs].T[c] * Xvect[delta->col[c]];
+            
+#ifdef LOOP
+            print_sigma(sigma, num, sig_pi);
+            print_delta(delta, num, del_pi, obs);
+            printf("\nResulting arg=%f", arg);
+#endif
+            
+            if (arg > (*argmax))
+            {
+                *argmax = arg;
+                ans.sigma = sig_pi;
+                ans.delta = del_pi;
+                //printf("argmax:%f and istar(%d,%d)\n", arg, ans.sigma, ans.delta);
+            }
+        }
+    }
+    
+#ifdef LOOP
+    printf("Exiting compute_istar_index\n");
+#endif
+    
+    return ans;
+}
 
+i_type compute_new_istar_index(soln_type *s, int obs, one_cut *cut, sigma_type *sigma,
+                         delta_type *delta, vector Xvect, num_type *num, vector Pi_Tbar_X,
+                         double *argmax, int ictr)
+{
+    double arg;
+    int sig_pi, del_pi, index_idx;
+    int c, new_pisz;
+    i_type ans;
+    ans.sigma = 0;
+    ans.delta = 0;
+    
+#ifdef LOOP
+    printf("Inside compute_new_istar_index\n");
+#endif
+    
+    new_pisz = ictr / 10 + 1;
+    ictr -= new_pisz; /*evaluate the pi's generated in the last 10% iterations */
+    
+    *argmax = -DBL_MAX;
+    
+    for (index_idx = 0; index_idx < s->ids->cnt; index_idx++) {
+        sig_pi = s->ids->sig_idx[index_idx];
+        if (sigma->ck[sig_pi] > ictr) {
+            /* Find the row in delta corresponding to this row in sigma */
+            del_pi = sigma->lamb[sig_pi];
+            
+            /* Start with (Pi x Rbar) + (Pi x Romega) + (Pi x Tbar) x X */
+            arg = sigma->val[sig_pi].R + delta->val[del_pi][obs].R
+            - Pi_Tbar_X[sig_pi];
+            
+            /* Subtract (Pi x Tomega) x X. Multiply only non-zero VxT values */
+            for (c = 1; c <= num->rv_cols; c++)
+                arg -= delta->val[del_pi][obs].T[c] * Xvect[delta->col[c]];
+            
+#ifdef LOOP
+            print_sigma(sigma, num, sig_pi);
+            print_delta(delta, num, del_pi, obs);
+            printf("\nResulting arg=%f", arg);
+#endif
+            
+            if (arg > (*argmax))
+            {
+                *argmax = arg;
+                ans.sigma = sig_pi;
+                ans.delta = del_pi;
+                
+            }
+        }
+    }
+    
+#ifdef LOOP
+    printf("Exiting compute_new_istar_index\n");
+#endif
+    return ans;
+}
 
