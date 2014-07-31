@@ -621,7 +621,12 @@ int get_sense(one_problem *p, char *senx, int begin, int end)
  \**********************************************************************************/
 int get_basis(one_problem *p, int *cstat, int *rstat)
 {
-  return CPXgetbase(env, p->lp, cstat, rstat);
+    int status = 0;
+    status = CPXgetbase(env, p->lp, cstat, rstat);
+    if (status) {
+        printf("Error Code: %d from get_basis()\n", status);
+    }
+    return status;
 }
 
 /**********************************************************************************\

@@ -33,7 +33,7 @@ BOOL get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
     int *cstat;
     int *rstat;
     char *basismsg;
-    unsigned long *plain;
+    unsigned long *plain, *plain2;
     static int basis_rv_cnt = 0;
     BOOL New_index=TRUE;
     
@@ -41,6 +41,9 @@ BOOL get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
     /* Save the 0th location for the norm of the index vector */
     if (!(plain = arr_alloc(s->ids->num_word, unsigned long)))
 		err_msg("Allocation", "get_index_number", "plain");
+    /* plain2 is for basis status of the slack */
+    if (!(plain2 = arr_alloc(s->ids->num_word, unsigned long)))
+        err_msg("Allocation", "get_index_number", "plain2");
     
 	cstat = (int *) malloc((p->num->sub_cols + 1) * sizeof(int));
     rstat = (int *) malloc((p->num->sub_rows + 1) * sizeof(int));
@@ -88,16 +91,29 @@ BOOL get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
         printf("%d", cstat[j]);
     }
     printf("\t %d\n",c->k);
-#endif
     
+    int countc=0,countr=0;
+    for (j = 1; j <= p->num->sub_cols; j++) {
+        countc = countc + cstat[j];
+    }
+    printf("countc = %d\t",countc);
+    for (j = 1; j <= p->num->sub_rows; j++) {
+        countr = countr + rstat[j];
+    }
+    printf("countr = %d\t sum=%d\n",countr,countc+countr);
+#endif
 
     encode_col(p, plain, cstat, WORD_LENGTH);
     for (j = 1; j < s->ids->num_word; j++) {
         plain[0] += plain[j];
     }
+    encode_row(p, plain2, rstat, WORD_LENGTH);
+    for (j = 1; j < s->ids->num_word; j++) {
+        plain2[0] += plain2[j];
+    }
     
     for (i = 0; i < s->ids->cnt; i++) {
-        if (equal_ulong_arr(plain, s->ids->index[i]->val, s->ids->num_word)) {
+        if (equal_ulong_arr(plain, s->ids->index[i]->val, s->ids->num_word) && equal_ulong_arr(plain2, s->ids->index2[i]->val, s->ids->num_word)) {
             New_index = FALSE;
             s->ids->index[i]->freq++;
             s->ids->current_index_idx = i;
@@ -109,6 +125,10 @@ BOOL get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
         s->ids->index[s->ids->cnt]->val = plain;
         s->ids->index[s->ids->cnt]->first_c_k = c->k;
         s->ids->index[s->ids->cnt]->freq = 1;
+        s->ids->index2[s->ids->cnt] = new_id();
+        s->ids->index2[s->ids->cnt]->val = plain2;
+        s->ids->index2[s->ids->cnt]->first_c_k = c->k;
+        s->ids->index2[s->ids->cnt]->freq = 1;
         s->ids->current_index_idx = s->ids->cnt;
         s->ids->cnt++;
     }
@@ -221,6 +241,19 @@ int encode_col(prob_type *p, unsigned long *col, int *cstat, int word_length)
         shift = word_length - j%word_length;
         temp = (unsigned long) cstat[j] << shift;
         col[group] |= temp;
+    }
+    return 0;
+}
+
+int encode_row(prob_type *p, unsigned long *row, int *rstat, int word_length)
+{
+    int j,group,shift;
+    unsigned long temp;
+    for (j = 1; j <= p->num->sub_rows; j++) {
+        group = j/word_length + 1;
+        shift = word_length - j%word_length;
+        temp = (unsigned long) rstat[j] << shift;
+        row[group] |= temp;
     }
     return 0;
 }

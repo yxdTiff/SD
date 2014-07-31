@@ -423,7 +423,9 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 		}
         
         /* Check the index set of the subproblem updated by Yifan 2014.06.26 */
-        soln->ids->NewIndex = get_index_number(sd_global, prob, cell, soln);
+        if (TEST_INDEX) {
+            soln->ids->NewIndex = get_index_number(sd_global, prob, cell, soln);
+        }
 
 		/* 4. Enter Feasibility Mode */
 		if (prob->subprob->feaflag == FALSE)
@@ -788,6 +790,13 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 	{
 		print_detailed_soln(sd_global, soln, prob, fname, 0);
 	}
+    
+    /* modified by Yifan 2014.07.30 */
+    /* Let's print out the total number of sigma and lambda */
+    FILE *pi_count;
+    pi_count = fopen("pi_count.out", "a");
+    fprintf(pi_count, "sigma_cnt=:%d\tlambda_cnt=%d\n",cell->sigma->cnt, cell->lambda->cnt);
+    fclose(pi_count);
 
 #ifdef DEBUG
 	printf(" Ending Summary \n");

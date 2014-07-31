@@ -48,7 +48,7 @@
 #undef OMEGA_FILE
 #undef REC_OMEGA
 #undef CHECK_PHI
-#define TEST_INDEX 0
+#define TEST_INDEX 1
 /*
  ** Some constants used in various places
  */

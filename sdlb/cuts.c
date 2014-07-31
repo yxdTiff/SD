@@ -285,7 +285,9 @@ BOOL form_incumb_cut(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 		solve_subprob(sd_global, p, c, s, s->incumb_x, omeg_idx);
         
         /* modified by Yifan 2014.06.11 */
-        s->ids->NewIndex = get_index_number(sd_global, p, c, s);
+        if (TEST_INDEX) {
+            s->ids->NewIndex = get_index_number(sd_global, p, c, s);
+        }
 
 		/* Record time spent on argmax procedures without counting the time
 		 on solving the subproblem LP. zl, 06/30/04. */

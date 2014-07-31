@@ -21,7 +21,7 @@ id_type *new_id(void);
 rc_type *new_rcdata(int sub_rows, int rv_g, int num_word);
 int get_omega_index(prob_type *p, soln_type *s);
 void free_omega(omega_type *omega);
-void free_ids(ids_type *ids);
+void free_ids(int num_iter, ids_type *ids);
 void free_id(id_type *index);
 void free_rcdata(rc_type *rc_data);
 void get_R_T_G_omega(sdglobal_type* sd_global, omega_type *omega, int obs_idx);

@@ -353,6 +353,9 @@ ids_type *new_ids(int num_iter, int sub_col)
     if (!(ids->index = arr_alloc(num_iter, id_ptr)))
 		err_msg("Allocation", "new_ids", "ids->index");
     
+    if (!(ids->index2 = arr_alloc(num_iter, id_ptr)))
+        err_msg("Allocation", "new_ids", "ids->index2");
+    
     
     if (!(ids->sig_idx = arr_alloc(num_iter, int)))
         err_msg("Allocation", "new_ids", "ids->sig_idx");
@@ -460,15 +463,18 @@ void free_omega(omega_type *omega)
  ** This function frees ALL the memory associated with
  ** the ids structure, including the structure itself.
  \***********************************************************************/
-void free_ids(ids_type *ids)
+void free_ids(int num_iter, ids_type *ids)
 {
     int cnt;
 #ifdef TRACE
 	printf("Inside free_ids\n");
 #endif
-    for (cnt = 0; cnt < ids->cnt; cnt++) {
+    for (cnt = 0; cnt < num_iter; cnt++) {
         free_id(ids->index[cnt]);
+        free_id(ids->index2[cnt]);
     }
+    mem_free(ids->index);
+    mem_free(ids->index2);
     mem_free(ids->sig_idx);
     mem_free(ids->lam_idx);
     mem_free(ids->omega_index);

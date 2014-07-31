@@ -279,7 +279,7 @@ void free_soln(prob_type *p, cell_type *c, soln_type *s)
 	/* Yifan 03/04/2012 Updated for Feasibility Cuts*/
 	free_omega(s->omega);
     /* modified by Yifan 2014.06.17 */
-    free_ids(s->ids);
+    free_ids(p->num->iter ,s->ids);
     free_rcdata(s->rcdata);
 	mem_free(s->run_time);
 	/* added by zl, 06/29/04. */
