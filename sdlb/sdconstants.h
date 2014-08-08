@@ -48,7 +48,15 @@
 #undef OMEGA_FILE
 #undef REC_OMEGA
 #undef CHECK_PHI
+/* Change TEST_INDEX and SIG_LAM_CMP together (It turns out that it is not a good idea to set SIG_LAM_CMP=0) */
+/* Note: clean up  SIG_LAM_CMP after the experiment, for now, always set it to 1*/
+/* TEST_INDEX 1 and SIG_LAM_CMP 0 should run slowest*/
+/* TEST_INDEX 1 and SIG_LAM_CMP 1 should run slower*/
+/* TEST_INDEX 0 and SIG_LAM_CMP 1 this is the original setting of SD */
 #define TEST_INDEX 1
+#define SIG_LAM_CMP 1
+
+#define RESUME_FLAG 0
 /*
  ** Some constants used in various places
  */

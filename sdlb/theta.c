@@ -261,16 +261,19 @@ theta_type *new_theta(int num_cells)
 	if (!(theta = (theta_type *) mem_malloc (sizeof(theta_type))))
 		err_msg("Allocation", "new_theta", "theta");
 
-	if (!(theta->last = arr_alloc(num_cells, int)))
-		err_msg("Allocation", "new_theta", "theta->last");
+    if (theta) {
+        if (!(theta->last = arr_alloc(num_cells, int)))
+            err_msg("Allocation", "new_theta", "theta->last");
+        
+        if (!(theta->k = arr_alloc(num_cells, double)))
+            err_msg("Allocation", "new_theta", "theta->k");
+        
+        if (!(theta->p = arr_alloc(num_cells, double)))
+            err_msg("Allocation", "new_theta", "theta->p");
+        
+        theta->cnt = num_cells;
+    }
 
-	if (!(theta->k = arr_alloc(num_cells, double)))
-		err_msg("Allocation", "new_theta", "theta->k");
-
-	if (!(theta->p = arr_alloc(num_cells, double)))
-		err_msg("Allocation", "new_theta", "theta->p");
-
-	theta->cnt = num_cells;
 
 	return theta;
 }

@@ -207,7 +207,7 @@ soln_type * new_soln(sdglobal_type* sd_global, prob_type *p, vector x_k)
 
 	length = p->num->iter + p->num->iter / p->tau + 1;
 	s->omega = new_omega(p->num->iter, p->num->rv, p->coord);
-    s->ids = new_ids(p->num->iter,p->num->sub_cols);
+    s->ids = new_ids(p->num->iter,p->num->sub_cols, p->num->sub_rows, p->num->rv_g);
     s->rcdata = new_rcdata(p->num->sub_rows, p->num->rv_g, s->ids->num_word);
     
 	s->delta = new_delta(length, p->coord);

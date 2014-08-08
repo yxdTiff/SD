@@ -532,8 +532,7 @@ double compute_Mu(one_problem *p, int sub_cols)
 }
 
 /***********************************************************************\
- ** This function obtains the basis infomation of variables for example basis 
- ** or nonbasis at lowerbound or nonbasis at higher bound. Then return   
+ ** This function obtains the basis infomation. Then return
  ** the value of Mu x R.
  \***********************************************************************/
 /*added by Yifan to update _PixR_*/

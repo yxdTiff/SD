@@ -110,8 +110,10 @@ int main(int argc, char *argv[])
 	if (!load_config(sd_global, read_seeds, read_iters))
 		return 1;
 #ifdef SD_unix
-    sd_global->resume_flag = sd_check_resume_folder(sd_global, fname);
-    sd_create_resume_folder(sd_global, buffer3,buffer2,fname);
+    if (RESUME_FLAG) {
+        sd_global->resume_flag = sd_check_resume_folder(sd_global, fname);
+        sd_create_resume_folder(sd_global, buffer3,buffer2,fname);
+    }
     sd_create_output_folder(sd_global, buffer1,buffer2,fname);
 #endif
 
@@ -358,7 +360,8 @@ int main(int argc, char *argv[])
 	for (n = 0; n < num_probs; n++)
 	{
 		/* Find the name of the current problem */
-		if (argc >= 2 && argc < 5)
+        /* modified by Yifan 2014.08.04 */
+		if (argc > 2 && argc < 5)
 			filename_number(fname, 4, 1000, n + start);
 		/* Copy the number _n+start_ into _fname_ starting at position 4 */
 
@@ -586,10 +589,12 @@ else
 #ifdef SD_win
     sd_mv_output_files(fname);
 #else
-    sd_mv_resume_files(buffer3, buffer2, fname);
+    if (RESUME_FLAG) {
+        sd_mv_resume_files(buffer3, buffer2, fname);
+    }
     sd_mv_output_files(buffer1, buffer2, fname);
 #endif
-	return 1;
+	return 0;
 }
 
 /****************************************************************************\
@@ -953,7 +958,13 @@ void sd_mv_output_files(char *fname)
 void sd_mv_output_files(char *buffer1, char *buffer2, char *fname)
 {
     int status;
-    strcpy(buffer2, "mv resume_time store_time *.out *.lp *.dat ");
+    if (RESUME_FLAG) {
+        strcpy(buffer2, "mv resume_time store_time *.out *.lp *.dat ");
+    }
+    else{
+        strcpy(buffer2, "mv *.out *.lp *.dat ");
+    }
+    
 	strcat(buffer2, buffer1);
 	status = system(buffer2);
     if(status == -1){

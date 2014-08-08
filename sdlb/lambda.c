@@ -62,14 +62,16 @@ int calc_lambda(sdglobal_type* sd_global, lambda_type *lambda, num_type *num,
 	lambda_pi = reduce_vect(Pi, lambda->row, length);
 
 	/* Compare resulting lambda_pi with all previous vectors */
-	for (pi_idx = 0; pi_idx < lambda->cnt; pi_idx++)
-		if (equal_arr(lambda_pi, lambda->val[pi_idx], length,
-				sd_global->config.TOLERANCE))
-		{
-			mem_free(lambda_pi);
-			*new_lamb = FALSE;
-			return pi_idx;
-		}
+    if (SIG_LAM_CMP) {
+        for (pi_idx = 0; pi_idx < lambda->cnt; pi_idx++)
+            if (equal_arr(lambda_pi, lambda->val[pi_idx], length, sd_global->config.TOLERANCE))
+            {
+                mem_free(lambda_pi);
+                *new_lamb = FALSE;
+                return pi_idx;
+            }
+    }
+
 
 	/* Add the vector to lambda struct */
 	lambda->val[lambda->cnt] = lambda_pi;

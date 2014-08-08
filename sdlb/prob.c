@@ -833,8 +833,8 @@ void parse_cmd_line(sdglobal_type* sd_global, int argc, char *argv[],
   int status;
 	if (argc < 2)
 	{
-		printf("Please enter the name of the problem files (eg. `exags1p'): ");
-		status = scanf("%s", fname);
+        printf("Please enter the name of the problem files (eg. `exags1p'): ");
+        status = scanf("%s", fname);
         if (status <= 0) {
           printf("You entered nothing.\n");
         }
@@ -848,12 +848,20 @@ void parse_cmd_line(sdglobal_type* sd_global, int argc, char *argv[],
 	}
 	else if (argc < 3)
 	{
+        /*
 		strcpy(fname, "prob   ");
 		*num_probs = atoi(argv[1]);
 		*objsen = 1;
 		*start = 0;
 		*read_seeds = TRUE;
-		*read_iters = TRUE; /* added by zl. 06/18/02. */
+		*read_iters = TRUE;*/ /* added by zl. 06/18/02. */
+        
+        /* modified by Yifan 2014.08.04 */
+        strcpy(fname, argv[1]);
+        *objsen = 1;
+        *num_probs = 1;
+        *read_seeds = TRUE;
+        *read_iters = TRUE;
 	}
 	else if (argc == 5)
 	{

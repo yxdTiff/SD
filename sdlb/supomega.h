@@ -41,6 +41,7 @@ sd_small get_omega_idx(sdglobal_type* sd_global, sd_small *observ, sd_small *mem
  \**************************************************************************/
 
 double get_omega_vals(sdglobal_type* sd_global, sd_small *observ, double *RT);
+double get_cost_omega_vals(sdglobal_type* sd_global,num_type *num, sd_small *observ, double *RT);
 double get_omega_vals_from_file(sdglobal_type *sd_global, int obs_idx, double *RT, sd_long *fidx);
 
 /**************************************************************************\

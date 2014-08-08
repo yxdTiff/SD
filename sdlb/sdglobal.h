@@ -283,6 +283,7 @@ typedef struct
 {
     int omega_cnt;
 	int *istar;
+    int *istar_index;
 	int slack_cnt;
 	int cell_num;
 	int cut_obs;

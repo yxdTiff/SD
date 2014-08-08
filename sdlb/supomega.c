@@ -100,6 +100,22 @@ double get_omega_vals(sdglobal_type* sd_global, sd_small *observ, double *RT)
 	return 0.0; /* In place of 1-norm */
 }
 
+/****************************************************************\
+ **  The function get_cost_omega_vals() receives an array of indices
+ **  to values in omegas and loads the array RT with the
+ **  corresponding cost values of omega.
+ \****************************************************************/
+double get_cost_omega_vals(sdglobal_type* sd_global,num_type *num, sd_small *observ, double *RT)
+{
+    int i;
+    
+    decode(observ, sd_global->omegas.key, sd_global->omegas.indices, sd_global->omegas.num_omega);
+    for (i = num->rv_R + num->rv_T; i < sd_global->omegas.num_omega; i++)
+        RT[i] = sd_global->omegas.omega_vals[i][sd_global->omegas.indices[i]];
+    
+    return 0.0; /* In place of 1-norm */
+}
+
 /* Yifan 2012.05.21 */
 
 /****************************************************************\

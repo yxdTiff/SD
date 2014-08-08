@@ -106,6 +106,7 @@ typedef struct
 {
 	int delta;
 	int sigma;
+    int index_idx;
 } i_type;
 
 /**************************************************************************\
@@ -138,19 +139,30 @@ typedef struct
     unsigned long *val;
     int first_c_k;
     int freq;
+    int phi_cnt;
+    double **phi_val;
+    double *phi_cost_delta;
+    int *phi_col_num;
+    int *phi_sigma_idx;
+    int *phi_lambda_idx;
 } id_type, *id_ptr;
 
 typedef struct
 {
     int cnt;
     int num_word;
+    int num_word2;
     int current_index_idx; // record the idx number of the index set found in the most rencent subproblem solve
+    int current_obs_idx;  // record the idx number of the observation used in the most rencent subproblem solve
     id_type **index;
     id_type **index2;
     int *sig_idx;  //record the location of the sigma
     int *lam_idx;  //record the location of the lambda
+    double *random_cost_val;
+    int *random_cost_col;
     unsigned long *omega_index; // record the location of random cost
     BOOL NewIndex; //indicate that whether a new index is found in the most recent subproblem solve
+    
 } ids_type, *ids_ptr;
 
 typedef struct

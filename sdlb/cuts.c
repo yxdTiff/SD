@@ -286,7 +286,7 @@ BOOL form_incumb_cut(sdglobal_type* sd_global, prob_type *p, cell_type *c,
         
         /* modified by Yifan 2014.06.11 */
         if (TEST_INDEX) {
-            s->ids->NewIndex = get_index_number(sd_global, p, c, s);
+            s->ids->NewIndex = get_index_number(sd_global, p, c, s, omeg_idx);
         }
 
 		/* Record time spent on argmax procedures without counting the time
@@ -398,6 +398,11 @@ BOOL stochastic_updates(sdglobal_type* sd_global, cell_type *c, soln_type *s,
 	/* Retrieve the dual solution from the latest subproblem */
 	get_dual(Pi, subprob, num, num->sub_rows);
 
+    /* If random cost exists and it will affect the dual solution, then we need to calculate Nu */
+    if (num->rv_g) {
+        adjust_dual_solution(Pi, num, s->ids->index[s->ids->current_index_idx]);
+    }
+
 #ifdef RUN
 	/*
 	 print_vect(Pi, num->sub_rows, "Subproblem Dual, Pi");
@@ -436,6 +441,15 @@ BOOL stochastic_updates(sdglobal_type* sd_global, cell_type *c, soln_type *s,
          distinct one due to the variations in sigma*/
         if (new_lamb)
             calc_delta_row(sd_global, delta, lambda, omega, num, lamb_idx);
+        
+        /* If random cost exits and phi show up for the current index */
+        /* Then store all the phi's associate with this index similar */
+        /* to a dual mutiplier. Think of nu and phi's as a general representation */
+        /* of the dual mutiplier */
+        if (num->rv_g && s->ids->index[s->ids->current_index_idx]->phi_cnt){
+            put_phi_into_sigma_delta(sd_global, c, s, lambda, sigma, delta, omega, num, Rbar, Tbar, s->ids->index[s->ids->current_index_idx]);
+        }
+
     }
     
 #ifdef DEBUG
@@ -558,8 +572,8 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 				//istar = compute_istar(obs, cut, sigma, delta, Xvect, num, pi_Tbar_x, argmax_all, FALSE, num_samples);
 				//printf("This is argmax OSD for obs %d : %f and istar(%d,%d)\n", obs, *argmax_all, istar.sigma, istar.delta);
 
-                /* Testing the index argmax */
-                if (TEST_INDEX) {
+                /* Testing the index argmax, use index for argmax only when random cost coefficients show up*/
+                if (TEST_INDEX && num->rv_g) {
                     /* modified by Yifan 2014.07.30 */
                     istar_old = compute_istar_index(soln, obs, cut, sigma, delta, Xvect, num,
                                                     pi_Tbar_x, argmax_old, pi_eval_flag, num_samples);
@@ -579,12 +593,14 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 					*argmax_all = *argmax_new;
 					istar.sigma = istar_new.sigma;
 					istar.delta = istar_new.delta;
+                    istar.index_idx = istar_new.index_idx;
 				}
 				else
 				{
 					*argmax_all = *argmax_old;
 					istar.sigma = istar_old.sigma;
 					istar.delta = istar_old.delta;
+                    istar.index_idx = istar_old.index_idx;
 				}
                 
                 if (*argmax_all > temp_max) {
@@ -605,8 +621,8 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 				// printf("This is argmax NSD for obs %d : %f and istar(%d,%d) and sigma from %d iteration \n", obs, *argmax_all, istar.sigma, istar.delta, sigma->ck[istar.sigma]);
 			}
 			else{
-                /* Testing the index argmax */
-                if (TEST_INDEX) {
+                /* Testing the index argmax, use index for argmax only when random cost coefficients show up*/
+                if (TEST_INDEX && num->rv_g) {
                     /* modified by Yifan 2014.07.30 */
                     istar = compute_istar_index(soln, obs, cut, sigma, delta, Xvect, num,
                                                 pi_Tbar_x, argmax_all, pi_eval_flag, num_samples);
@@ -623,6 +639,7 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
             }
             
 			cut->istar[obs] = istar.sigma;
+            cut->istar_index[obs] = istar.index_idx;
 
 			/* by Yifan 02/02/12 */
 			if (cut->is_incumbent)
@@ -637,6 +654,10 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 
 				for (c = 1; c <= num->rv_cols; c++)
 					beta[delta->col[c]] += delta->val[istar.delta][obs].T[c];
+                
+                if (num->rv_g && soln->ids->index[istar.index_idx]->phi_cnt) {
+                    adjust_incumbent_height(soln, obs, cut, beta, sigma, delta, omega, num, soln->ids->index[istar.index_idx]);
+                }
 
 				cut->subobj_omega[obs] -= CxX(beta, Xvect, num->mast_cols);
 
@@ -658,6 +679,11 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 			for (c = 1; c <= num->rv_cols; c++)
 				cut->beta[delta->col[c]] += delta->val[istar.delta][obs].T[c]
 						* omega->weight[obs];
+            
+            if (num->rv_g && soln->ids->index[istar.index_idx]->phi_cnt) {
+                adjust_alpha_value(soln, obs, cut, sigma, delta, omega, num, soln->ids->index[istar.index_idx]);
+                adjust_beta_value(soln, obs, cut, sigma, delta, omega, num, soln->ids->index[istar.index_idx]);
+            }
 
 		}
     
@@ -689,7 +715,9 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
                 {
                     sd_global-> pi_flag[cnt] = TRUE;
                     /* Now start refreshing master problem in CPLEX */
-                    refresh_master(sd_global, prob, cell, soln);
+                    if (RESUME_FLAG) {
+                        refresh_master(sd_global, prob, cell, soln);
+                    }
                 }
             }
         }
@@ -877,6 +905,8 @@ int add_to_cutpool(sdglobal_type* sd_global, double *alpha, double *beta,
 
 	if (!(cut->istar = arr_alloc(s->omega->most, int)))
 		err_msg("Allocation", "add_to_cutpool", "istar");
+    if (!(cut->istar_index = arr_alloc(s->omega->most, int)))
+        err_msg("Allocation", "add_to_cutpool", "istar_index");
 
 	if (!(cut->beta = arr_alloc(mast_cols+1, double)))
 		err_msg("Allocation", "add_to_cutpool", "beta");
@@ -1624,6 +1654,9 @@ one_cut *new_cut(int num_x, int num_istar, int num_samples)
 
 	if (!(cut->istar = arr_alloc(num_istar, int)))
 		err_msg("Allocation", "new_cut", "istar");
+    
+    if (!(cut->istar_index = arr_alloc(num_istar, int)))
+        err_msg("Allocation", "new_cut", "istar_index");
 
 	if (!(cut->beta = arr_alloc(num_x+1, double)))
 		err_msg("Allocation", "new_cut", "beta");
@@ -1658,6 +1691,8 @@ one_cut *new_fea_cut(int num_x, int num_istar, int num_samples)
 
 	if (!(cut->istar = arr_alloc(num_istar, int)))
 		err_msg("Allocation", "new_fea_cut", "istar");
+    if (!(cut->istar_index = arr_alloc(num_istar, int)))
+        err_msg("Allocation", "new_fea_cut", "istar_index");
 
 	if (!(cut->beta = arr_alloc(num_x+1, double)))
 		err_msg("Allocation", "new_fea_cut", "beta");
@@ -1691,6 +1726,8 @@ void free_cut(one_cut *cut)
 		 */
 		if (cut->istar)
 			mem_free(cut->istar);
+        if (cut->istar_index)
+            mem_free(cut->istar_index);
 		if (cut->beta)
 			mem_free(cut->beta);
 		if (cut->is_incumbent)

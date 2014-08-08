@@ -63,8 +63,8 @@ int solve_subprob(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 		err_msg("Allocation", "compute_rhs", "rhs");
     if (!(cost = arr_alloc(p->num->sub_cols+1, double)))
 		err_msg("Allocation", "compute_rhs", "rhs");
-
 	compute_rhs_cost(sd_global, p->num, p->Rbar, p->Tbar, p->Gbar, Xvect, rhs, cost, s->omega, omeg_idx);
+
 	if (!change_col(c->subprob, RHS_COL, rhs + 1, 0, p->num->sub_rows))
 	{
 		print_contents(c->subprob, "contents.out");
@@ -148,7 +148,7 @@ int solve_subprob(sdglobal_type* sd_global, prob_type *p, cell_type *c,
  ** freed by the customer.  Also, the zeroth position of this rhs vector
  ** is reserved, and the actual values begin at rhs[1].
  \***********************************************************************/
-void compute_rhs_cost(sdglobal_type* sd_global, num_type *num, sparse_vect *Rbar,
+void compute_rhs_cost(sdglobal_type *sd_global, num_type *num, sparse_vect *Rbar,
 		sparse_matrix *Tbar, sparse_vect *Gbar, vector X, vector rhs, vector cost, omega_type *omega, int omeg_idx)
 {
 	int cnt;

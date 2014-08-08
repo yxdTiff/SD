@@ -1229,6 +1229,11 @@ int load_stoch(sdglobal_type* sd_global, one_problem *original, identity *ident,
 				printf("sd_global->omegas.omega_probs[%d][%d]: %f\n",idx,i,sd_global->omegas.omega_probs[idx][i]);
 #endif
 			}
+            /* modified by Yifan 2014.08.04 Deep Bug!!! To prevent extreme case of the uniform 
+             random generator. The last element of sd_global->omegas.omega_probs[idx] should be 1.0 */
+            if (DBL_ABS(sd_global->omegas.omega_probs[idx][i-1] - 1.0) > sd_global->config.TOLERANCE)
+                err_msg("STOCH File", "omega Prob", "Does not sum to 1.0");
+            sd_global->omegas.omega_probs[idx][i-1] = 1.0;
 		}
 	}
   

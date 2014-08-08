@@ -29,6 +29,7 @@
 #include "cuts.h"
 #include "rvgen.h"
 #include "resumeb.h"
+#include "rc.h"
 #include "sdconstants.h"
 #include "sdglobal.h"
 
@@ -201,7 +202,7 @@ BOOL pre_test_2(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 #ifdef OPT
 		printf("SS-PRINT: passed sample_omega \n");
 #endif
-		reform_cuts(sd_global, c->sigma, s->delta, s->omega, p->num, T, observ,
+		reform_cuts(sd_global, s, c->sigma, s->delta, s->omega, p->num, T, observ,
 				c->k);
 #ifdef OPT
 		printf("SS-PRINT: passed reform_cuts \n");
@@ -401,7 +402,7 @@ BOOL full_test(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 #ifdef OPT
 		printf("SS-PRINT: passed sample_omega \n");
 #endif
-		reform_cuts(sd_global, c->sigma, s->delta, s->omega, p->num, T, observ,
+		reform_cuts(sd_global, s, c->sigma, s->delta, s->omega, p->num, T, observ,
 				c->k);
 #ifdef OPT
 		printf("SS-PRINT: passed reform_cuts \n");
@@ -833,7 +834,7 @@ double solve_temp_master(sdglobal_type* sd_global, prob_type *p, cut_type *T,
  ** If an istar field does not exist for a given observation, then 
  ** a value of zero is averaged into the calculation of alpha & beta.
  \***********************************************************************/
-void reform_cuts(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
+void reform_cuts(sdglobal_type* sd_global, soln_type *s, sigma_type *sigma, delta_type *delta,
 		omega_type *omega, num_type *num, cut_type *T, int *observ, int k)
 {
 	int cnt, obs, idx, count; /* modified by Yifan 2013.05.06 */
@@ -873,6 +874,8 @@ void reform_cuts(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
 				T->val[cnt]->istar[observ[obs]] != DROPPED){
 				istar.sigma = T->val[cnt]->istar[observ[obs]];
 				istar.delta = sigma->lamb[istar.sigma];
+                /* modified by Yifan 2014.08.07 */
+                istar.index_idx = T->val[cnt]->istar_index[observ[obs]];
 
 				T->val[cnt]->alpha += sigma->val[istar.sigma].R +
 				delta->val[istar.delta][observ[obs]].R;
@@ -884,6 +887,11 @@ void reform_cuts(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
 				for (idx = 1; idx <= num->rv_cols; idx++)
 				T->val[cnt]->beta[delta->col[idx]] +=
 				delta->val[istar.delta][observ[obs]].T[idx];
+                    
+                if (num->rv_g && s->ids->index[istar.index_idx]->phi_cnt) {
+                    adjust_alpha_value(s, obs, T->val[cnt], sigma, delta, omega, num, s->ids->index[istar.index_idx]);
+                    adjust_beta_value(s, obs, T->val[cnt], sigma, delta, omega, num, s->ids->index[istar.index_idx]);
+                }
 				count++; /* modified by Yifan 2013.05.06 */
 			}
 		}

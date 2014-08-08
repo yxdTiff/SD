@@ -343,6 +343,7 @@ BOOL solve_problem(sdglobal_type* sd_global, one_problem *p)
 	{
 		/*turn_off_presolve: if(p->feaflag == FALSE && pre_solve == TRUE) {pre_stat = CPXsetintparam (env, CPX_PARAM_PREIND, CPX_OFF); pre_solve = FALSE;}*/
 		change_solver_primal(p);
+        
 		CPXsetintparam(env, CPX_PARAM_PREIND, CPX_OFF);
 		ans = !CPXlpopt(env, p->lp);
 		CPXsetintparam(env, CPX_PARAM_PREIND, CPX_ON);

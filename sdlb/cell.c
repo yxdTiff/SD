@@ -174,19 +174,15 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 	/*Code below are added for evaluation!!!!!*/
 
 #if 0
-	fix=fopen("eval.dat", "r");
+	fix=fopen("eval_input1.txt", "r");
 
-	//for (j=1; j<=20; j++) {
 	soln->incumb_x[0]=0.0;
 	for (i=1; i<=prob->num->mast_cols; i++)
 	{
 		fscanf(fix, "%lf",&soln->incumb_x[i]);
 		soln->incumb_x[0]+=soln->incumb_x[i];
 	}
-	if (sd_global->config.EVAL_FLAG==1)
-	{	evaluate_inc(cell,prob, soln, soln->incumb_x, fname,conf_int,0);
-	}
-	//}
+	evaluate_inc(sd_global,cell,prob, soln, soln->incumb_x, fname,conf_int,4);
 
 	fclose(fix);
 #endif
@@ -424,7 +420,7 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
         
         /* Check the index set of the subproblem updated by Yifan 2014.06.26 */
         if (TEST_INDEX) {
-            soln->ids->NewIndex = get_index_number(sd_global, prob, cell, soln);
+            soln->ids->NewIndex = get_index_number(sd_global, prob, cell, soln, omeg_idx);
         }
 
 		/* 4. Enter Feasibility Mode */
@@ -810,6 +806,7 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 	fclose(obj_file);
 	fclose(time_file);
 
+    printf("\nTotal Number of Index Found: %d \n", soln->ids->cnt);
 	free_subprob(cell->subprob);
 	free_master(cell->master);
 	free_soln(prob, cell, soln);

@@ -32,6 +32,7 @@
 #include "omega.h"
 #include "log.h"
 #include "sdglobal.h"
+#include "rc.h"
 
 /***********************************************************************\
 ** This function obtains a new vector of realizations of the random variables.
@@ -232,6 +233,25 @@ void init_R_T_G_omega(sparse_vect *Romega, sparse_matrix *Tomega, sparse_vect *G
 #endif
 }
 
+void init_G_omega(sparse_vect *Gomega,omega_type *omega, num_type *num)
+{
+    
+#ifdef TRACE
+    printf("Inside init_G_omega\n");
+#endif
+    
+    /* Start C(omega) arrays where the R(omega) and T(omega) arrays left off */
+    Gomega->cnt = num->rv_g;
+    /* modified by Yifan 2014.06.11 */
+    /* This Gomega->row is tricky since sparse_vect is a row vector, here we sholud have Gomega->col */
+    Gomega->row = omega->col + num->rv_R + num->rv_T;
+    Gomega->val = omega->RT + num->rv_R + num->rv_T;
+    
+#ifdef TRACE
+    printf("Exiting init_G_omega\n");
+#endif
+}
+
 
 /***********************************************************************\
 ** This function updates the values referenced by Romega and Tomega
@@ -255,6 +275,11 @@ void get_R_T_G_omega(sdglobal_type* sd_global, omega_type *omega, int obs_idx)
 #else
   omega->RT[0] = get_omega_vals(sd_global, omega->idx[obs_idx] + 1, omega->RT + 1);
 #endif
+}
+
+void get_G_omega(sdglobal_type* sd_global,num_type *num, omega_type *omega, int obs_idx)
+{
+    omega->RT[0] = get_cost_omega_vals(sd_global, num, omega->idx[obs_idx] + 1, omega->RT + 1);
 }
 
 /***********************************************************************\
@@ -341,7 +366,7 @@ omega_type *new_omega(int num_iter, int num_rv, coord_type *coord)
  ** However, the actual arrays of id for each index are
  ** NOT allocated, since this is done as each index is encountered.
  \***********************************************************************/
-ids_type *new_ids(int num_iter, int sub_col)
+ids_type *new_ids(int num_iter, int sub_col, int sub_row, int rv_g)
 {
     ids_type *ids;
 #ifdef TRACE
@@ -356,10 +381,14 @@ ids_type *new_ids(int num_iter, int sub_col)
     if (!(ids->index2 = arr_alloc(num_iter, id_ptr)))
         err_msg("Allocation", "new_ids", "ids->index2");
     
+    if (!(ids->random_cost_val = arr_alloc(rv_g + 1, double)))
+        err_msg("Allocation", "new_ids", "ids->random_cost_val");
+    
+    if (!(ids->random_cost_col = arr_alloc(rv_g + 1, int)))
+        err_msg("Allocation", "new_ids", "ids->random_cost_col");
     
     if (!(ids->sig_idx = arr_alloc(num_iter, int)))
         err_msg("Allocation", "new_ids", "ids->sig_idx");
-    
     
     if (!(ids->lam_idx = arr_alloc(num_iter, int)))
         err_msg("Allocation", "new_ids", "ids->sig_idx");
@@ -367,8 +396,10 @@ ids_type *new_ids(int num_iter, int sub_col)
     ids->cnt=0;
     /* Zero-th word is used to store the sup-norm of the following words*/
     ids->num_word = sub_col/WORD_LENGTH + 2;
+    ids->num_word2 = sub_row/WORD_LENGTH + 2;
     
     ids->current_index_idx = 0;
+    ids->current_obs_idx = 0;
     ids->NewIndex = TRUE;
     
     if (!(ids->omega_index = arr_alloc(ids->num_word, unsigned long)))
@@ -379,12 +410,15 @@ ids_type *new_ids(int num_iter, int sub_col)
 #endif
     return ids;
 }
-id_type *new_id(void)
+id_type *new_id(int num_word)
 {
     id_type *index;
-    index = (id_type *) mem_malloc(sizeof(id_type));
+    
+    if(!(index = (id_type *) mem_malloc(sizeof(id_type))))
+
     index->freq = 1;
     index->first_c_k = 0;
+    index->phi_cnt = 0;
     return index;
 }
 
@@ -475,6 +509,8 @@ void free_ids(int num_iter, ids_type *ids)
     }
     mem_free(ids->index);
     mem_free(ids->index2);
+    mem_free(ids->random_cost_val);
+    mem_free(ids->random_cost_col);
     mem_free(ids->sig_idx);
     mem_free(ids->lam_idx);
     mem_free(ids->omega_index);
@@ -488,9 +524,14 @@ void free_ids(int num_iter, ids_type *ids)
 void free_id(id_type *index)
 {
     if (index) {
-        mem_free(index->val);
+        if (index->val) {
+            mem_free(index->val);
+        }
+        if (index->phi_cnt) {
+            free_phi(index);
+        }
+        mem_free(index);
     }
-    mem_free(index);
 }
 
 void free_rcdata(rc_type *rc_data)

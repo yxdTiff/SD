@@ -59,8 +59,9 @@ int calc_sigma(sdglobal_type* sd_global, cell_type *c, sigma_type *sigma,
 #endif
 
 	/* Add these new values of pi_R and pi_T and store index to lambda Yifan*/
-	Mu_R = compute_Mu(c->subprob, num->sub_cols);
-	//printf("Mu_R = %f \n", Mu_R);
+    /* modified by Yifan 2014.08.07 Temporary assume standard sub */
+	// Mu_R = compute_Mu(c->subprob, num->sub_cols);
+    Mu_R = 0.0;
 
 	pi_R = PIxR(pi_k, Rbar) + Mu_R;
 
@@ -73,22 +74,24 @@ int calc_sigma(sdglobal_type* sd_global, cell_type *c, sigma_type *sigma,
 		/* Compare pi_R and pi_T with all previous values */
 		/* The TOLERANCE in the following lines are substituted by
 		 TOLERANCE.   zl */
+        if (SIG_LAM_CMP) {
+            for (cnt = 0; cnt < sigma->cnt; cnt++)
+            /* Add <= and DBL_ABS in case pi_R is zero or negative 04/25/2013 Yifan */
+                if (DBL_ABS(pi_R - sigma->val[cnt].R)
+                    <= sd_global->config.TOLERANCE * DBL_ABS(pi_R))
+                    if (equal_arr(pi_T, sigma->val[cnt].T, num->nz_cols,
+                                  sd_global->config.TOLERANCE))
+                    {
+                        if (sigma->lamb[cnt] == lamb_idx)
+                        {
+                            mem_free(pi_T);
+                            *new_sigma = FALSE;
+                            return cnt;
+                        }
+                        
+                    }
+        }
 
-		for (cnt = 0; cnt < sigma->cnt; cnt++)
-			/* Add <= and DBL_ABS in case pi_R is zero or negative 04/25/2013 Yifan */
-			if (DBL_ABS(pi_R - sigma->val[cnt].R)
-					<= sd_global->config.TOLERANCE * DBL_ABS(pi_R))
-				if (equal_arr(pi_T, sigma->val[cnt].T, num->nz_cols,
-						sd_global->config.TOLERANCE))
-				{
-					if (sigma->lamb[cnt] == lamb_idx)
-					{
-						mem_free(pi_T);
-						*new_sigma = FALSE;
-						return cnt;
-					}
-
-				}
 	}
 
 	if (sd_global->MALLOC)
@@ -150,24 +153,28 @@ sigma_type *new_sigma(int num_iter, int num_nz_cols, int num_pi,
 	printf("Inside new_sigma\n");
 #endif
 
-	if (!(sigma = (sigma_type *) mem_malloc (sizeof(sigma_type))))
-		err_msg("Allocation", "new_sigma", "sigma");
+    if (!(sigma = (sigma_type *) mem_malloc (sizeof(sigma_type))))
+        err_msg("Allocation", "new_sigma", "sigma");
+        
+    if (sigma) {
+        if (!(sigma->lamb = arr_alloc(num_iter, int)))
+            err_msg("Allocation", "new_sigma", "sigma->lamb");
+        
+        if (!(sigma->ck = arr_alloc(num_iter, int)))
+            err_msg("Allocation", "new_sigma", "sigma->ck");
+        
+        if (!(sigma->val = arr_alloc(num_iter, pi_R_T_type)))
+            err_msg("Allocation", "new_sigma", "sigma->val");
+        
+        if (sigma->val) {
+            for (cnt = 0; cnt < num_pi && cnt < num_iter; cnt++)
+                if (!(sigma->val[cnt].T = arr_alloc(num_nz_cols+1, double)))
+                    err_msg("Allocation", "new_sigma", "sigma->val[cnt]");
+        }
 
-	if (!(sigma->lamb = arr_alloc(num_iter, int)))
-		err_msg("Allocation", "new_sigma", "sigma->lamb");
-
-	if (!(sigma->ck = arr_alloc(num_iter, int)))
-		err_msg("Allocation", "new_sigma", "sigma->ck");
-
-	if (!(sigma->val = arr_alloc(num_iter, pi_R_T_type)))
-		err_msg("Allocation", "new_sigma", "sigma->val");
-
-	for (cnt = 0; cnt < num_pi && cnt < num_iter; cnt++)
-		if (!(sigma->val[cnt].T = arr_alloc(num_nz_cols+1, double)))
-			err_msg("Allocation", "new_sigma", "sigma->val[cnt]");
-
-	sigma->col = coord->sigma_col;
-	sigma->cnt = num_pi;
+        sigma->col = coord->sigma_col;
+        sigma->cnt = num_pi;
+    }
 
 	return sigma;
 }

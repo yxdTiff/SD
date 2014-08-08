@@ -23,7 +23,7 @@ double solve_temp_master(sdglobal_type* sd_global, prob_type *p, cut_type *T,
 		cell_type *c);
 int randfun(int greatest, sd_long *seed);
 void empirical_distrib(omega_type *omega, int *cdf);
-void reform_cuts(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
+void reform_cuts(sdglobal_type* sd_global, soln_type *s, sigma_type *sigma, delta_type *delta,
 		omega_type *omega, num_type *num, cut_type *T, int *observ, int k);
 void sample_omega(sdglobal_type* sd_global, int *cdf, int *observ, int k);
 
