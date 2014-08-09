@@ -191,6 +191,16 @@ BOOL get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
 
     }
 
+#if 1
+    FILE *index_number;
+    index_number = fopen("indexNumber.txt", "a");
+    for (j = 1; j <= p->num->sub_cols; j++) {
+            fprintf(index_number, "%d\t", cstat[j]);
+        }
+    fprintf(index_number, "\n");
+    fclose(index_number);
+#endif
+    
     if (!New_index) {
         mem_free(plain);
         mem_free(plain2);
@@ -273,7 +283,7 @@ int encode_row(prob_type *p, unsigned long *row, int *rstat, int word_length)
  ** through all the index set and retrieves all sigma and delta needed
  ** for the calculation.
  \***********************************************************************/
-i_type compute_istar_index(soln_type *s, int obs, one_cut *cut, sigma_type *sigma,
+i_type compute_istar_index(sdglobal_type *sd_global, soln_type *s, int obs, one_cut *cut, sigma_type *sigma,
                      delta_type *delta, vector Xvect, num_type *num, vector Pi_Tbar_X,
                      double *argmax, BOOL pi_eval, int ictr)
 {
@@ -317,6 +327,7 @@ i_type compute_istar_index(soln_type *s, int obs, one_cut *cut, sigma_type *sigm
                 arg -= delta->val[del_pi][obs].T[c] * Xvect[delta->col[c]];
             
             if (num->rv_g && s->ids->index[index_idx]->phi_cnt) {
+                get_cost_val(sd_global, s->omega, num, s->ids->index[index_idx], s->ids->random_cost_val, s->ids->random_cost_col, obs);
                 adjust_argmax_value(s, obs, sigma, delta, Xvect, num, Pi_Tbar_X, &arg, s->ids->index[index_idx]);
             }
             
@@ -344,7 +355,7 @@ i_type compute_istar_index(soln_type *s, int obs, one_cut *cut, sigma_type *sigm
     return ans;
 }
 
-i_type compute_new_istar_index(soln_type *s, int obs, one_cut *cut, sigma_type *sigma,
+i_type compute_new_istar_index(sdglobal_type *sd_global, soln_type *s, int obs, one_cut *cut, sigma_type *sigma,
                          delta_type *delta, vector Xvect, num_type *num, vector Pi_Tbar_X,
                          double *argmax, int ictr)
 {
@@ -378,6 +389,7 @@ i_type compute_new_istar_index(soln_type *s, int obs, one_cut *cut, sigma_type *
                 arg -= delta->val[del_pi][obs].T[c] * Xvect[delta->col[c]];
             
             if (num->rv_g && s->ids->index[index_idx]->phi_cnt) {
+                get_cost_val(sd_global, s->omega, num, s->ids->index[index_idx], s->ids->random_cost_val, s->ids->random_cost_col, obs);
                 adjust_argmax_value(s, obs, sigma, delta, Xvect, num, Pi_Tbar_X, &arg, s->ids->index[index_idx]);
             }
 #ifdef LOOP
@@ -551,6 +563,8 @@ int adjust_argmax_value(soln_type *s, int obs, sigma_type *sigma, delta_type *de
     for (cnt = 0; cnt < index->phi_cnt; cnt++) {
         sig_pi = index->phi_sigma_idx[cnt];
         del_pi = sigma->lamb[sig_pi];
+        
+        /* First need to update the phi_cost_delta value according obs */
         
         /* Start with (Pi x Rbar) + (Pi x Romega) + (Pi x Tbar) x X */
         *arg += index->phi_cost_delta[cnt] * (sigma->val[sig_pi].R + delta->val[del_pi][obs].R - Pi_Tbar_X[sig_pi]);

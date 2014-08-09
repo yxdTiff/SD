@@ -82,14 +82,14 @@ int solve_subprob(sdglobal_type* sd_global, prob_type *p, cell_type *c,
     /* print_problem(c->subprob, "testing_sub.lp"); */
     
     /* modified by Yifan 2014.06.17 */
-#if 0
+#if 1
     FILE *rhs_value;
     rhs_value =fopen("rhs_value.txt", "a");
     fprintf(rhs_value, "%f\t%f\n",rhs[1],rhs[2]);
     fclose(rhs_value);
     FILE *cost_value;
     cost_value =fopen("cost_value.txt", "a");
-    fprintf(cost_value, "%f\n",cost[3]);
+    fprintf(cost_value, "%f\n",cost[1]);
     fclose(cost_value);
 #endif
 

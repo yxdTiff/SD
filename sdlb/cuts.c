@@ -575,9 +575,9 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
                 /* Testing the index argmax, use index for argmax only when random cost coefficients show up*/
                 if (TEST_INDEX && num->rv_g) {
                     /* modified by Yifan 2014.07.30 */
-                    istar_old = compute_istar_index(soln, obs, cut, sigma, delta, Xvect, num,
+                    istar_old = compute_istar_index(sd_global, soln, obs, cut, sigma, delta, Xvect, num,
                                                     pi_Tbar_x, argmax_old, pi_eval_flag, num_samples);
-                    istar_new = compute_new_istar_index(soln, obs, cut, sigma, delta, Xvect,
+                    istar_new = compute_new_istar_index(sd_global, soln, obs, cut, sigma, delta, Xvect,
                                                     num, pi_Tbar_x, argmax_new, num_samples);
                 }
                 else{
@@ -624,7 +624,7 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
                 /* Testing the index argmax, use index for argmax only when random cost coefficients show up*/
                 if (TEST_INDEX && num->rv_g) {
                     /* modified by Yifan 2014.07.30 */
-                    istar = compute_istar_index(soln, obs, cut, sigma, delta, Xvect, num,
+                    istar = compute_istar_index(sd_global, soln, obs, cut, sigma, delta, Xvect, num,
                                                 pi_Tbar_x, argmax_all, pi_eval_flag, num_samples);
                 }
                 else{
@@ -656,6 +656,7 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 					beta[delta->col[c]] += delta->val[istar.delta][obs].T[c];
                 
                 if (num->rv_g && soln->ids->index[istar.index_idx]->phi_cnt) {
+                    get_cost_val(sd_global, soln->omega, num, soln->ids->index[istar.index_idx], soln->ids->random_cost_val, soln->ids->random_cost_col, obs);
                     adjust_incumbent_height(soln, obs, cut, beta, sigma, delta, omega, num, soln->ids->index[istar.index_idx]);
                 }
 
@@ -681,6 +682,7 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 						* omega->weight[obs];
             
             if (num->rv_g && soln->ids->index[istar.index_idx]->phi_cnt) {
+                get_cost_val(sd_global, soln->omega, num, soln->ids->index[istar.index_idx], soln->ids->random_cost_val, soln->ids->random_cost_col, obs);
                 adjust_alpha_value(soln, obs, cut, sigma, delta, omega, num, soln->ids->index[istar.index_idx]);
                 adjust_beta_value(soln, obs, cut, sigma, delta, omega, num, soln->ids->index[istar.index_idx]);
             }
