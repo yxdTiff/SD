@@ -453,7 +453,8 @@ BOOL stochastic_updates(sdglobal_type* sd_global, cell_type *c, soln_type *s,
     }
     
 #ifdef DEBUG
-	for(idx=0;idx<lambda->cnt;idx++)
+    int idx, obs;
+    for(idx=0;idx<lambda->cnt;idx++)
 	for(obs=0;obs<omega->most;obs++)
 	if (valid_omega_idx(omega, obs))
 	print_delta(delta, num, idx, obs);

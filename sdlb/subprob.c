@@ -82,7 +82,7 @@ int solve_subprob(sdglobal_type* sd_global, prob_type *p, cell_type *c,
     /* print_problem(c->subprob, "testing_sub.lp"); */
     
     /* modified by Yifan 2014.06.17 */
-#if 1
+#if 0
     FILE *rhs_value;
     rhs_value =fopen("rhs_value.txt", "a");
     fprintf(rhs_value, "%f\t%f\n",rhs[1],rhs[2]);

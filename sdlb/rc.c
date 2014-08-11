@@ -191,7 +191,7 @@ BOOL get_index_number(sdglobal_type* sd_global, prob_type *p, cell_type *c, soln
 
     }
 
-#if 1
+#if 0
     FILE *index_number;
     index_number = fopen("indexNumber.txt", "a");
     for (j = 1; j <= p->num->sub_cols; j++) {
@@ -579,9 +579,12 @@ int adjust_argmax_value(soln_type *s, int obs, sigma_type *sigma, delta_type *de
 int adjust_alpha_value(soln_type *s, int obs, one_cut *cut ,sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, id_type *index)
 {
     int cnt;
+    int sig_pi, del_pi;
     for (cnt = 0; cnt < index->phi_cnt; cnt++) {
-        cut->alpha += index->phi_cost_delta[cnt] * sigma->val[index->phi_sigma_idx[cnt]].R * omega->weight[obs];
-        cut->alpha += index->phi_cost_delta[cnt] * delta->val[index->phi_lambda_idx[cnt]][obs].R * omega->weight[obs];
+        sig_pi = index->phi_sigma_idx[cnt];
+        del_pi = sigma->lamb[sig_pi];
+        cut->alpha += index->phi_cost_delta[cnt] * sigma->val[sig_pi].R * omega->weight[obs];
+        cut->alpha += index->phi_cost_delta[cnt] * delta->val[del_pi][obs].R * omega->weight[obs];
     }
     
     return 0;
@@ -589,13 +592,16 @@ int adjust_alpha_value(soln_type *s, int obs, one_cut *cut ,sigma_type *sigma, d
 
 int adjust_beta_value(soln_type *s, int obs, one_cut *cut ,sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, id_type *index)
 {
-    int cnt, c;
+    int cnt;
+    int sig_pi, del_pi, c;
     for (cnt = 0; cnt < index->phi_cnt; cnt++) {
+        sig_pi = index->phi_sigma_idx[cnt];
+        del_pi = sigma->lamb[sig_pi];
         for (c = 1; c <= num->nz_cols; c++)
-            cut->beta[sigma->col[c]] += index->phi_cost_delta[cnt] * sigma->val[index->phi_sigma_idx[cnt]].T[c]
+            cut->beta[sigma->col[c]] += index->phi_cost_delta[cnt] * sigma->val[sig_pi].T[c]
             * omega->weight[obs];
         for (c = 1; c <= num->rv_cols; c++)
-            cut->beta[delta->col[c]] += index->phi_cost_delta[cnt] * delta->val[index->phi_lambda_idx[cnt]][obs].T[c]
+            cut->beta[delta->col[c]] += index->phi_cost_delta[cnt] * delta->val[del_pi][obs].T[c]
             * omega->weight[obs];
     }
     return 0;

@@ -50,8 +50,6 @@ FILE *fix;
 void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 		vector x_k, char *fname)
 {
-    int save_obs[362]; //TEST, REMOVE!!!!!
-    int save_cnt=0; //TEST, REMOVE!!!!!
 	soln_type *soln;
 	int omeg_idx;
 	int i, j, cnt;
@@ -384,8 +382,6 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 #else
       omeg_idx = generate_observ(sd_global, soln->omega, prob->num,
                                  &new_omega, &(sd_global->config.RUN_SEED));
-        save_obs[save_cnt] = omeg_idx; //TEST, REMOVE!!!!!
-        save_cnt++;
 #endif
       
 #ifdef REC_OMEGA
@@ -470,8 +466,6 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 		{
 			if (cell->k - soln->last_update == prob->tau)
 			{
-                save_obs[save_cnt] = omeg_idx; //TEST, REMOVE!!!!!
-                save_cnt++;
 				++num_subproblems; /* JH 3/12/98 */
 				/* Because a solve_subprob function is called in form_incumb_cut, 
 				 we have to go into the function to record the time spent on 
@@ -799,28 +793,6 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
     pi_count = fopen("pi_count.out", "a");
     fprintf(pi_count, "sigma_cnt=:%d\tlambda_cnt=%d\n",cell->sigma->cnt, cell->lambda->cnt);
     fclose(pi_count);
-    
-    FILE *guess_pi;
-    FILE *pi_idx;
-    guess_pi = fopen("guess_pi.txt", "a");
-    pi_idx = fopen("pi_idx", "a");
-    /* Let's print the dual extreme point "guessed" by SD */
-    for (omeg_idx = 0; omeg_idx < save_cnt; omeg_idx++) {
-        for (cnt = 0; cnt < soln->ids->cnt; cnt++) {
-            decode_col(prob, soln->rcdata->col_num, soln->ids->index[cnt]->val, WORD_LENGTH);
-            fprintf(pi_idx, "%d\t%d\t",soln->rcdata->col_num[0],soln->rcdata->col_num[1]);
-            get_cost_val(sd_global, soln->omega, prob->num, soln->ids->index[cnt], soln->ids->random_cost_val, soln->ids->random_cost_col, save_obs[omeg_idx]);
-            if (soln->ids->index[cnt]->phi_cnt) {
-                fprintf(guess_pi, "%f\t%f\t",soln->ids->index[cnt]->phi_cost_delta[0] * soln->ids->index[cnt]->phi_val[0][1],soln->ids->index[cnt]->phi_cost_delta[0] * soln->ids->index[cnt]->phi_val[0][2]);
-            }
-            else{
-                fprintf(guess_pi, "%f\t%f\t",0.0,0.0);
-            }
-        }
-        fprintf(guess_pi, "\n");
-        fprintf(pi_idx, "\n");
-    }
-    fclose(guess_pi);
 
 #ifdef DEBUG
 	printf(" Ending Summary \n");

@@ -58,7 +58,7 @@ int generate_observ(sdglobal_type* sd_global, omega_type *omega, num_type *num,
 	 */
 	if (!(observ = arr_alloc(num->cipher+1, int)))
 		err_msg("Allocation", "generate_observ", "observ");
-	observ[0] = get_omega_idx(sd_global, observ + 1, NULL, 1, RUN_SEED);
+	observ[0] = get_omega_idx(sd_global, num, observ + 1, NULL, 1, RUN_SEED);
 	/* Compare vector with all the previous observations */
 	for (cnt = 0; cnt < omega->most; cnt++)
 		if (valid_omega_idx(omega, cnt))

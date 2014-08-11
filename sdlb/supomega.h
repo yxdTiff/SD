@@ -31,8 +31,8 @@
 #define SUPOMEGA_H_
 #include "sdglobal.h"
 
-sd_small get_omega_idx(sdglobal_type* sd_global, sd_small *observ, sd_small *members,
-		sd_small num_members, sd_long *RUN_SEED);
+sd_small get_omega_idx(sdglobal_type* sd_global, num_type *num, sd_small *observ, sd_small *members,
+                       sd_small num_members, sd_long *RUN_SEED);
 
 /**************************************************************************\
 **  The function get_omega_vals() receives an array of indices

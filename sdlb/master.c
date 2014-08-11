@@ -75,7 +75,6 @@ BOOL solve_master(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 	printf("Saving file: %s\n", fname);
 #endif
     
-
 	/* Recording the time for solving master LPs. zl, 06/29/04. */
 	start = clock();
 	ans = solve_problem(sd_global, c->master);

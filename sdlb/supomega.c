@@ -32,16 +32,23 @@
  ** implementation.
  \****************************************************************/
 /* modified by Yifan 2012.07.02 */
-sd_small get_omega_idx(sdglobal_type* sd_global, sd_small *observ, sd_small *members,
+sd_small get_omega_idx(sdglobal_type* sd_global, num_type *num, sd_small *observ, sd_small *members,
 		sd_small num_members, sd_long *RUN_SEED)
 {
 	sd_small i, j;
 	sd_small sum = 0;
+    sd_long seed_copy = *RUN_SEED;
 	double val;
 	/*  locate values of stochastic elements in distribution array */
 	for (i = 0; i < sd_global->omegas.num_omega; i++)
 	{
-		val = scalit(0, 1, RUN_SEED);
+        if (i < num->rv_T + num->rv_R) {
+            val = scalit(0, 1, RUN_SEED);
+        }
+        else{
+            val = scalit(0, 1, &seed_copy);
+        }
+		
 		for (j = 0; val > sd_global->omegas.omega_probs[i][j]; j++)
 			/* loop until value falls below the cdf at j */;
 		sd_global->omegas.indices[i] = j;
