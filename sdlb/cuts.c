@@ -684,8 +684,8 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
             
             if (num->rv_g && soln->ids->index[istar.index_idx]->phi_cnt) {
                 get_cost_val(sd_global, soln->omega, num, soln->ids->index[istar.index_idx], soln->ids->random_cost_val, soln->ids->random_cost_col, obs);
-                adjust_alpha_value(soln, obs, cut, sigma, delta, omega, num, soln->ids->index[istar.index_idx]);
-                adjust_beta_value(soln, obs, cut, sigma, delta, omega, num, soln->ids->index[istar.index_idx]);
+                adjust_alpha_value(soln, obs, cut, sigma, delta, omega, num, soln->ids->index[istar.index_idx], omega->weight[obs]);
+                adjust_beta_value(soln, obs, cut, sigma, delta, omega, num, soln->ids->index[istar.index_idx], omega->weight[obs]);
             }
 
 		}

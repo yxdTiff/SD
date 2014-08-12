@@ -576,21 +576,21 @@ int adjust_argmax_value(soln_type *s, int obs, sigma_type *sigma, delta_type *de
     return 0;
 }
 
-int adjust_alpha_value(soln_type *s, int obs, one_cut *cut ,sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, id_type *index)
+int adjust_alpha_value(soln_type *s, int obs, one_cut *cut ,sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, id_type *index, int weight)
 {
     int cnt;
     int sig_pi, del_pi;
     for (cnt = 0; cnt < index->phi_cnt; cnt++) {
         sig_pi = index->phi_sigma_idx[cnt];
         del_pi = sigma->lamb[sig_pi];
-        cut->alpha += index->phi_cost_delta[cnt] * sigma->val[sig_pi].R * omega->weight[obs];
-        cut->alpha += index->phi_cost_delta[cnt] * delta->val[del_pi][obs].R * omega->weight[obs];
+        cut->alpha += index->phi_cost_delta[cnt] * sigma->val[sig_pi].R * weight;
+        cut->alpha += index->phi_cost_delta[cnt] * delta->val[del_pi][obs].R * weight;
     }
     
     return 0;
 }
 
-int adjust_beta_value(soln_type *s, int obs, one_cut *cut ,sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, id_type *index)
+int adjust_beta_value(soln_type *s, int obs, one_cut *cut ,sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, id_type *index, int weight)
 {
     int cnt;
     int sig_pi, del_pi, c;
@@ -599,10 +599,10 @@ int adjust_beta_value(soln_type *s, int obs, one_cut *cut ,sigma_type *sigma, de
         del_pi = sigma->lamb[sig_pi];
         for (c = 1; c <= num->nz_cols; c++)
             cut->beta[sigma->col[c]] += index->phi_cost_delta[cnt] * sigma->val[sig_pi].T[c]
-            * omega->weight[obs];
+            * weight;
         for (c = 1; c <= num->rv_cols; c++)
             cut->beta[delta->col[c]] += index->phi_cost_delta[cnt] * delta->val[del_pi][obs].T[c]
-            * omega->weight[obs];
+            * weight;
     }
     return 0;
 }

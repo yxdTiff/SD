@@ -890,8 +890,8 @@ void reform_cuts(sdglobal_type* sd_global, soln_type *s, sigma_type *sigma, delt
                     
                 if (num->rv_g && s->ids->index[istar.index_idx]->phi_cnt) {
                     get_cost_val(sd_global, s->omega, num, s->ids->index[istar.index_idx], s->ids->random_cost_val, s->ids->random_cost_col, observ[obs]);
-                    adjust_alpha_value(s, obs, T->val[cnt], sigma, delta, omega, num, s->ids->index[istar.index_idx]);
-                    adjust_beta_value(s, obs, T->val[cnt], sigma, delta, omega, num, s->ids->index[istar.index_idx]);
+                    adjust_alpha_value(s, obs, T->val[cnt], sigma, delta, omega, num, s->ids->index[istar.index_idx], 1);
+                    adjust_beta_value(s, obs, T->val[cnt], sigma, delta, omega, num, s->ids->index[istar.index_idx], 1);
                 }
 				count++; /* modified by Yifan 2013.05.06 */
 			}

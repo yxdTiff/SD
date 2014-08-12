@@ -30,7 +30,7 @@ int put_phi_into_sigma_delta(sdglobal_type* sd_global, cell_type *c, soln_type *
                              omega_type *omega, num_type *num, sparse_vect *Rbar,
                              sparse_matrix *Tbar,id_type *index);
 int adjust_argmax_value(soln_type *s, int obs, sigma_type *sigma, delta_type *delta, vector Xvect, num_type *num, vector Pi_Tbar_X,double *arg, id_type *index);
-int adjust_alpha_value(soln_type *s, int obs, one_cut *cut ,sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, id_type *index);
-int adjust_beta_value(soln_type *s, int obs, one_cut *cut ,sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, id_type *index);
+int adjust_alpha_value(soln_type *s, int obs, one_cut *cut ,sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, id_type *index, int weight);
+int adjust_beta_value(soln_type *s, int obs, one_cut *cut ,sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, id_type *index, int weight);
 int adjust_incumbent_height(soln_type *s, int obs, one_cut *cut , double *beta, sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, id_type *index);
 #endif
