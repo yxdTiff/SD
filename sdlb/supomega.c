@@ -159,7 +159,7 @@ double get_omega_vals_from_file(sdglobal_type *sd_global, int obs_idx, double *R
 
 /****************************************************************\
 **  The function get_omega_col() loads a list of col numbers
- **  corresponding to the stochastic elements contained contained
+ **  corresponding to the stochastic elements contained
  **  in the struct omegas.
  \****************************************************************/
 

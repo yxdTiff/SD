@@ -184,6 +184,17 @@ typedef struct
 	one_key *key; /* array of keys for encoding / decoding obsevations */
 } omegastuff;
 
+
+typedef struct
+{
+    sd_small num_high_block;
+    sd_small *num_low_block;
+    sd_small *num_omega_low_block;
+    double **low_block_probs;
+    double ***omega_vals;
+    double **mean;
+} omegastuff_block;
+
 /**********************************************************************\
 ** struct one_problem is used to store the LP problem information in
  ** a format usable by cplex.  The information can be loaded through the
@@ -318,6 +329,7 @@ typedef struct
 {
 	config_type config;
 	omegastuff omegas;
+    omegastuff_block blocks;
 	one_problem * batch_problem;
 	int MALLOC;
 	batch_incumb_type *batch_incumb;

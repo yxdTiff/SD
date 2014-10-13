@@ -57,6 +57,13 @@
 #define SIG_LAM_CMP 1
 
 #define RESUME_FLAG 0
+
+
+static const int   UNKNOWN_TYPE      =  0;
+
+static const int   INDEPENDENT_TYPE  =  1;
+static const int   BLOCKS_TYPE       =  2;
+
 /*
  ** Some constants used in various places
  */

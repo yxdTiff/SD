@@ -716,7 +716,7 @@ int load_stoch(sdglobal_type* sd_global, one_problem *original, identity *ident,
 		char *fname)
 {
 	FILE *stoch;
-	int idx, group_idx, *coeff_idx, i, cnt;
+	int idx, group_idx, *coeff_idx, i, cnt, sto_type;
 	int num_rvs = 101; /* default # of vals for each continuous rv */
 	int blockSize = BLOCKSIZE; /* default blk size for initial omegas arrays */
 	int category;
@@ -738,6 +738,15 @@ int load_stoch(sdglobal_type* sd_global, one_problem *original, identity *ident,
 	{ 0 };
 	char name[NAME_SIZE] =
 	{ 0 };
+    char OldBlockName[NAME_SIZE] =
+    { 0 };
+    int BlockNum, Continue;
+    double SumProb, value1;
+    int high_block_cnt;
+    int low_block_cnt;
+    int low_block_omega_cnt;
+    fpos_t file_postition = 0;
+    int status = 123;
 
 	/* modified by Yifan 2013.05.20 */
 
@@ -811,6 +820,16 @@ int load_stoch(sdglobal_type* sd_global, one_problem *original, identity *ident,
 	{
 		if (fieldType == 't')
 		{
+            if (strcmp(field1, "INDEP") == 0) {
+                sto_type = INDEPENDENT_TYPE;
+            }
+            else if (strcmp(field1, "BLOCKS") == 0){
+                sto_type = BLOCKS_TYPE;
+            }
+            else{
+                sto_type = UNKNOWN_TYPE;
+            }
+            
 			if (strcmp(field2, "DISCRETE") == 0)
 			{
 				category = 1;
@@ -848,282 +867,451 @@ int load_stoch(sdglobal_type* sd_global, one_problem *original, identity *ident,
 		else if (fieldType == 'f')
 		{
 
-			/****************************************************************\
-			**	3. New stochastic element encountered, update row and col names,
-			 **	verify arrays are sufficiently allocated and check for
-			 **	continuous distribution.  If continuous, load next array
-			 **	of percentiles.
-			 \****************************************************************/
-			if (strcmp(field1, last_col) != 0 || strcmp(field2, last_row) != 0)
-			{
-				idx = sd_global->omegas.num_omega++;
-				/* allocate array in struct omegas for next set of vals */
-				if (idx == blockSize) /* allocation exceeded, reallocate */
-				{
-					blockSize = blockSize + BLOCKSIZE;
-					if (!(sd_global->omegas.omega_probs =
-							(double **) mem_realloc(sd_global->omegas.omega_probs,
-									blockSize * sizeof(double *))))
-					{
-						printf("memory allocation error\n");
-						return 0;
-					}
-					if (!(sd_global->omegas.omega_vals =
-							(double **) mem_realloc(sd_global->omegas.omega_vals,
-									blockSize * sizeof(double *))))
-					{
-						printf("memory allocation error\n");
-						return 0;
-					}
-					if (!(sd_global->omegas.row =
-							(int *) mem_realloc(sd_global->omegas.row, blockSize * sizeof(int))))
-					{
-						printf("memory allocation error\n");
-						return 0;
-					}
-					if (!(sd_global->omegas.col =
-							(int *) mem_realloc(sd_global->omegas.col, blockSize * sizeof(int))))
-					{
-						printf("memory allocation error\n");
-						return 0;
-					}
-					if (!(sd_global->omegas.num_vals =
-							(int *) mem_realloc(sd_global->omegas.num_vals, blockSize * sizeof(int))))
-					/* BETTER INIT TO ZERO!!! THIS ISN'T CALLOC */
-					{
-						printf("memory allocation error\n");
-						return 0;
-					}
-					if (!(coeff_idx =
-							(int *) mem_realloc(coeff_idx, blockSize * sizeof(int))))
-					{
-						printf("memory allocation error\n");
-						return 0;
-					}
-					if (!(mean_dest =
-							(double **) mem_realloc(mean_dest, blockSize * sizeof(double *))))
-					{
-						printf("memory allocation error\n");
-						return 0;
-					}
+            if (sto_type == INDEPENDENT_TYPE) {
+                /****************************************************************\
+                **	3. New stochastic element encountered, update row and col names,
+                 **	verify arrays are sufficiently allocated and check for
+                 **	continuous distribution.  If continuous, load next array
+                 **	of percentiles.
+                 \****************************************************************/
+                if (strcmp(field1, last_col) != 0 || strcmp(field2, last_row) != 0)
+                {
+                    idx = sd_global->omegas.num_omega++;
+                    /* allocate array in struct omegas for next set of vals */
+                    if (idx == blockSize) /* allocation exceeded, reallocate */
+                    {
+                        blockSize = blockSize + BLOCKSIZE;
+                        if (!(sd_global->omegas.omega_probs =
+                                (double **) mem_realloc(sd_global->omegas.omega_probs,
+                                        blockSize * sizeof(double *))))
+                        {
+                            printf("memory allocation error\n");
+                            return 0;
+                        }
+                        if (!(sd_global->omegas.omega_vals =
+                                (double **) mem_realloc(sd_global->omegas.omega_vals,
+                                        blockSize * sizeof(double *))))
+                        {
+                            printf("memory allocation error\n");
+                            return 0;
+                        }
+                        if (!(sd_global->omegas.row =
+                                (int *) mem_realloc(sd_global->omegas.row, blockSize * sizeof(int))))
+                        {
+                            printf("memory allocation error\n");
+                            return 0;
+                        }
+                        if (!(sd_global->omegas.col =
+                                (int *) mem_realloc(sd_global->omegas.col, blockSize * sizeof(int))))
+                        {
+                            printf("memory allocation error\n");
+                            return 0;
+                        }
+                        if (!(sd_global->omegas.num_vals =
+                                (int *) mem_realloc(sd_global->omegas.num_vals, blockSize * sizeof(int))))
+                        /* BETTER INIT TO ZERO!!! THIS ISN'T CALLOC */
+                        {
+                            printf("memory allocation error\n");
+                            return 0;
+                        }
+                        if (!(coeff_idx =
+                                (int *) mem_realloc(coeff_idx, blockSize * sizeof(int))))
+                        {
+                            printf("memory allocation error\n");
+                            return 0;
+                        }
+                        if (!(mean_dest =
+                                (double **) mem_realloc(mean_dest, blockSize * sizeof(double *))))
+                        {
+                            printf("memory allocation error\n");
+                            return 0;
+                        }
 
-					/* Initialize new counts to zero, after realloc */
-					for (i = idx; i < blockSize; i++)
-						sd_global->omegas.num_vals[i] = 0;
+                        /* Initialize new counts to zero, after realloc */
+                        for (i = idx; i < blockSize; i++)
+                            sd_global->omegas.num_vals[i] = 0;
 
-				}
+                    }
 
-				/*  4. allocate space for idividual stochastic element */
-				if (!(sd_global->omegas.omega_probs[idx] =
-						(double *) mem_calloc(num_rvs, sizeof(double))))
-				{
-					printf("memory allocation error\n");
-					return 0;
-				}
-				if (!(sd_global->omegas.omega_vals[idx] =
-						(double *) mem_calloc(num_rvs, sizeof(double))))
-				{
-					printf("memory allocation error\n");
-					return 0;
-				}
+                    /*  4. allocate space for idividual stochastic element */
+                    if (!(sd_global->omegas.omega_probs[idx] =
+                            (double *) mem_calloc(num_rvs, sizeof(double))))
+                    {
+                        printf("memory allocation error\n");
+                        return 0;
+                    }
+                    if (!(sd_global->omegas.omega_vals[idx] =
+                            (double *) mem_calloc(num_rvs, sizeof(double))))
+                    {
+                        printf("memory allocation error\n");
+                        return 0;
+                    }
 
-				/* initialize new arrays to zero */
-				for (i = 0; i < num_rvs; i++)
-				{
-					sd_global->omegas.omega_probs[idx][i] = 0.0;
-					sd_global->omegas.omega_vals[idx][i] = 0.0;
-				}
+                    /* initialize new arrays to zero */
+                    for (i = 0; i < num_rvs; i++)
+                    {
+                        sd_global->omegas.omega_probs[idx][i] = 0.0;
+                        sd_global->omegas.omega_vals[idx][i] = 0.0;
+                    }
 
-				/* update row and column names */
-				strcpy(last_col, field1);
-				strcpy(last_row, field2);
+                    /* update row and column names */
+                    strcpy(last_col, field1);
+                    strcpy(last_row, field2);
 
-				/***********************************************\
-					5. identify and record row and column numbers
-				 \***********************************************/
-				/* get row number by name */
-				i = 0;
-				while (i < original->mar
-						&& strcmp(ident->row_name[i], field2) != 0)
-				{
-					i++;
-				}
-				if (i >= original->mar)
-				{
-					if (strcmp(original->objname, field2) == 0)
-					{
-						i = -1;
-					}
-					else
-					{
-						printf("undefined row name in constraint matrix: %s\n",
-								field2);
-						printf(
-								"Randomness in W metrix will be supported in later release\n");
-						/*added by Yifan Oct 12 2011*/
-						return (0);
-					}
-				}
-				sd_global->omegas.row[idx] = i;
+                    /***********************************************\
+                        5. identify and record row and column numbers
+                     \***********************************************/
+                    /* get row number by name */
+                    i = 0;
+                    while (i < original->mar
+                            && strcmp(ident->row_name[i], field2) != 0)
+                    {
+                        i++;
+                    }
+                    if (i >= original->mar)
+                    {
+                        if (strcmp(original->objname, field2) == 0)
+                        {
+                            i = -1;
+                        }
+                        else
+                        {
+                            printf("undefined row name in constraint matrix: %s\n",
+                                    field2);
+                            printf(
+                                    "Randomness in W metrix will be supported in later release\n");
+                            /*added by Yifan Oct 12 2011*/
+                            return (0);
+                        }
+                    }
+                    sd_global->omegas.row[idx] = i;
 
-				/* get column number by name */
-				i = 0;
-				while (i < original->mac
-						&& strcmp(ident->col_name[i], field1) != 0)
-				{
-					i++;
-				}
+                    /* get column number by name */
+                    i = 0;
+                    while (i < original->mac
+                            && strcmp(ident->col_name[i], field1) != 0)
+                    {
+                        i++;
+                    }
 
-				if (i >= original->mac)
-				{
-					if (strcmp(field1, "rhs") == 0
-							|| strcmp(field1, "RHS") == 0)
-						i = -1;
-					else
-					{
-						printf("undefined column name in constraint matrix\n");
-						printf(
-								"Randomness in W metrix will be supported in later release\n");
-						/*added by Yifan Oct 12 2011*/
-						return (0);
-					}
-				}
-				sd_global->omegas.col[idx] = i;
+                    if (i >= original->mac)
+                    {
+                        if (strcmp(field1, "rhs") == 0
+                                || strcmp(field1, "RHS") == 0)
+                            i = -1;
+                        else
+                        {
+                            printf("undefined column name in constraint matrix\n");
+                            printf(
+                                    "Randomness in W metrix will be supported in later release\n");
+                            /*added by Yifan Oct 12 2011*/
+                            return (0);
+                        }
+                    }
+                    sd_global->omegas.col[idx] = i;
 
-				/*********************************************************\
-					6. identify and store location of stochastic element
-				 in original matval according to col and row numbers
-				 obtained above.  Locations are stored in coeff_idx[].
-				 \*********************************************************/
-				if (i != -1)
-				{
-					if (sd_global->omegas.row[idx] == -1)
-					{
-						mean_dest[idx] =
-								&(original->objx[sd_global->omegas.col[idx]]);
-#ifdef CAL_CHECK
-						printf("mean_dest[%d] is %f\n",idx,*mean_dest[idx]);
-#endif
-					}
-					else
-					{
-						/*original->mac is changed to original->matsz  modified by Yifan 02/07/12*/
-						group_idx =
-								original->matbeg[sd_global->omegas.col[idx]];
+                    /*********************************************************\
+                        6. identify and store location of stochastic element
+                     in original matval according to col and row numbers
+                     obtained above.  Locations are stored in coeff_idx[].
+                     \*********************************************************/
+                    if (i != -1)
+                    {
+                        if (sd_global->omegas.row[idx] == -1)
+                        {
+                            mean_dest[idx] =
+                                    &(original->objx[sd_global->omegas.col[idx]]);
+    #ifdef CAL_CHECK
+                            printf("mean_dest[%d] is %f\n",idx,*mean_dest[idx]);
+    #endif
+                        }
+                        else
+                        {
+                            /*original->mac is changed to original->matsz  modified by Yifan 02/07/12*/
+                            group_idx =
+                                    original->matbeg[sd_global->omegas.col[idx]];
 
-#ifdef CAL_CHECK
-						printf("%d\n",idx);
-						printf("gropu_idx:%d\n",group_idx);
-						printf("sd_global->omegas.col[%d]:%d\n",idx,sd_global->omegas.col[idx]);
-#endif
+    #ifdef CAL_CHECK
+                            printf("%d\n",idx);
+                            printf("gropu_idx:%d\n",group_idx);
+                            printf("sd_global->omegas.col[%d]:%d\n",idx,sd_global->omegas.col[idx]);
+    #endif
 
-						while (group_idx
-								< (original->matbeg[sd_global->omegas.col[idx]]
-										+ original->matcnt[sd_global->omegas.col[idx]])
-								&& original->matind[group_idx]
-										!= sd_global->omegas.row[idx])
-						{
-							++group_idx;
-						}
-						coeff_idx[idx] = group_idx;
-						mean_dest[idx] = &(original->matval[coeff_idx[idx]]);
-					}
-				}
-				else
-					mean_dest[idx] =
-							&(original->rhsx[sd_global->omegas.row[idx]]);
-#ifdef CAL_CHECK
-				printf("coeeff_idx[%d] is %d\n",idx,coeff_idx[idx]);
-#endif
-				/*****************************************************\
-					check for continuous distribution. If continuous,
-				 set new array of percentiles.
-				 \*****************************************************/
-				if (category > 1) /* continuous distribution encountered */
-				{
-					/* set percentiles in sd_global->omegas.omega_probs */
-					base = 1.0 / (float) num_rvs;
-					for (i = 0; i < num_rvs - 1; i++)
-					{
-						percentile += base;
-						sd_global->omegas.omega_probs[idx][i] = percentile;
-					}
-				}
-			}
+                            while (group_idx
+                                    < (original->matbeg[sd_global->omegas.col[idx]]
+                                            + original->matcnt[sd_global->omegas.col[idx]])
+                                    && original->matind[group_idx]
+                                            != sd_global->omegas.row[idx])
+                            {
+                                ++group_idx;
+                            }
+                            coeff_idx[idx] = group_idx;
+                            mean_dest[idx] = &(original->matval[coeff_idx[idx]]);
+                        }
+                    }
+                    else
+                        mean_dest[idx] =
+                                &(original->rhsx[sd_global->omegas.row[idx]]);
+    #ifdef CAL_CHECK
+                    printf("coeeff_idx[%d] is %d\n",idx,coeff_idx[idx]);
+    #endif
+                    /*****************************************************\
+                        check for continuous distribution. If continuous,
+                     set new array of percentiles.
+                     \*****************************************************/
+                    if (category > 1) /* continuous distribution encountered */
+                    {
+                        /* set percentiles in sd_global->omegas.omega_probs */
+                        base = 1.0 / (float) num_rvs;
+                        for (i = 0; i < num_rvs - 1; i++)
+                        {
+                            percentile += base;
+                            sd_global->omegas.omega_probs[idx][i] = percentile;
+                        }
+                    }
+                }
 
-			/****************************************************************\
-				7. load values for stochastic elements into array sd_global->omegas.omega_vals.
-			 If element is discrete, increment sd_global->omegas.num_vals[idx], else
-			 set sd_global->omegas.num_vals[idx] to num_rvs - 1.
+                /****************************************************************\
+                    7. load values for stochastic elements into array sd_global->omegas.omega_vals.
+                 If element is discrete, increment sd_global->omegas.num_vals[idx], else
+                 set sd_global->omegas.num_vals[idx] to num_rvs - 1.
 
-			 NOTE: This does not consider continuous r.v.'s for the rhs.
-			 \****************************************************************/
-			switch (category)
-			{
-			case 1: /* discrete distribution */
-				sd_global->omegas.omega_vals[idx][sd_global->omegas.num_vals[idx]] =
-						str_to_float(field3);
-				sd_global->omegas.omega_probs[idx][sd_global->omegas.num_vals[idx]] =
-						str_to_float(field4);
-				++sd_global->omegas.num_vals[idx];
-				break;
+                 NOTE: This does not consider continuous r.v.'s for the rhs.
+                 \****************************************************************/
+                switch (category)
+                {
+                case 1: /* discrete distribution */
+                    sd_global->omegas.omega_vals[idx][sd_global->omegas.num_vals[idx]] =
+                            str_to_float(field3);
+                    sd_global->omegas.omega_probs[idx][sd_global->omegas.num_vals[idx]] =
+                            str_to_float(field4);
+                    ++sd_global->omegas.num_vals[idx];
+                    break;
 
-			case 2: /* Normal distribution */
-				val1 = str_to_float(field3);
-				val2 = str_to_float(field4);
-				normal(sd_global->omegas.omega_probs[idx], num_rvs - 1,
-						sd_global->omegas.omega_vals[idx], val1, val2);
-				sd_global->omegas.num_vals[idx] = num_rvs - 1;
+                case 2: /* Normal distribution */
+                    val1 = str_to_float(field3);
+                    val2 = str_to_float(field4);
+                    normal(sd_global->omegas.omega_probs[idx], num_rvs - 1,
+                            sd_global->omegas.omega_vals[idx], val1, val2);
+                    sd_global->omegas.num_vals[idx] = num_rvs - 1;
 
-				/* set value to mean in lp prob. struct */
-				*mean_dest[idx] = val1;
-				break;
+                    /* set value to mean in lp prob. struct */
+                    *mean_dest[idx] = val1;
+                    break;
 
-			case 3: /* Exponential distribution */
-				val1 = str_to_float(field3);
-				exponential(sd_global->omegas.omega_probs[idx], num_rvs - 1,
-						sd_global->omegas.omega_vals[idx], val1);
-				sd_global->omegas.num_vals[idx] = num_rvs - 1;
+                case 3: /* Exponential distribution */
+                    val1 = str_to_float(field3);
+                    exponential(sd_global->omegas.omega_probs[idx], num_rvs - 1,
+                            sd_global->omegas.omega_vals[idx], val1);
+                    sd_global->omegas.num_vals[idx] = num_rvs - 1;
 
-				/* set value to mean in lp prob. struct */
-				*mean_dest[idx] = val1;
-				break;
+                    /* set value to mean in lp prob. struct */
+                    *mean_dest[idx] = val1;
+                    break;
 
-			case 4: /* Uniform distribution */
-				val1 = str_to_float(field3);
-				val2 = str_to_float(field4);
-				uniform(num_rvs - 1, sd_global->omegas.omega_vals[idx], val1,
-						val2);
-				sd_global->omegas.num_vals[idx] = num_rvs - 1;
+                case 4: /* Uniform distribution */
+                    val1 = str_to_float(field3);
+                    val2 = str_to_float(field4);
+                    uniform(num_rvs - 1, sd_global->omegas.omega_vals[idx], val1,
+                            val2);
+                    sd_global->omegas.num_vals[idx] = num_rvs - 1;
 
-				/* set value to mean in lp prob. struct */
-				*mean_dest[idx] = val1;
-				break;
-				/*
-				 case 5:		 Gamma distribution
-				 val1 = str_to_float(field3);
-				 val2 = str_to_float(field4);
-				 gamma(sd_global->omegas.omega_probs[idx], num_rvs - 1,
-				 sd_global->omegas.omega_vals[idx], val1, val2);
-				 sd_global->omegas.num_vals[idx] = num_rvs - 1;
-				 set value to mean in lp prob. struct
-				 *mean_dest[idx] = val1;	
-				 break; 
-				 */
+                    /* set value to mean in lp prob. struct */
+                    *mean_dest[idx] = val1;
+                    break;
+                    /*
+                     case 5:		 Gamma distribution
+                     val1 = str_to_float(field3);
+                     val2 = str_to_float(field4);
+                     gamma(sd_global->omegas.omega_probs[idx], num_rvs - 1,
+                     sd_global->omegas.omega_vals[idx], val1, val2);
+                     sd_global->omegas.num_vals[idx] = num_rvs - 1;
+                     set value to mean in lp prob. struct
+                     *mean_dest[idx] = val1;	
+                     break; 
+                     */
 
-			case 6: /* Geometric distribution */
-				val1 = str_to_float(field3);
-				geometric(sd_global->omegas.omega_probs[idx], num_rvs - 1,
-						sd_global->omegas.omega_vals[idx], val1);
-				/* call chg_to_deviation */
-				sd_global->omegas.num_vals[idx] = num_rvs - 1;
+                case 6: /* Geometric distribution */
+                    val1 = str_to_float(field3);
+                    geometric(sd_global->omegas.omega_probs[idx], num_rvs - 1,
+                            sd_global->omegas.omega_vals[idx], val1);
+                    /* call chg_to_deviation */
+                    sd_global->omegas.num_vals[idx] = num_rvs - 1;
 
-				/* set value to mean in lp prob. struct */
-				*mean_dest[idx] = val1;
-				break;
-			default:
-				break;
-			}
+                    /* set value to mean in lp prob. struct */
+                    *mean_dest[idx] = val1;
+                    break;
+                default:
+                    break;
+                }
+            }
+            else if (sto_type == BLOCKS_TYPE){
+                /* Add code here to deal with block type stoch input */
+                printf("Read BLOCKS line\n");
+                strcpy(OldBlockName, "");
+                Continue = 1;
+                BlockNum = -1;
+                SumProb  = 0.0;
+                high_block_cnt=0;
+                low_block_cnt=0;
+                low_block_omega_cnt=0;
+                sd_global->blocks.num_high_block = 0;
+                
+                if (!(sd_global->blocks.low_block_probs =
+                      (double **) mem_calloc(BLOCKSIZE, sizeof(double *))))
+                {
+                    printf("memory allocation error\n");
+                    return 0;
+                }
+                if (!(sd_global->blocks.omega_vals =
+                      (double ***) mem_calloc(BLOCKSIZE, sizeof(double **))))
+                {
+                    printf("memory allocation error\n");
+                    return 0;
+                }
+                
+                do{
+                    /* In this loop, all block variable will be read */
+                    if (fieldType == 'f') {
+                        if (strcmp(field1, "BL") == 0) {
+
+                            low_block_omega_cnt = 0;
+                            if (strcmp(field2, OldBlockName) != 0) {
+                                /* Now we know it is a new high block */
+                                high_block_cnt++;
+                                low_block_cnt = 0;
+                                low_block_cnt++;
+                                /* Check old block that probabilities sum to 1.0 */
+                                if (BlockNum != -1){
+                                    /* if old block exists */
+                                    if (fabs(SumProb - 1.0) > 1.0e-3) {
+                                        printf("ERROR: The probabilities for block '%s' ", OldBlockName);
+                                        printf("do not sum to 1.0.\n");
+                                    }
+                                }
+                                /* Otherwise, it is a new block name */
+
+                                if (high_block_cnt == 1) {
+                                    if (!(sd_global->blocks.num_low_block =
+                                          (sd_small *) mem_calloc(high_block_cnt, sizeof(sd_small))))
+                                    {
+                                        printf("memory allocation error\n");
+                                        return 0;
+                                    }
+                                    if (!(sd_global->blocks.num_omega_low_block =
+                                          (sd_small *) mem_calloc(high_block_cnt, sizeof(sd_small))))
+                                    {
+                                        printf("memory allocation error\n");
+                                        return 0;
+                                    }
+                                }
+                                else{
+                                    if (!(sd_global->blocks.num_low_block =
+                                          (sd_small *) mem_realloc(sd_global->blocks.num_low_block, (high_block_cnt) * sizeof(sd_small))))
+                                    {
+                                        printf("memory allocation error\n");
+                                        return 0;
+                                    }
+                                    if (!(sd_global->blocks.num_omega_low_block =
+                                          (sd_small *) mem_realloc(sd_global->blocks.num_omega_low_block, (high_block_cnt) * sizeof(sd_small))))
+                                    {
+                                        printf("memory allocation error\n");
+                                        return 0;
+                                    }
+                                }
+                                
+                                if (!(sd_global->blocks.low_block_probs[high_block_cnt-1] =
+                                      (double *) mem_calloc(low_block_cnt, sizeof(double))))
+                                {
+                                    printf("memory allocation error\n");
+                                    return 0;
+                                }
+
+                                SumProb = 0.0;
+                                strcpy(OldBlockName, field2);
+                                SumProb += str_to_float(field4);
+                                sd_global->blocks.low_block_probs[high_block_cnt-1][low_block_cnt-1] = str_to_float(field4);
+                                sd_global->blocks.num_high_block = high_block_cnt;
+                            }
+                            else{
+                                /* Now we know it is a new low block */
+                                low_block_cnt++;
+                                if (!(sd_global->blocks.low_block_probs[high_block_cnt-1] =
+                                      (double *) mem_realloc(sd_global->blocks.low_block_probs[high_block_cnt-1],
+                                                             (low_block_cnt) * sizeof(double))))
+                                {
+                                    printf("memory allocation error\n");
+                                    return 0;
+                                }
+                                
+                                sd_global->blocks.low_block_probs[high_block_cnt-1][low_block_cnt-1] = str_to_float(field4);
+                                SumProb += str_to_float(field4);
+                            }
+                            
+                            sd_global->blocks.num_low_block[high_block_cnt-1] = low_block_cnt;
+                            
+                            /* Since a new low block is added, expand the omega_val structure */
+                            if (low_block_cnt == 1) {
+                                if (!(sd_global->blocks.omega_vals[high_block_cnt-1] =
+                                      (double **) mem_calloc(low_block_cnt, sizeof(double *))))
+                                {
+                                    printf("memory allocation error\n");
+                                    return 0;
+                                }
+                            }
+                            else{
+                                if (!(sd_global->blocks.omega_vals[high_block_cnt-1] =
+                                      (double **) mem_realloc(sd_global->blocks.omega_vals[high_block_cnt-1],
+                                                              (low_block_cnt) * sizeof(double *))))
+                                {
+                                    printf("memory allocation error\n");
+                                    return 0;
+                                }
+                            }
+
+                            
+                        }
+                        else{ /* additional instance of previous block */
+                            /* Now we know it is a new instance of the current block */
+                            low_block_omega_cnt++;
+                            if (low_block_omega_cnt == 1) {
+                                if (!(sd_global->blocks.omega_vals[high_block_cnt-1][low_block_cnt-1] =
+                                      (double *) mem_calloc( low_block_omega_cnt, sizeof(double))))
+                                {
+                                    printf("memory allocation error\n");
+                                    return 0;
+                                }
+                            }
+                            else{
+                                if (!(sd_global->blocks.omega_vals[high_block_cnt-1][low_block_cnt-1] =
+                                      (double *) mem_realloc(sd_global->blocks.omega_vals[high_block_cnt-1][low_block_cnt-1],
+                                                             (low_block_omega_cnt) * sizeof(double))))
+                                {
+                                    printf("memory allocation error\n");
+                                    return 0;
+                                }
+                            }
+                            sd_global->blocks.num_omega_low_block[high_block_cnt-1] = low_block_omega_cnt;
+                            value1 = str_to_float(field3);
+                            sd_global->blocks.omega_vals[high_block_cnt-1][low_block_cnt-1][low_block_omega_cnt-1] = value1;
+                        }
+                    }
+                    else if (fieldType == 't'){
+                        Continue = 0;
+                        /* Set the file pointer to the last read record */
+                        status = fsetpos (stoch, &file_postition);
+                        break;
+                    }
+                    
+                    /* Remember the last line's location */
+                    status = fgetpos(stoch, &file_postition);
+                    get_line(&stoch, field1, field2, field3, field4, field5, field6,
+                             field7, &fieldType);
+                }while (1);
+            }
+            else{
+                err_msg("STOCH file wrong sto_type", "load_stoch()", "sto_type");
+            }
 		}
 	}
 
