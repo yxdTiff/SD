@@ -985,6 +985,8 @@ i_type compute_istar(int obs, one_cut *cut, sigma_type *sigma,
 	int sig_pi, del_pi;
 	int c, new_pisz;
 	i_type ans;
+	ans.delta = 0;
+	ans.sigma = 0;
 
 #ifdef LOOP
 	printf("Inside compute_istar\n");

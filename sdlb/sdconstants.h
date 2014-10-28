@@ -119,6 +119,8 @@ typedef CPXENVptr ENVptr;
 #define PARAM_SCRIND CPX_PARAM_SCRIND
 #define ON CPX_ON
 
+#define PARAM_PARALLELMODE CPX_PARAM_PARALLELMODE
+
 #define BASIC_SOLN       CPX_BASIC_SOLN
 ENVptr env;
 #endif
@@ -164,8 +166,8 @@ ENVptr *env;
 /************************************************************************\
                         OS Platform Options 
 \************************************************************************/
-#define SD_unix
-#undef SD_win
+#define SD_win
+#undef SD_unix
 
 #ifdef SD_unix
 #define sd_long long long

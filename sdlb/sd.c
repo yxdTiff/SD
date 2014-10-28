@@ -34,9 +34,13 @@
 #include "cuts.h"
 #include "sdglobal.h"
 #include "supomega.h"
-#include "unistd.h"
+
 #ifdef SD_win
 #include <windows.h>
+#include <io.h>
+#define F_OK 0
+#else
+#include "unistd.h"
 #endif
 void sd_create_resume_folder(sdglobal_type* sd_global, char *buffer3, char *buffer2, char *fname);
 BOOL sd_check_resume_folder(sdglobal_type* sd_global, char *fname);

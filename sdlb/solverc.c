@@ -105,8 +105,11 @@ void open_Solver(void)
 	}
 
 	/* Turn on output to the screen */
-
 	status = set_intparam(NULL, PARAM_SCRIND, ON);
+
+	/* Set parallel switch on */
+	status = set_intparam(env, PARAM_PARALLELMODE, -1);
+
 	if (status)
 	{
 		fprintf(stderr, "Failed to turn on screen indicator, error %d.\n",
