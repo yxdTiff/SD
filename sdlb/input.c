@@ -1304,7 +1304,7 @@ int copy_names(char **x_name, char ***xname, char **xstore, unsigned *xstorsz,
  **	structure will also be used for the decomposition of the constraint
  **	matrix following the running of the main problem in cplex.
  \**********************************************************************/
-
+/* !!! something wrong is going here, at least for 4node and 20term */
 int load_time(sd_small *row_num, sd_small *col_num, identity *ident, char *fname)
 {
 	FILE *time;
