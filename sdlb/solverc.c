@@ -213,7 +213,6 @@ BOOL setup_problem(one_problem *current)
 	 */
 
 	current->lp = CPXcreateprob(env, &status, current->name);
-
 	if ((status = CPXcopylpwnames(env, current->lp, current->mac, current->mar,
 			current->objsen, current->objx, current->rhsx, current->senx,
 			current->matbeg, current->matcnt, current->matind, current->matval,

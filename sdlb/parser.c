@@ -257,6 +257,12 @@ int title(char *input_str, char *field1, char *field2)
 		}
 	}
 
+	/* Terminate field1  added by Yifan, this bug could potentially damage memeroy around field1*/
+	if (last_field == 1)
+	{
+		field1[endpt] = '\0';
+	}
+
 	/* Terminate field2 */
 	if (last_field == 2)
 	{
