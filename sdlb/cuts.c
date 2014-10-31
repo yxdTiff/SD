@@ -62,6 +62,8 @@
 #include <float.h>
 #include <stdlib.h>
 #include <time.h>
+clock_t TX_start, TX_end, TX_accu, TX_accu0;
+clock_t PTbar_start, PTbar_end, PTbar_accu;
 
 /*
  **  WAIT!  cuts->cnt is NOT the same as num_samples, or cell->k.
@@ -99,13 +101,19 @@ void form_new_cut(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 
 	cut = new_cut(p->num->mast_cols, s->omega->most, c->k);
 
+	TX_start = clock();
 	stochastic_updates(sd_global, c, c->lambda, c->sigma, s->delta, s->omega,
 			p->num, p->Rbar, p->Tbar, c->subprob, s->Pi, omeg_idx, new_omega);
+	TX_end = clock();
+	TX_accu0 += (TX_end - TX_start);
 
+	TX_start = clock();
 	SD_cut(sd_global, p, c, s, c->sigma, s->delta, s->omega, p->num, cut, s->candid_x,
 			s->pi_ratio, s->max_ratio, s->min_ratio, c->k,
 			s->dual_statble_flag);
-    
+	TX_end = clock();
+	TX_accu += (TX_end - TX_start);
+
     add_cut(sd_global, cut, p, c, s);
 
 	/* Print all the cuts after adding a cut, for the purpose of cut index
@@ -534,6 +542,7 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 			pi_Tbar_x[cnt] += sigma->val[cnt].T[c] * Xvect[sigma->col[c]];
 	}
 
+
 	/* Assume the cut's fields were initialized to zero.  */
     temp_max = 0.0;
 	/* Yifan 03/20/2012 Test for omega issues*/
@@ -546,11 +555,13 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 				//printf("\n This is iteration c->k: %d \n",num_samples);
 				//istar = compute_istar(obs, cut, sigma, delta, Xvect, num, pi_Tbar_x, argmax_all, FALSE, num_samples);
 				//printf("This is argmax OSD for obs %d : %f and istar(%d,%d)\n", obs, *argmax_all, istar.sigma, istar.delta);
-
+				PTbar_start = clock();
 				istar_old = compute_istar(obs, cut, sigma, delta, Xvect, num,
 						pi_Tbar_x, argmax_old, pi_eval_flag, num_samples);
 				istar_new = compute_new_istar(obs, cut, sigma, delta, Xvect,
 						num, pi_Tbar_x, argmax_new, num_samples);
+				PTbar_end = clock();
+				PTbar_accu += (PTbar_end - PTbar_start);
 				if (*argmax_new > *argmax_old)
 				{
 					*argmax_all = *argmax_new;
@@ -987,6 +998,8 @@ i_type compute_istar(int obs, one_cut *cut, sigma_type *sigma,
 	i_type ans;
 	ans.delta = 0;
 	ans.sigma = 0;
+	int sig_idx,a_sig_cnt = 0;
+
 
 #ifdef LOOP
 	printf("Inside compute_istar\n");
@@ -1004,6 +1017,18 @@ i_type compute_istar(int obs, one_cut *cut, sigma_type *sigma,
 
 	*argmax = -DBL_MAX;
 
+	if (sigma->cnt >= 2000){
+		for (sig_pi = 0; sig_pi < sigma->cnt; sig_pi++)
+		{
+			if (sigma->ck[sig_pi] <= ictr){
+				a_sig_cnt++;
+				sig_idx = sig_pi;
+			}
+
+		}
+		printf("a_sig_cnt:%d; sig_idx:%d\n",a_sig_cnt, sig_idx);
+	}
+
 	/*added by Yifan to enable parallel process*/
 // #pragma omp for private(sig_pi,del_pi, arg)
 	for (sig_pi = 0; sig_pi < sigma->cnt; sig_pi++)
@@ -1018,10 +1043,8 @@ i_type compute_istar(int obs, one_cut *cut, sigma_type *sigma,
 					- Pi_Tbar_X[sig_pi];
 
 			/* Subtract (Pi x Tomega) x X. Multiply only non-zero VxT values */
-
 			for (c = 1; c <= num->rv_cols; c++)
 				arg -= delta->val[del_pi][obs].T[c] * Xvect[delta->col[c]];
-
 #ifdef LOOP
 			print_sigma(sigma, num, sig_pi);
 			print_delta(delta, num, del_pi, obs);
@@ -1083,8 +1106,11 @@ i_type compute_new_istar(int obs, one_cut *cut, sigma_type *sigma,
 					- Pi_Tbar_X[sig_pi];
 
 			/* Subtract (Pi x Tomega) x X. Multiply only non-zero VxT values */
+
 			for (c = 1; c <= num->rv_cols; c++)
 				arg -= delta->val[del_pi][obs].T[c] * Xvect[delta->col[c]];
+
+
 
 #ifdef LOOP
 			print_sigma(sigma, num, sig_pi);

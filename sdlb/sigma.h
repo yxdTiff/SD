@@ -14,7 +14,10 @@ int calc_sigma(sdglobal_type* sd_global, cell_type *c, sigma_type *sigma,
 		int lamb_idx, BOOL new_lamb, BOOL *new_sigma);
 sigma_type *new_sigma(int num_iter, int num_nz_cols, int num_pi,
 		coord_type *coord);
+sigma_type *new_sigma_cuda(int num_iter, int num_nz_cols, int num_pi,
+	coord_type *coord);
 void free_sigma(sigma_type *sigma);
+void free_sigma_cuda(sigma_type *sigma);
 void print_sigma(sigma_type *sigma, num_type *num, int idx);
 void write_sigma(FILE *fptr, sigma_type *sigma, num_type *num);
 

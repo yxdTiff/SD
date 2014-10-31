@@ -107,8 +107,11 @@ void open_Solver(void)
 	/* Turn on output to the screen */
 	status = set_intparam(NULL, PARAM_SCRIND, ON);
 
-	/* Set parallel switch on */
-	status = set_intparam(env, PARAM_PARALLELMODE, -1);
+	/* Set parallel switch to auto */
+	status = set_intparam(env, PARAM_PARALLELMODE, 0);
+	
+	/* Choose number of threads used for barrier (default) */
+	status = set_intparam(env, CPX_PARAM_THREADS, 0);
 
 	if (status)
 	{
@@ -345,7 +348,7 @@ BOOL solve_problem(sdglobal_type* sd_global, one_problem *p)
 	{
 		/*turn_off_presolve: if(p->feaflag == FALSE && pre_solve == TRUE) {pre_stat = CPXsetintparam (env, CPX_PARAM_PREIND, CPX_OFF); pre_solve = FALSE;}*/
 		change_solver_primal(p);
-		CPXsetintparam(env, CPX_PARAM_PREIND, CPX_OFF);
+		CPXsetintparam(env, CPX_PARAM_PREIND, CPX_ON);
 		ans = !CPXlpopt(env, p->lp);
 		CPXsetintparam(env, CPX_PARAM_PREIND, CPX_ON);
 	}

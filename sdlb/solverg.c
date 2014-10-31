@@ -572,6 +572,16 @@ BOOL change_coef(one_problem *p, sparse_matrix *coef)
 }
 
 
+/* This function will change a singel coefficient of the problem -- added by Yifan Oct 30, 2014, need checks*/
+BOOL change_single_coef(one_problem *p, int row, int col, double coef)
+{
+	int status;
+	status = GRBchgcoeffs((GRBmodel*)p->lp, 1, &row, &col, &coef);
+	return (status == 0 ? TRUE : FALSE);
+}
+
+
+
 /***********************************************************************\
  ** This function will change the coefficients of one column of the
  ** constraint matrix (or the right hand side if column is specified as -1)

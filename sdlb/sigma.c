@@ -31,6 +31,7 @@
 #include "log.h"
 #include "sdglobal.h"
 
+
 /***********************************************************************\
 ** This function calculates Pi X R and Pi X T for a new Pi.  Then it
  ** compares these results to all previous calculations of Pi X R and 
@@ -172,6 +173,32 @@ sigma_type *new_sigma(int num_iter, int num_nz_cols, int num_pi,
 	return sigma;
 }
 
+sigma_type *new_sigma_cuda(int num_iter, int num_nz_cols, int num_pi,
+	coord_type *coord)
+{
+	sigma_type *sigma;
+	int cnt;
+
+#ifdef TRACE
+	printf("Inside new_sigma\n");
+#endif
+	cudaMallocManaged(&sigma, sizeof(sigma_type),1);
+
+	cudaMallocManaged(&(sigma->lamb), num_iter*sizeof(int),1);
+
+	cudaMallocManaged(&(sigma->ck), num_iter*sizeof(int),1);
+
+	cudaMallocManaged(&(sigma->val), num_iter*sizeof(pi_R_T_type),1);
+
+	for (cnt = 0; cnt < num_pi && cnt < num_iter; cnt++)
+		cudaMallocManaged(&(sigma->val[cnt].T), (num_nz_cols + 1)*sizeof(double),1);
+
+	sigma->col = coord->sigma_col;
+	sigma->cnt = num_pi;
+
+	return sigma;
+}
+
 /***********************************************************************\
 ** This function frees all the data associated with the sigma
  ** structure, including every Pi x Tbar vector.  It then frees
@@ -193,6 +220,23 @@ void free_sigma(sigma_type *sigma)
 		mem_free(sigma->val[cnt].T);
 	mem_free(sigma->val);
 	mem_free(sigma);
+}
+
+void free_sigma_cuda(sigma_type *sigma)
+{
+	int cnt;
+
+#ifdef TRACE
+	printf("Inside free_sigma\n");
+#endif
+
+	cudaFree(sigma->lamb);
+	cudaFree(sigma->ck);
+	//added by Yifan to clean iteration number(c->k) records
+	for (cnt = 0; cnt < sigma->cnt; cnt++)
+		cudaFree(sigma->val[cnt].T);
+	cudaFree(sigma->val);
+	cudaFree(sigma);
 }
 
 /***********************************************************************\

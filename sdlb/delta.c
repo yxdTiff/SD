@@ -239,6 +239,22 @@ delta_type *new_delta(int num_iter, coord_type *coord)
 	return d;
 }
 
+delta_type *new_delta_cuda(int num_iter, coord_type *coord)
+{
+	delta_type *d;
+
+#ifdef TRACE
+	printf("Inside new_delta_cuda\n");
+#endif
+
+	cudaMallocManaged(&d, sizeof(delta_type), 1);
+
+	cudaMallocManaged(&(d->val), num_iter*sizeof(pi_R_T_type*), 1);
+	d->col = coord->delta_col;
+
+	return d;
+}
+
 /***********************************************************************\
 ** This function frees all the data associated with the delta
  ** three-dimensional matrix.  Since the size of the matrix is
@@ -264,3 +280,22 @@ void free_delta(delta_type *delta, omega_type *omega, int num_lamb)
 	}mem_free(delta->val);
 	mem_free(delta);
 }
+
+void free_delta_cuda(delta_type *delta, omega_type *omega, int num_lamb)
+{
+	int cnt, idx;
+
+#ifdef TRACE
+	printf("Inside free_delta_cuda\n");
+#endif
+
+	for (cnt = 0; cnt < num_lamb; cnt++)
+	{
+		for (idx = 0; idx < omega->most; idx++)
+			if (valid_omega_idx(omega, idx))
+				cudaFree(delta->val[cnt][idx].T);
+		cudaFree(delta->val[cnt]);
+	}cudaFree(delta->val);
+	cudaFree(delta);
+}
+

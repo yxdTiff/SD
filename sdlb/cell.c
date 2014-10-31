@@ -38,6 +38,7 @@
 #include <limits.h> 
 
 FILE *fix;
+extern clock_t TX_accu, TX_accu0, PTbar_accu;
 /************************************************************************\
 ** This function represents the SD algorithm, as solved for a
  ** single cell.  It creates temporary data structures required for
@@ -577,11 +578,11 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 				soln->run_time->soln_master_iter,
 				soln->run_time->soln_subprob_iter,
 				soln->run_time->full_test_iter, soln->run_time->argmax_iter);
-		fprintf(time_file, "%lf\t %lf\t %lf\t %lf\t %lf\n",
+		fprintf(time_file, "%lf\t %lf\t %lf\t %lf\t %lf \t %lf \t %lf \t %lf\n",
 				soln->run_time->iteration_accum,
 				soln->run_time->soln_master_accum,
 				soln->run_time->soln_subprob_accum,
-				soln->run_time->full_test_accum, soln->run_time->argmax_accum);
+				soln->run_time->full_test_accum, soln->run_time->argmax_accum, ((double)TX_accu0) / CLOCKS_PER_SEC, ((double)TX_accu) / CLOCKS_PER_SEC, ((double)PTbar_accu) / CLOCKS_PER_SEC);
 
 		//}
 	}
@@ -818,14 +819,14 @@ cell_type *new_cell(sdglobal_type* sd_global, prob_type *p, int id_num)
 	/* Yifan 06/18/2012 batch mean */
 	c->cuts = new_cuts(p->num->iter, p->num->mast_cols, 0);
 	c->lambda = new_lambda(length, 0, p->num->rv_rows, p->coord);
-	c->sigma = new_sigma(length, p->num->nz_cols, 0, p->coord);
+	c->sigma = new_sigma_cuda(length, p->num->nz_cols, 0, p->coord);
 	c->theta = new_theta(0);
 
 	/* Yifan 03/04/2012 Updated for Feasibility Cuts*/
 	c->feasible_cuts_pool = new_cuts(p->num->iter, p->num->mast_cols, 0);
 	c->feasible_cuts_added = new_cuts(p->num->iter, p->num->mast_cols, 0);
 	c->feasible_lambda = new_lambda(length, 0, p->num->rv_rows, p->coord);
-	c->feasible_sigma = new_sigma(length, p->num->nz_cols, 0, p->coord);
+	c->feasible_sigma = new_sigma_cuda(length, p->num->nz_cols, 0, p->coord);
 	c->feasible_theta = new_theta(0);
 	/* Yifan 03/04/2012 Updated for Feasibility Cuts*/
 
@@ -854,7 +855,7 @@ void free_cell(cell_type *c, num_type *num)
 	/* Avoid freeing the cuts structure for compromise problem Yifan 2013/01/17 */
 	//free_cuts(c->cuts);
 	free_lambda(c->lambda);
-	free_sigma(c->sigma);
+	free_sigma_cuda(c->sigma);
 	free_theta(c->theta);
 
 	/* modified by Yifan 2013.05.05 */
@@ -867,7 +868,7 @@ void free_cell(cell_type *c, num_type *num)
 	 mem_free(c->feasible_cuts_added);*/
 
 	free_lambda(c->feasible_lambda);
-	free_sigma(c->feasible_sigma);
+	free_sigma_cuda(c->feasible_sigma);
 	free_theta(c->feasible_theta);
 	/* Yifan 03/04/2012 Updated for Feasibility Cuts*/
 

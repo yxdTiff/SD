@@ -308,10 +308,8 @@ vector PIxT(vector pi_k, sparse_matrix *T, int length)
 vector TxX(sparse_matrix *T, vector X, vector ans)
 {
 	int cnt;
-
 	for (cnt = 1; cnt <= T->cnt; cnt++)
 		ans[T->row[cnt]] -= T->val[cnt] * X[T->col[cnt]];
-
 	return ans;
 }
 

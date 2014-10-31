@@ -5,6 +5,8 @@
  *      Author: lian
  */
 
+
+
 #ifndef SDCONSTANTS_H_
 #define SDCONSTANTS_H_
 
@@ -178,6 +180,11 @@ ENVptr *env;
 #endif
 
 /************************************************************************\
+**           GPU Computation Support CUDA  2014.1030  Yifan
+\************************************************************************/
+#define SD_CUDA
+
+/************************************************************************\
 **			Macro Definitions
  \************************************************************************/
 
@@ -250,7 +257,6 @@ ENVptr *env;
  **
  */
 #define mem_malloc(n) log_alloc("malloc : " #n,malloc((n)), (n))
-
 /*
  ** Returns a pointer to reallocated memory of new size _n_ from location _ptr_
  ** Also logs information about the memory allocated.

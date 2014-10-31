@@ -207,10 +207,10 @@ soln_type * new_soln(sdglobal_type* sd_global, prob_type *p, vector x_k)
 
 	length = p->num->iter + p->num->iter / p->tau + 1;
 	s->omega = new_omega(p->num->iter, p->num->rv, p->coord);
-	s->delta = new_delta(length, p->coord);
+	s->delta = new_delta_cuda(length, p->coord);
 
 	/* Yifan 03/04/2012 Updated for Feasibility Cuts*/
-	s->feasible_delta = new_delta(length, p->coord);
+	s->feasible_delta = new_delta_cuda(length, p->coord);
 
 	/* Make initial allocation of the x vectors -- not freed until the end */
 	s->incumb_x = duplic_arr(x_k, p->num->mast_cols);
@@ -270,9 +270,9 @@ void free_soln(prob_type *p, cell_type *c, soln_type *s)
 #ifdef TRACE
 	printf("Inside free_soln\n");
 #endif
-	free_delta(s->delta, s->omega, c->lambda->cnt);
+	free_delta_cuda(s->delta, s->omega, c->lambda->cnt);
 	/* Yifan 03/04/2012 Updated for Feasibility Cuts*/
-	free_delta(s->feasible_delta, s->omega, c->feasible_lambda->cnt);
+	free_delta_cuda(s->feasible_delta, s->omega, c->feasible_lambda->cnt);
 	/* Yifan 03/04/2012 Updated for Feasibility Cuts*/
 	free_omega(s->omega);
 	mem_free(s->run_time);
