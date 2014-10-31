@@ -58,13 +58,13 @@
 #include "sdglobal.h"
 #include "quad.h"
 #include "master.h"
+#include "istar.h"
 
 #include <float.h>
 #include <stdlib.h>
 #include <time.h>
 clock_t TX_start, TX_end, TX_accu, TX_accu0;
 clock_t PTbar_start, PTbar_end, PTbar_accu;
-
 /*
  **  WAIT!  cuts->cnt is NOT the same as num_samples, or cell->k.
  ** you must use cuts->cnt when accessing the cuts array, since it

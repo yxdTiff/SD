@@ -854,7 +854,7 @@ void sd_mv_output_files(char *fname)
     printf("Your instance's name is: %S\n", inst_dir);
     wcscat(path,L"\\");
     wcscat(path,inst_dir);
-    printf("Your instance SD Result directory is: %S\n", path);
+    printf("Your instance's SD Result directory is: %S\n", path);
     CreateDirectory(path,NULL);
     
   	wcscpy(buff, path);

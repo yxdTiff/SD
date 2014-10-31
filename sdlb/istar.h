@@ -1,0 +1,1 @@
+__global__ void compute_istar_cuda(int *c, const int *a, const int *b);
