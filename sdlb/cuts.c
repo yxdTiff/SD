@@ -546,9 +546,14 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 			&& !(num_samples % sd_global->config.PI_CYCLE))
 		pi_eval_flag = TRUE; //modified by Yifan for testing
 
+#ifndef SD_CUDA
 	/* Need to store  Pi x Tbar x X independently of observation loop */
 	if (!(pi_Tbar_x = arr_alloc(sigma->cnt, double)))
 		err_msg("Allocation", "SD_cut", "pi_Tbar_x");
+#else
+	/* So we need the CUDA version (i.e. Unified Memory) of pi_Tbar_x  */
+	cudaMallocManaged(&pi_Tbar_x, sigma->cnt*sizeof(double), 1);
+#endif
     
     
 	/* Calculate (Pi x Tbar) x X by mult. each VxT by X, one at a time */
@@ -741,7 +746,12 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 	for (c = 1; c <= num->mast_cols; c++)
 		cut->beta[c] /= num_samples;
 
+#ifndef SD_CUDA
 	mem_free(pi_Tbar_x);
+#else
+	cudaFree(pi_Tbar_x);
+#endif
+
 	mem_free(argmax_all);
 	mem_free(argmax_new);
 	mem_free(argmax_old);
