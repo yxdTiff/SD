@@ -594,7 +594,9 @@ else
     sd_mv_output_files(buffer1, buffer2, fname);
 #endif
 
+#ifdef SD_CUDA
 	cudaDeviceReset();
+#endif
 	return 0;
 }
 

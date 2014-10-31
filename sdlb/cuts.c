@@ -479,7 +479,6 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 	int c, cnt;
 	int obs; /* Observation of omega being used */
     int start_position;
-	i_type istar; /* Index to optimizing Pi's */
 	vector pi_Tbar_x; /* Array of PixTbarxX scalars for all Pi */
 	BOOL pi_eval_flag = FALSE; /*TRUE for testing the impact of the new PI's */
 	double *argmax_all; /*added by Yifan to calcuate argmax for new PI's and old PI's seperately*/
@@ -491,9 +490,27 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 	double vari = 1.0;
     double temp_max = -10^20;
     int scan_len[3];
+	i_type istar; /* Index to optimizing Pi's */
 	i_type istar_new;
 	i_type istar_old;
 	FILE *fptr;
+
+	/* Pointers for CUDA implementation */
+	
+	i_type *istar_cuda; /* Index to optimizing Pi's */
+	i_type *istar_new_cuda;
+	i_type *istar_old_cuda;
+	cudaMallocManaged(&istar_cuda, omega->most * sizeof(i_type), 1);
+	cudaMallocManaged(&istar_new_cuda, omega->most * sizeof(i_type), 1);
+	cudaMallocManaged(&istar_old_cuda, omega->most * sizeof(i_type), 1);
+
+	double *argmax_all_cuda;
+	double *argmax_new_cuda;
+	double *argmax_old_cuda;
+	cudaMallocManaged(&argmax_all_cuda, omega->most * sizeof(double), 1);
+	cudaMallocManaged(&argmax_new_cuda, omega->most * sizeof(double), 1);
+	cudaMallocManaged(&argmax_old_cuda, omega->most * sizeof(double), 1);
+
 #ifdef RECOURSE_OBJ
 	FILE *subobj_ptr; /* by Yifan 02/02/12 */
 #endif
@@ -732,6 +749,13 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 	{
 		mem_free(beta);
 	}
+
+	cudaFree(istar_cuda);
+	cudaFree(istar_new_cuda);
+	cudaFree(istar_old_cuda);
+	cudaFree(argmax_all_cuda);
+	cudaFree(argmax_new_cuda);
+	cudaFree(argmax_old_cuda);
 #ifdef TRACE
 	printf("Exiting SD_cut\n");
 #endif
@@ -1017,17 +1041,17 @@ i_type compute_istar(int obs, one_cut *cut, sigma_type *sigma,
 
 	*argmax = -DBL_MAX;
 
-	if (sigma->cnt >= 2000){
-		for (sig_pi = 0; sig_pi < sigma->cnt; sig_pi++)
-		{
-			if (sigma->ck[sig_pi] <= ictr){
-				a_sig_cnt++;
-				sig_idx = sig_pi;
-			}
+	//if (sigma->cnt >= 2000){
+	//	for (sig_pi = 0; sig_pi < sigma->cnt; sig_pi++)
+	//	{
+	//		if (sigma->ck[sig_pi] <= ictr){
+	//			a_sig_cnt++;
+	//			sig_idx = sig_pi;
+	//		}
 
-		}
-		printf("a_sig_cnt:%d; sig_idx:%d\n",a_sig_cnt, sig_idx);
-	}
+	//	}
+	//	printf("a_sig_cnt:%d; sig_idx:%d\n",a_sig_cnt, sig_idx);
+	//}
 
 	/*added by Yifan to enable parallel process*/
 // #pragma omp for private(sig_pi,del_pi, arg)
