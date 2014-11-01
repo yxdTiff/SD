@@ -216,7 +216,11 @@ soln_type * new_soln(sdglobal_type* sd_global, prob_type *p, vector x_k)
 	s->incumb_x = duplic_arr(x_k, p->num->mast_cols);
 	s->incumb_d = duplic_arr(x_k, p->num->mast_cols); /* modified by Yifan 2012.09.23 */
 	s->incumb_avg = duplic_arr(x_k, p->num->mast_cols); /* modified by Yifan 2012.09.23 */
+#ifndef SD_CUDA
 	s->candid_x = duplic_arr(x_k, p->num->mast_cols);
+#else
+	cudaMallocManaged(&(s->candid_x), (p->num->mast_cols + 1)*sizeof(double), 1);
+#endif
 
 	/* Initial allocation for the subproblem dual vector, including 1-norm */
 	s->Pi = arr_alloc(p->num->sub_rows+1, double);
@@ -297,7 +301,11 @@ void free_soln(prob_type *p, cell_type *c, soln_type *s)
 	/* modified by Yifan 2012.09.28 */
 	mem_free(s->Batch_dj);
 	/* modified by Yifan 2012.09.28 */
+#ifndef SD_CUDA
 	mem_free(s->candid_x);
+#else
+	cudaFree(s->candid_x);
+#endif
 	mem_free(s->pi_ratio);
 	/* added by Yifan, 09/27/2011*/
 	mem_free(s->Pi);

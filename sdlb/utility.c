@@ -166,6 +166,20 @@ double *reduce_vect(double *f_vect, int *row, int num_elem)
 	return s_vect;
 }
 
+double *reduce_vect_cuda(double *f_vect, int *row, int num_elem)
+{
+	int cnt;
+	double *s_vect;
+
+	cudaMallocManaged(&s_vect, (num_elem + 1)*sizeof(double), 1);
+
+	for (cnt = 1; cnt <= num_elem; cnt++)
+		s_vect[cnt] = f_vect[row[cnt]];
+	s_vect[0] = one_norm(s_vect + 1, num_elem);
+
+	return s_vect;
+}
+
 /* CALLER: DONT FORGET TO FREE THE ORIGINAL FULL VECTOR !! !! !! !! */
 
 void print_num(sdglobal_type* sd_global, num_type *num)
@@ -274,6 +288,7 @@ vector PIxT(vector pi_k, sparse_matrix *T, int length)
 
 	if (!(pi_T = arr_alloc(length+1, double)))
 		err_msg("Allocation", "PIxT", "pi_T");
+
     
     
 //#pragma omp parallel for private(cnt, a) num_threads(2)

@@ -64,8 +64,12 @@ void calc_delta_row(sdglobal_type* sd_global, delta_type *delta,
 	/* Initialize all vectors for calculations */
 	init_R_T_omega(&Romega, &Tomega, omega, num);
 
+#ifndef SD_CUDA
 	if (!(delta->val[pi_idx] = arr_alloc(num->iter, pi_R_T_type)))
 		err_msg("Allocation", "calc_delta_row", "delta->val");
+#else
+	cudaMallocManaged(&(delta->val[pi_idx]), num->iter * sizeof(pi_R_T_type), 1);
+#endif
 
 	lamb_pi = expand_vect(lambda->val[pi_idx], lambda->row, num->rv_rows,
 			num->sub_rows);
@@ -80,7 +84,7 @@ void calc_delta_row(sdglobal_type* sd_global, delta_type *delta,
 			/* Reduce the vector resulting from Pi x T to its sparse form */
 			delta->val[pi_idx][obs].R = PIxR(lamb_pi, &Romega);
 			pi_cross_T = PIxT(lamb_pi, &Tomega, num->mast_cols);
-			delta->val[pi_idx][obs].T = reduce_vect(pi_cross_T, delta->col,
+			delta->val[pi_idx][obs].T = reduce_vect_cuda(pi_cross_T, delta->col,
 					num->rv_cols);
 			mem_free(pi_cross_T);
 		}
@@ -125,8 +129,7 @@ void calc_delta_col(sdglobal_type* sd_global, delta_type *delta,
 		/* Reduce PIxT from its full vector form into a sparse vector */
 		delta->val[pi_idx][obs].R = PIxR(lamb_pi, &Romega);
 		pi_cross_T = PIxT(lamb_pi, &Tomega, num->mast_cols);
-		delta->val[pi_idx][obs].T = reduce_vect(pi_cross_T, delta->col,
-				num->rv_cols);
+		delta->val[pi_idx][obs].T = reduce_vect_cuda(pi_cross_T, delta->col, num->rv_cols);
 		mem_free(pi_cross_T);
 		mem_free(lamb_pi);
 		/*

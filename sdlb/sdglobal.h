@@ -11,12 +11,6 @@
 #include "time.h"
 #include <stdlib.h>
 
-/* added by Yifan for CUDA */
-#ifdef SD_CUDA
-#include <cuda.h>
-#include <cuda_runtime.h>				// Stops underlining of __global__
-#include <device_launch_parameters.h>	// Stops underlining of threadIdx etc.
-#endif
 
 typedef enum
 {

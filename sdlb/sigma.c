@@ -66,7 +66,7 @@ int calc_sigma(sdglobal_type* sd_global, cell_type *c, sigma_type *sigma,
 	pi_R = PIxR(pi_k, Rbar) + Mu_R;
 
 	temp = PIxT(pi_k, Tbar, num->mast_cols);
-	pi_T = reduce_vect(temp, sigma->col, num->nz_cols);
+	pi_T = reduce_vect_cuda(temp, sigma->col, num->nz_cols);
 	mem_free(temp);
 
 	if (!new_lamb)
@@ -84,7 +84,11 @@ int calc_sigma(sdglobal_type* sd_global, cell_type *c, sigma_type *sigma,
 				{
 					if (sigma->lamb[cnt] == lamb_idx)
 					{
+#ifndef SD_CUDA
 						mem_free(pi_T);
+#else
+						cudaFree(pi_T);
+#endif
 						*new_sigma = FALSE;
 						return cnt;
 					}

@@ -14,6 +14,7 @@ BOOL encode(int *plain, one_key *key, int *cipher, int len);
 BOOL equal_arr(double *a, double *b, int len, double tolerance);
 double *duplic_arr(double *a, int len);
 double *reduce_vect(double *f_vect, int *row, int num_elem);
+double *reduce_vect_cuda(double *f_vect, int *row, int num_elem);
 double calc_var(sdglobal_type* sd_global, double *x, double *mean_value,
 		double *stdev_value, int batch_size);
 double calc_pi_var(sdglobal_type* sd_global, double *x, int start, int length);

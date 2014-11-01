@@ -58,11 +58,18 @@
 #include "sdglobal.h"
 #include "quad.h"
 #include "master.h"
-#include "istar.h"
 
 #include <float.h>
 #include <stdlib.h>
 #include <time.h>
+
+#include "sdglobal.h"
+
+#include <cuda_runtime.h>
+
+extern void CudaMain(void);
+extern void launch_kernel(sigma_type *sigma, delta_type *delta, i_type *istar, double *argmax, vector pi_Tbar_x, vector Xvect, int rv_cols, int ictr, int count);
+
 clock_t TX_start, TX_end, TX_accu, TX_accu0;
 clock_t PTbar_start, PTbar_end, PTbar_accu;
 /*
@@ -500,16 +507,16 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 	i_type *istar_cuda; /* Index to optimizing Pi's */
 	i_type *istar_new_cuda;
 	i_type *istar_old_cuda;
-	cudaMallocManaged(&istar_cuda, omega->most * sizeof(i_type), 1);
-	cudaMallocManaged(&istar_new_cuda, omega->most * sizeof(i_type), 1);
-	cudaMallocManaged(&istar_old_cuda, omega->most * sizeof(i_type), 1);
+	cudaMallocManaged(&istar_cuda, (omega->most+1) * sizeof(i_type), 1);
+	cudaMallocManaged(&istar_new_cuda, (omega->most+1) * sizeof(i_type), 1);
+	cudaMallocManaged(&istar_old_cuda, (omega->most+1) * sizeof(i_type), 1);
 
 	double *argmax_all_cuda;
 	double *argmax_new_cuda;
 	double *argmax_old_cuda;
-	cudaMallocManaged(&argmax_all_cuda, omega->most * sizeof(double), 1);
-	cudaMallocManaged(&argmax_new_cuda, omega->most * sizeof(double), 1);
-	cudaMallocManaged(&argmax_old_cuda, omega->most * sizeof(double), 1);
+	cudaMallocManaged(&argmax_all_cuda, (omega->most+1) * sizeof(double), 1);
+	cudaMallocManaged(&argmax_new_cuda, (omega->most+1) * sizeof(double), 1);
+	cudaMallocManaged(&argmax_old_cuda, (omega->most+1) * sizeof(double), 1);
 
 #ifdef RECOURSE_OBJ
 	FILE *subobj_ptr; /* by Yifan 02/02/12 */
@@ -564,6 +571,30 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 			pi_Tbar_x[cnt] += sigma->val[cnt].T[c] * Xvect[sigma->col[c]];
 	}
 
+	int count = omega->most;
+	int ictr;
+	if (pi_eval_flag == TRUE){
+		ictr = num_samples - (num_samples / 10 + 1);
+	}
+	else{
+		ictr = num_samples;
+	}
+
+	if (count >= 10){
+		launch_kernel(sigma, delta, istar_old_cuda, argmax_old_cuda, pi_Tbar_x, Xvect, num->rv_cols, ictr, count);
+		printf("------------------------------------------------------------------------------------");
+		printf("\nistar_old_cuda[0]: %d, %d\n", istar_old_cuda[0].sigma, istar_old_cuda[0].delta);
+		printf("argmax_old_cuda[0]: %f\n", argmax_old_cuda[0]);
+		printf("istar_old_cuda[1]: %d, %d\n", istar_old_cuda[1].sigma, istar_old_cuda[1].delta);
+		printf("argmax_old_cuda[1]: %f\n", argmax_old_cuda[1]);
+		printf("istar_old_cuda[2]: %d, %d\n", istar_old_cuda[2].sigma, istar_old_cuda[2].delta);
+		printf("argmax_old_cuda[2]: %f\n", argmax_old_cuda[2]);
+		printf("istar_old_cuda[3]: %d, %d\n", istar_old_cuda[3].sigma, istar_old_cuda[3].delta);
+		printf("argmax_old_cuda[3]: %f\n", argmax_old_cuda[3]);
+		printf("istar_old_cuda[4]: %d, %d\n", istar_old_cuda[4].sigma, istar_old_cuda[4].delta);
+		printf("argmax_old_cuda[4]: %f\n\n\n\n", argmax_old_cuda[4]);
+	}
+
 
 	/* Assume the cut's fields were initialized to zero.  */
     temp_max = 0.0;
@@ -580,6 +611,12 @@ void SD_cut(sdglobal_type* sd_global,prob_type *prob, cell_type *cell, soln_type
 				PTbar_start = clock();
 				istar_old = compute_istar(obs, cut, sigma, delta, Xvect, num,
 						pi_Tbar_x, argmax_old, pi_eval_flag, num_samples);
+				if (count >= 10){
+					if (obs <= 4){
+						printf("istar_old[%d]: %d, %d\n", obs, istar_old.sigma, istar_old.delta);
+						printf("argmax_old[%d]: %f\n", obs, *argmax_old);
+					}
+				}
 				istar_new = compute_new_istar(obs, cut, sigma, delta, Xvect,
 						num, pi_Tbar_x, argmax_new, num_samples);
 				PTbar_end = clock();
