@@ -169,10 +169,13 @@ prob_type *new_prob(sdglobal_type* sd_global, one_problem *original, int num_rv,
 
     /* modified by Yifan 2013.10.14 Since omega_col and omega_row all shifted up 
      by one. The mast_col used in find_rows and find_cols will be increased by one*/
-	p->coord->delta_col = find_cols(num_rv, &p->num->rv_cols,
+	p->coord->delta_col = find_cols_cuda(num_rv, &p->num->rv_cols,
 			p->coord->omega_col, col+1);
-	p->coord->sigma_col = find_cols(p->Tbar->cnt, &p->num->nz_cols,
+	p->coord->sigma_col = find_cols_cuda(p->Tbar->cnt, &p->num->nz_cols,
 			p->Tbar->col, col+1);
+	/* added by Yifan, the delta_col and sigma_col need to be initialized using CUDA */
+
+
 	p->coord->lambda_row = find_rows(num_rv, &p->num->rv_rows,
 			p->coord->omega_row, p->coord->omega_col, col+1);
 
@@ -198,9 +201,14 @@ void free_prob(sdglobal_type* sd_global, prob_type *p)
 	/* Free arrays inside coord structure, then free it. */
 	mem_free(p->coord->omega_row);
 	mem_free(p->coord->omega_col);
-	mem_free(p->coord->delta_col);
 	mem_free(p->coord->lambda_row);
+#ifndef SD_CUDA
+	mem_free(p->coord->delta_col);
 	mem_free(p->coord->sigma_col);
+#else
+	cudaFree(p->coord->delta_col);
+	cudaFree(p->coord->sigma_col);
+#endif
 	mem_free(p->coord);
 
 	/* Free the sparse vecotrs and matrices */

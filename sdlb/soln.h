@@ -223,6 +223,7 @@ typedef struct
 
 int *find_rows(int num_elem, int *num_rows, int *omega_row,int *omega_col, int mast_col);
 int *find_cols(int num_elem, int *num_cols, int *omega_col, int mast_col);
+int *find_cols_cuda(int num_elem, int *num_cols, int *omega_col, int mast_col);
 soln_type *new_soln(sdglobal_type* sd_global, prob_type *p, vector x_k);
 void free_soln(prob_type *p, cell_type *c, soln_type *s);
 void print_soln(sdglobal_type* sd_global, prob_type *p, cell_type *c,

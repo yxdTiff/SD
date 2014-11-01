@@ -100,6 +100,37 @@ int *find_cols(int num_elem, int *num_cols, int *omega_col, int mast_col)
 #endif
 
 	len = 0;
+	if (!(rv_col = arr_alloc(num_elem + 1, int)))
+		err_msg("Allocation", "find_cols", "rv_col");
+
+	last = 0; /* If the last observation was 0, we won't store new ones */
+
+	/* Copy over all the distinct elements of omega_col */
+	for (i = 0; omega_col[i + 1] < mast_col && i < num_elem; i++)
+		if (omega_col[i + 1] != last)
+			last = rv_col[++len] = omega_col[i + 1];
+
+	/* Shrink the array down to the number of distinct elements found */
+	rv_col = (int *)mem_realloc(rv_col, (len + 1)*sizeof(int));
+
+	rv_col[0] = 0;
+	*num_cols = len;
+
+	return rv_col;
+}
+int *find_cols_cuda(int num_elem, int *num_cols, int *omega_col, int mast_col)
+{
+	int *rv_col;
+	int *rv_col_cuda;
+	int i;
+	int len;
+	int last;
+
+#ifdef TRACE
+	printf("Inside find_cols\n");
+#endif
+
+	len = 0;
 	if (!(rv_col = arr_alloc(num_elem+1, int)))
 		err_msg("Allocation", "find_cols", "rv_col");
 
@@ -110,13 +141,18 @@ int *find_cols(int num_elem, int *num_cols, int *omega_col, int mast_col)
 		if (omega_col[i + 1] != last)
 			last = rv_col[++len] = omega_col[i + 1];
 
-	/* Shrink the array down to the number of distinct elements found */
-	rv_col = (int *) mem_realloc(rv_col, (len+1)*sizeof(int));
+	/* This part basically copys all the rv_col to rc_col_cuda */
+	cudaMallocManaged(&rv_col_cuda, (len + 1)*sizeof(int), 1);
+	for ( i = 1; i <= len ; i++)
+	{
+		rv_col_cuda[i] = rv_col[i];
+	}
 
-	rv_col[0] = 0;
+	rv_col_cuda[0] = 0;
 	*num_cols = len;
 
-	return rv_col;
+	mem_free(rv_col);
+	return rv_col_cuda;
 }
 
 /***********************************************************************\
