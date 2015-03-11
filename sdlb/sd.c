@@ -351,7 +351,7 @@ int main(int argc, char *argv[])
 	for (n = 0; n < num_probs; n++)
 	{
 		/* Find the name of the current problem */
-		if (argc >= 2 && argc < 5)
+		if (argc >= 3 && argc < 5)
 			filename_number(fname, 4, 1000, n + start);
 		/* Copy the number _n+start_ into _fname_ starting at position 4 */
 

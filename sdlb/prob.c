@@ -825,12 +825,13 @@ void parse_cmd_line(sdglobal_type* sd_global, int argc, char *argv[],
 	}
 	else if (argc < 3)
 	{
-		strcpy(fname, "prob   ");
-		*num_probs = atoi(argv[1]);
+        /* modified by yl, 2015-03-11. the first argument is 
+         expected to be the problem's name */
+		strcpy(fname, argv[1]);
+		*num_probs = 1;
 		*objsen = 1;
-		*start = 0;
 		*read_seeds = TRUE;
-		*read_iters = TRUE; /* added by zl. 06/18/02. */
+		*read_iters = TRUE;
 	}
 	else if (argc == 5)
 	{

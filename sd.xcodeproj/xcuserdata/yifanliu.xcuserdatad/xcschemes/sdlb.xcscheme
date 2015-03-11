@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6960045018219FE900CD6831"
-               BuildableName = "sdlb"
-               BlueprintName = "sdlb"
-               ReferencedContainer = "container:sdlb.xcodeproj">
+               BuildableName = "sd"
+               BlueprintName = "sd"
+               ReferencedContainer = "container:sd.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6960045018219FE900CD6831"
-            BuildableName = "sdlb"
-            BlueprintName = "sdlb"
-            ReferencedContainer = "container:sdlb.xcodeproj">
+            BuildableName = "sd"
+            BlueprintName = "sd"
+            ReferencedContainer = "container:sd.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -48,15 +48,22 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6960045018219FE900CD6831"
-            BuildableName = "sdlb"
-            BlueprintName = "sdlb"
-            ReferencedContainer = "container:sdlb.xcodeproj">
+            BuildableName = "sd"
+            BlueprintName = "sd"
+            ReferencedContainer = "container:sd.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "baa99"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -66,13 +73,14 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6960045018219FE900CD6831"
-            BuildableName = "sdlb"
-            BlueprintName = "sdlb"
-            ReferencedContainer = "container:sdlb.xcodeproj">
+            BuildableName = "sd"
+            BlueprintName = "sd"
+            ReferencedContainer = "container:sd.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

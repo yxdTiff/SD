@@ -50,7 +50,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6960045118219FE900CD6831 /* sdlb */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sdlb; sourceTree = BUILT_PRODUCTS_DIR; };
+		6960045118219FE900CD6831 /* sd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sd; sourceTree = BUILT_PRODUCTS_DIR; };
 		6960045D1821A00300CD6831 /* batch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = batch.c; sourceTree = "<group>"; };
 		6960045E1821A00300CD6831 /* batch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = batch.h; sourceTree = "<group>"; };
 		6960045F1821A00300CD6831 /* cell.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cell.c; sourceTree = "<group>"; };
@@ -106,7 +106,7 @@
 		696004AB1821A04200CD6831 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		696004AD1821A04800CD6831 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		69D121431AAFA1A60015AA1C /* libcplex.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcplex.a; path = "../../Applications/IBM/ILOG/CPLEX_Studio126/cplex/lib/x86-64_osx/static_pic/libcplex.a"; sourceTree = "<group>"; };
-		69D121451AAFA3630015AA1C /* config.sd */ = {isa = PBXFileReference; lastKnownFileType = text; name = config.sd; path = DerivedData/sdlb/Build/Products/Debug/config.sd; sourceTree = "<group>"; };
+		69D121461AAFB2FE0015AA1C /* config.sd */ = {isa = PBXFileReference; lastKnownFileType = text; name = config.sd; path = DerivedData/sd/Build/Products/Debug/config.sd; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,8 +127,8 @@
 			isa = PBXGroup;
 			children = (
 				696004B11821A06C00CD6831 /* Framework */,
-				6960045318219FE900CD6831 /* sdlb */,
-				69D121451AAFA3630015AA1C /* config.sd */,
+				6960045318219FE900CD6831 /* sd */,
+				69D121461AAFB2FE0015AA1C /* config.sd */,
 				6960045218219FE900CD6831 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -136,12 +136,12 @@
 		6960045218219FE900CD6831 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6960045118219FE900CD6831 /* sdlb */,
+				6960045118219FE900CD6831 /* sd */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		6960045318219FE900CD6831 /* sdlb */ = {
+		6960045318219FE900CD6831 /* sd */ = {
 			isa = PBXGroup;
 			children = (
 				6960045D1821A00300CD6831 /* batch.c */,
@@ -197,6 +197,7 @@
 				6960048E1821A00300CD6831 /* theta.h */,
 				696004901821A00300CD6831 /* utility.h */,
 			);
+			name = sd;
 			path = sdlb;
 			sourceTree = "<group>";
 		};
@@ -213,9 +214,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6960045018219FE900CD6831 /* sdlb */ = {
+		6960045018219FE900CD6831 /* sd */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6960045A18219FE900CD6831 /* Build configuration list for PBXNativeTarget "sdlb" */;
+			buildConfigurationList = 6960045A18219FE900CD6831 /* Build configuration list for PBXNativeTarget "sd" */;
 			buildPhases = (
 				6960044D18219FE900CD6831 /* Sources */,
 				6960044E18219FE900CD6831 /* Frameworks */,
@@ -225,9 +226,9 @@
 			);
 			dependencies = (
 			);
-			name = sdlb;
+			name = sd;
 			productName = sdlb;
-			productReference = 6960045118219FE900CD6831 /* sdlb */;
+			productReference = 6960045118219FE900CD6831 /* sd */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -239,7 +240,7 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Yifan Liu";
 			};
-			buildConfigurationList = 6960044C18219FE900CD6831 /* Build configuration list for PBXProject "sdlb" */;
+			buildConfigurationList = 6960044C18219FE900CD6831 /* Build configuration list for PBXProject "sd" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -251,7 +252,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6960045018219FE900CD6831 /* sdlb */,
+				6960045018219FE900CD6831 /* sd */,
 			);
 		};
 /* End PBXProject section */
@@ -373,7 +374,7 @@
 					"/Users/yifanliu/Applications/IBM/ILOG/CPLEX_Studio126/cplex/lib/x86-64_osx/static_pic",
 				);
 				OTHER_LDFLAGS = "-Wl,-no_compact_unwind";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = sd;
 			};
 			name = Debug;
 		};
@@ -390,14 +391,14 @@
 					"/Users/yifanliu/Applications/IBM/ILOG/CPLEX_Studio126/cplex/lib/x86-64_osx/static_pic",
 				);
 				OTHER_LDFLAGS = "-Wl,-no_compact_unwind";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = sd;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6960044C18219FE900CD6831 /* Build configuration list for PBXProject "sdlb" */ = {
+		6960044C18219FE900CD6831 /* Build configuration list for PBXProject "sd" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6960045818219FE900CD6831 /* Debug */,
@@ -406,7 +407,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6960045A18219FE900CD6831 /* Build configuration list for PBXNativeTarget "sdlb" */ = {
+		6960045A18219FE900CD6831 /* Build configuration list for PBXNativeTarget "sd" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6960045B18219FE900CD6831 /* Debug */,
