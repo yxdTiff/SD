@@ -65,7 +65,15 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "farmer"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "baa99_pyomo"
             isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "baa99"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "pgp2"

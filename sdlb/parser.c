@@ -92,7 +92,7 @@ int get_fields(char *input_str, char *field1, char *field2, char *field3,
 	int field_num;
     sd_long len;
 
-	char *fields[7];
+	char *fields[NAME_SIZE];
 	char *current, lastCh;
 
 	/* initialize field number to be loaded */

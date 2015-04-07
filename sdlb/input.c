@@ -722,19 +722,19 @@ int load_stoch(sdglobal_type* sd_global, one_problem *original, identity *ident,
 	int category;
 	double percentile = 0.0, base;
 	double val1, val2, **mean_dest;
-	char field1[15] =
-	{ 0 }, field2[60] =
-	{ 0 }, field3[15] =
+	char field1[NAME_SIZE] =
+	{ 0 }, field2[NAME_SIZE] =
+	{ 0 }, field3[NAME_SIZE] =
 	{ 0 };
-	char field4[15] =
-	{ 0 }, field5[15] =
-	{ 0 }, field6[15] =
-	{ 0 }, field7[15] =
+	char field4[NAME_SIZE] =
+	{ 0 }, field5[NAME_SIZE] =
+	{ 0 }, field6[NAME_SIZE] =
+	{ 0 }, field7[NAME_SIZE] =
 	{ 0 };
 	char fieldType;
 	/* char	fileType[6];*/
-	char last_col[16] =
-	{ 0 }, last_row[16] =
+	char last_col[NAME_SIZE] =
+	{ 0 }, last_row[NAME_SIZE] =
 	{ 0 };
 	char name[NAME_SIZE] =
 	{ 0 };

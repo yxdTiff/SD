@@ -636,7 +636,9 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
     }
     mem_free(rd);
     
-    if (spn_max < sd_global->config.TOLERANCE) {
+      // Yifan 04072015
+    //if (spn_max < sd_global->config.TOLERANCE) {
+    if (spn_max < sd_global->config.EPSILON) {
       sd_global->average_flag = 1;
     }
     
