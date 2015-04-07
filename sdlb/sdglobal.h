@@ -120,7 +120,7 @@ typedef struct
 	int EVAL_RUN_FLAG;
 	int DROP_TIME;
     int MODEL_FORMAT;
-    int BOOTSRAP_TEST;
+    int BOOTSTRAP_TEST;
 	sd_long RUN_SEED;
 	sd_long RUN_SEED1;
 	sd_long RUN_SEED2;

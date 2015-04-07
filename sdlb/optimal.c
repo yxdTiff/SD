@@ -480,7 +480,7 @@ BOOL full_test(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 #endif
         
         // if the flag for boostrap test is disabled, then we simply claimed all tests passed the test.
-        if (sd_global->config.BOOTSRAP_TEST == 0) {
+        if (sd_global->config.BOOTSTRAP_TEST == 0) {
             sum = sd_global->config.M;
         }
         

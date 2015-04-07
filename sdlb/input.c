@@ -1634,7 +1634,7 @@ int load_config(sdglobal_type* sd_global, BOOL read_seeds, BOOL read_iters)
     sd_global->config.THIN_CYCLE   = 200;
     sd_global->config.DROP_TIME    = 16300;
     sd_global->config.MODEL_FORMAT = 0; /* zero for MPS, one for LP */
-    sd_global->config.BOOTSRAP_TEST = 1;  // by default, this test is enabled.
+    sd_global->config.BOOTSTRAP_TEST = 1;  // by default, this test is enabled.
     sd_global->config.TEST_TYPE    = 1;        /* 1 in config for full test */
     /* 0 in config for LP master */
     
@@ -1753,8 +1753,8 @@ int load_config(sdglobal_type* sd_global, BOOL read_seeds, BOOL read_iters)
 				status = fscanf(f_in, "%d", &(sd_global->config.DROP_TIME));
             else if (!strcmp(param, "MODEL_FORMAT"))
                 status = fscanf(f_in, "%d", &(sd_global->config.MODEL_FORMAT));
-            else if (!strcmp(param, "BOOTSRAP_TEST"))
-                status = fscanf(f_in, "%d", &(sd_global->config.BOOTSRAP_TEST));
+            else if (!strcmp(param, "BOOTSTRAP_TEST"))
+                status = fscanf(f_in, "%d", &(sd_global->config.BOOTSTRAP_TEST));
 			else if (!strcmp(param, "RUN_SEED1"))
 				if (read_seeds)
 					status = fscanf(f_in, "%lld", &(sd_global->config.RUN_SEED1));
