@@ -209,7 +209,6 @@ void solve_cell(sdglobal_type* sd_global, cell_type *cell, prob_type *prob,
 		 zl, 06/30/04. */
 		soln->run_time->soln_subprob_iter = 0.0;
 		soln->run_time->argmax_iter = 0.0;
-
 		/* Reset _smpl_test_flag_ to FALSE at the start of each iteration.
 		 zl, 08/17/04. */
 		soln->smpl_test_flag = FALSE;

@@ -357,12 +357,12 @@ int main(int argc, char *argv[])
 
 		/* If one of these fails, we'll have a lot of unfreed memory! */
 #if 0
-		if(load_core_cpx(&orig, &id, fname, objsen))
+		if(load_core_cpx(sd_global, &orig, &id, fname, objsen))
 		{ /* zl trial. */
 			if(load_core(&probptr, &ident, fname, objsen))
 			{
 #endif
-		if (load_core_cpx(&probptr, &ident, fname, objsen))
+		if (load_core_cpx(sd_global, &probptr, &ident, fname, objsen))
 		{ /* zl trial. */
 			if (load_stoch(sd_global, probptr, ident, fname))
 			{

@@ -1430,6 +1430,7 @@ int load_config(sdglobal_type* sd_global, BOOL read_seeds, BOOL read_iters)
     sd_global->config.START_THIN   = 9001;
     sd_global->config.THIN_CYCLE   = 200;
     sd_global->config.DROP_TIME    = 16300;
+    sd_global->config.MODEL_FORMAT = 0; /* zero for MPS, one for LP */
     sd_global->config.TEST_TYPE    = 1;        /* 1 in config for full test */
     /* 0 in config for LP master */
     
@@ -1546,6 +1547,8 @@ int load_config(sdglobal_type* sd_global, BOOL read_seeds, BOOL read_iters)
 				status = fscanf(f_in, "%d", &(sd_global->config.EVAL_RUN_FLAG));
 			else if (!strcmp(param, "DROP_TIME"))
 				status = fscanf(f_in, "%d", &(sd_global->config.DROP_TIME));
+            else if (!strcmp(param, "MODEL_FORMAT"))
+                status = fscanf(f_in, "%d", &(sd_global->config.MODEL_FORMAT));
 			else if (!strcmp(param, "RUN_SEED1"))
 				if (read_seeds)
 					status = fscanf(f_in, "%lld", &(sd_global->config.RUN_SEED1));
@@ -1893,7 +1896,7 @@ void free_omegas(sdglobal_type* sd_global)
 ** The function load_core_cpx reads the input file in mps format.  It then 
  ** stores the data in the struct 'original' of type one_problem.  zl
  \*************************************************************************/
-int load_core_cpx(one_problem **original, identity **ident, char *fname,
+int load_core_cpx(sdglobal_type* sd_global, one_problem **original, identity **ident, char *fname,
 		int objsen)
 {
 	/* int	i;*//* default increment counter */
@@ -1937,14 +1940,25 @@ int load_core_cpx(one_problem **original, identity **ident, char *fname,
 	strcat(name, "/");
 	strcat(name, fname);
 #ifdef CPLEX
-	strcat(name, ".cor");
+    if (sd_global->config.MODEL_FORMAT == 0) {
+        strcat(name, ".cor");
+    }
+    else{
+        strcat(name, ".lp");
+    }
 #else
   strcat(name, ".mps");
 #endif
 	printf("Reading problems from %s \n", name);
 
 	/* Read the problem in external Solver. */
-	(*original)->lp = read_problem((*original), name, "MPS"); /* 2011.10.30 */
+    if (sd_global->config.MODEL_FORMAT == 0) {
+        (*original)->lp = read_problem((*original), name, "MPS"); /* 2011.10.30 */
+    }
+    else{
+        (*original)->lp = read_problem((*original), name, "LP"); /* 2011.10.30 */
+    }
+	
 	if ((*original)->lp == NULL)
 	{
 		printf(" load_core_cpx: rats, original wasn't created! \n");

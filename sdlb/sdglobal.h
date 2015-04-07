@@ -119,6 +119,7 @@ typedef struct
 	int PRINT_CYCLE;
 	int EVAL_RUN_FLAG;
 	int DROP_TIME;
+    int MODEL_FORMAT;
 	sd_long RUN_SEED;
 	sd_long RUN_SEED1;
 	sd_long RUN_SEED2;
@@ -168,6 +169,7 @@ typedef struct
  \**************************************************************************/
 typedef struct
 {
+    char *type;
 	sd_small num_omega; /* number of stochastic elements stored in structure */
 	sd_small num_cells; /* number of cells being used in program */
 	sd_small num_cipher; /* number of ints needed to encode an observation */
@@ -182,6 +184,7 @@ typedef struct
 	cell_map *mapping; /* array of structures mapping cell ranges to omega. */
 	one_key *key; /* array of keys for encoding / decoding obsevations */
 } omegastuff;
+
 
 /**********************************************************************\
 ** struct one_problem is used to store the LP problem information in

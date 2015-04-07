@@ -27,7 +27,7 @@ int get_file(FILE **, char *, char *, char *);
 
 int load_core(one_problem **, identity **, char *, int);
 /*  Added by zl. */
-int load_core_cpx(one_problem **, identity **, char *, int);
+int load_core_cpx(sdglobal_type* sd_global, one_problem **, identity **, char *, int);
 void allocate_arrays(one_problem **, identity **);
 void getnamespace(one_problem *, int *, int *, int, int); /* 2011.10.30 */
 
