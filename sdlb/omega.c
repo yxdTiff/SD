@@ -58,6 +58,7 @@ int generate_observ(sdglobal_type* sd_global, omega_type *omega, num_type *num,
 	if (!(observ = arr_alloc(num->cipher+1, int)))
 		err_msg("Allocation", "generate_observ", "observ");
 	observ[0] = get_omega_idx(sd_global, observ + 1, NULL, 1, RUN_SEED);
+        
 	/* Compare vector with all the previous observations */
 	for (cnt = 0; cnt < omega->most; cnt++)
 		if (valid_omega_idx(omega, cnt))
@@ -249,7 +250,7 @@ void get_R_T_omega(sdglobal_type* sd_global, omega_type *omega, int obs_idx)
 #ifdef OMEGA_FILE
   omega->RT[0] = get_omega_vals_from_file(sd_global, obs_idx, omega->RT+1, omega->fidx);
 #else
-  omega->RT[0] = get_omega_vals(sd_global, omega->idx[obs_idx] + 1, omega->RT + 1);
+    omega->RT[0] = get_omega_vals(sd_global, omega->idx[obs_idx], omega->RT + 1);
 #endif
 }
 

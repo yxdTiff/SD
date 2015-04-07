@@ -90,7 +90,8 @@ int solve_subprob(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 	/* Record the lowest subproblem objective function values so far.
 	 zl, 07/01/04. */
 	sub_obj = get_objective(c->subprob);
-
+    
+    
 	if (s->sub_lb_checker > sub_obj)
 		s->sub_lb_checker = sub_obj;
 

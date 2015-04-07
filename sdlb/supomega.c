@@ -39,18 +39,28 @@ sd_small get_omega_idx(sdglobal_type* sd_global, sd_small *observ, sd_small *mem
 	sd_small sum = 0;
 	double val;
 	/*  locate values of stochastic elements in distribution array */
-	for (i = 0; i < sd_global->omegas.num_omega; i++)
-	{
-		val = scalit(0, 1, RUN_SEED);
-		for (j = 0; val > sd_global->omegas.omega_probs[i][j]; j++)
-			/* loop until value falls below the cdf at j */;
-		sd_global->omegas.indices[i] = j;
-		sum += j;
-	}
+    if (strcmp(sd_global->omegas.type, "INDEP") == 0) {
+        for (i = 0; i < sd_global->omegas.num_omega; i++)
+        {
+            val = scalit(0, 1, RUN_SEED);
+            for (j = 0; val > sd_global->omegas.omega_probs[i][j]; j++)
+            /* loop until value falls below the cdf at j */;
+            sd_global->omegas.indices[i] = j;
+            sum += j;
+        }
+        
+        /* Reduce the full array of indices down to an encrypted array */
+        encode(sd_global->omegas.indices, sd_global->omegas.key, observ,
+               sd_global->omegas.num_omega);
+    }
+    else{
+        val = scalit(0, 1, RUN_SEED);
+        for (j = 0; val > sd_global->omegas.omega_probs[0][j]; j++)
+        /* loop until value falls below the cdf at j */;
+        sd_global->omegas.indices[0] = j;
+        sum = j;
+    }
 
-	/* Reduce the full array of indices down to an encrypted array */
-	encode(sd_global->omegas.indices, sd_global->omegas.key, observ,
-			sd_global->omegas.num_omega);
 
 #ifdef ENCODE
 	{	int cnt;
@@ -79,10 +89,16 @@ sd_small get_omega_idx(sdglobal_type* sd_global, sd_small *observ, sd_small *mem
 double get_omega_vals(sdglobal_type* sd_global, sd_small *observ, double *RT)
 {
 	int i;
-
-	decode(observ, sd_global->omegas.key, sd_global->omegas.indices, sd_global->omegas.num_omega);
-	for (i = 0; i < sd_global->omegas.num_omega; i++)
-		RT[i] = sd_global->omegas.omega_vals[i][sd_global->omegas.indices[i]];
+    
+    if (strcmp(sd_global->omegas.type, "INDEP") == 0) {
+        decode(observ+1, sd_global->omegas.key, sd_global->omegas.indices, sd_global->omegas.num_omega);
+        for (i = 0; i < sd_global->omegas.num_omega; i++)
+            RT[i] = sd_global->omegas.omega_vals[i][sd_global->omegas.indices[i]];
+    }
+    else{
+        for (i = 0; i < sd_global->omegas.num_omega; i++)
+            RT[i] = sd_global->omegas.omega_vals[i][observ[0]];
+    }
 
 #ifdef ENCODE
 	{	int cnt;
@@ -208,12 +224,14 @@ void sort_omegas(sdglobal_type* sd_global, sd_small col)
 					itemp);
 			swap(sd_global->omegas.row[i], sd_global->omegas.row[min_idx],
 					itemp);
-			swap(sd_global->omegas.num_vals[i],
-					sd_global->omegas.num_vals[min_idx], itemp);
 			swap(sd_global->omegas.omega_vals[i],
 					sd_global->omegas.omega_vals[min_idx], dptemp);
-			swap(sd_global->omegas.omega_probs[i],
-					sd_global->omegas.omega_probs[min_idx], dptemp);
+            if (strcmp(sd_global->omegas.type, "INDEP") == 0) {
+                swap(sd_global->omegas.num_vals[i],
+                     sd_global->omegas.num_vals[min_idx], itemp);
+                swap(sd_global->omegas.omega_probs[i],
+                     sd_global->omegas.omega_probs[min_idx], dptemp);
+            }
 		}
 	}
     
@@ -234,12 +252,14 @@ void sort_omegas(sdglobal_type* sd_global, sd_small col)
                      itemp);
                 swap(sd_global->omegas.row[i], sd_global->omegas.row[min_idx],
                      itemp);
-                swap(sd_global->omegas.num_vals[i],
-                     sd_global->omegas.num_vals[min_idx], itemp);
                 swap(sd_global->omegas.omega_vals[i],
                      sd_global->omegas.omega_vals[min_idx], dptemp);
-                swap(sd_global->omegas.omega_probs[i],
-                     sd_global->omegas.omega_probs[min_idx], dptemp);
+                if (strcmp(sd_global->omegas.type, "INDEP") == 0) {
+                    swap(sd_global->omegas.num_vals[i],
+                         sd_global->omegas.num_vals[min_idx], itemp);
+                    swap(sd_global->omegas.omega_probs[i],
+                         sd_global->omegas.omega_probs[min_idx], dptemp);
+                }
             }
         }
     }

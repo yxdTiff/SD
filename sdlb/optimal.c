@@ -453,7 +453,7 @@ BOOL full_test(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 #endif
 
 #ifdef OPT
-		printf("Lm=%lf, Sm=%lf\n", Lm, Sm);
+		printf("Lm=%lf, Sm=%lf, sum=%d\n", Lm, Sm, sum);
 #endif
 
 		if (DBL_ABS((Sm - Lm) / s->incumb_est)
@@ -478,7 +478,12 @@ BOOL full_test(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 		printf("(Sm-Lm)/incumb_est is : %f\n",(Sm - Lm) / s->incumb_est);
 		printf("**********************************************\n");
 #endif
-
+        
+        // if the flag for boostrap test is disabled, then we simply claimed all tests passed the test.
+        if (sd_global->config.BOOTSRAP_TEST == 0) {
+            sum = sd_global->config.M;
+        }
+        
 		if (m + 1 - sum
 				>= (1 - sd_global->config.PERCENT_PASS) * sd_global->config.M)
 		{
