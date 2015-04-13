@@ -12,4 +12,4 @@ git clone https://github.com/imliuyifan/sd && cd sd/sdlb && make && cd ../instan
 
 At the prompt, enter an instance name (which are stored in sdinput folder), for example: pgp2
 
-Results will be stored in sdoutput/pgp2. Please check pgp2.detailed_soln.out for solutions and time_ample.out for CPU time and number of samples used.
+Results will be stored in sdoutput/pgp2. Please check pgp2.detailed_soln.out for solutions and time_sample.out for CPU time and number of samples used.
