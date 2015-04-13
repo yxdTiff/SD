@@ -4,7 +4,7 @@ Prerequisite: CPLEX should be available on your machine. (If not, follow this li
 
 1). Download and compile SD with the following command (only support unix-like system such as OS X and Ubuntu):
 
-git clone https://github.com/imliuyifan/sd && cd sd/sdlb && make && cd ../instance && ln -s ../sdlb/sd
+git clone https://github.com/imliuyifan/sd && cd sd/src && make && cd ../instance && ln -s ../src/sd
 
 2). Then excute sd by typing:
 
