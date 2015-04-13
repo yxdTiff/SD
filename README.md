@@ -1,5 +1,5 @@
 # sd
-Download and compile SD with the following command(only support unix-like system such as OS X and Ubuntu):
+Download and compile SD with the following command (only support unix-like system such as OS X and Ubuntu):
 
 git clone https://github.com/imliuyifan/sd && cd sd/sdlb && make && cd ../instance && ln -s ../sdlb/sd
 
