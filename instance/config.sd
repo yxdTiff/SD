@@ -68,7 +68,7 @@ MAX_ITER 5000
 OVERRIDE 1
 
 // The input format for the model file (0 for MPS and 1 for LP)
-MODEL_FORMAT 1
+MODEL_FORMAT 0
 
 // ---------------Changes made below here are not recommended-----------------
 
