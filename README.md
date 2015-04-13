@@ -1,4 +1,7 @@
 # sd
+
+Prerequisite: CPLEX should be available on your machine. (If not, follow this link to get a trial version: http://www-01.ibm.com/software/commerce/optimization/cplex-optimizer/).
+
 1). Download and compile SD with the following command (only support unix-like system such as OS X and Ubuntu):
 
 git clone https://github.com/imliuyifan/sd && cd sd/sdlb && make && cd ../instance && ln -s ../sdlb/sd
