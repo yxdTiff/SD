@@ -31,12 +31,12 @@ COPT  = -m64 -fPIC -fno-strict-aliasing
 # ---------------------------------------------------------------------
 CLNFLAGS  = -lcplex -lm -pthread
 
-# CPLEXLIBDIR   = $(CPLEXDIR)/lib/$(SYSTEM)/$(LIBFORMAT)
+CPLEXLIBDIR   = $(CPLEXDIR)/lib/$(SYSTEM)/$(LIBFORMAT)
 # Let's automate this process
-CPLEXLIBDIR := $(shell find ~ -name libcplex.a | cat > /tmp/cplexPath && cat /tmp/cplexPath | grep -m1 -E 'libcplex.a' | awk -F "/libcplex.a" '{print $$1}')
+# CPLEXLIBDIR := $(shell find ~ -name libcplex.a | cat > /tmp/cplexPath && cat /tmp/cplexPath | grep -m1 -E 'libcplex.a' | awk -F "/libcplex.a" '{print $$1}')
 
-# CPLEXINCDIR   = $(CPLEXDIR)/include/ilcplex
-CPLEXINCDIR := $(shell find ~ -name cplex.h | cat > /tmp/cplexPath && cat /tmp/cplexPath | grep -m1 -E 'cplex.h' | awk -F "/cplex.h" '{print $$1}')
+CPLEXINCDIR   = $(CPLEXDIR)/include/ilcplex
+# CPLEXINCDIR := $(shell find ~ -name cplex.h | cat > /tmp/cplexPath && cat /tmp/cplexPath | grep -m1 -E 'cplex.h' | awk -F "/cplex.h" '{print $$1}')
 
 # ---------------------------------------------------------------------
 # To execute the CPLEX examples.
