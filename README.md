@@ -7,7 +7,7 @@ Then excute sd by typing:
 
 ./sd
 
-Then at the propmpt, enter an instance name(which are stored in sdinput folder), for example:
+Then at the prompt, enter an instance name (which are stored in sdinput folder), for example:
 
 pgp2
 
