@@ -33,10 +33,10 @@ CLNFLAGS  = -lcplex -lm -pthread
 
 # CPLEXLIBDIR   = $(CPLEXDIR)/lib/$(SYSTEM)/$(LIBFORMAT)
 # Let's automate this process
-CPLEXLIBDIR := $(shell sudo find /opt ~ -name libcplex.a | cat > ~/cplexPath && cat ~/cplexPath | grep -m1 -E 'cplex/lib' | awk -F "/libcplex.a" '{print $$1}')
+CPLEXLIBDIR := $(shell find /opt ~ -name libcplex.a | cat > ~/cplexPath && cat ~/cplexPath | grep -m1 -E 'cplex/lib' | awk -F "/libcplex.a" '{print $$1}')
 
 # CPLEXINCDIR   = $(CPLEXDIR)/include/ilcplex
-CPLEXINCDIR := $(shell sudo find /opt ~ -name cplex.h | sudo cat > ~/cplexPath && cat ~/cplexPath | grep -m1 -E 'cplex/include' | awk -F "/cplex.h" '{print $$1}')
+CPLEXINCDIR := $(shell find /opt ~ -name cplex.h | cat > ~/cplexPath && cat ~/cplexPath | grep -m1 -E 'cplex/include' | awk -F "/cplex.h" '{print $$1}')
 
 # ---------------------------------------------------------------------
 # To execute the CPLEX examples.
