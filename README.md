@@ -12,6 +12,8 @@ Prerequisite: CPLEX should be available on your machine. (If not, follow this li
 
 `./sd`
 
-At the prompt, enter an instance name (which are stored in sdinput folder), for example: `pgp2`
+At the prompt, enter an instance name for example: `pgp2`
+
+(note: all instances are stored in the sdinput folder.)
 
 Results will be stored in sdoutput/pgp2. Please check pgp2.detailed_soln.out for solutions and time_sample.out for CPU time and number of samples used.
