@@ -958,7 +958,7 @@ void get_lower_bound(sdglobal_type* sd_global, one_problem *p, int row, int col)
 	/* Change the objective to lower bound calculation */
 	change_objective(copy, p->mac, indices, values);
 
-	/* write_prob(copy, "after_coef_change.lp");*/
+        // write_prob(copy, "after_coef_change.lp");
 	/*
 	 write_prob(p, "SDprob_after_coef_change.lp");
 	 */
