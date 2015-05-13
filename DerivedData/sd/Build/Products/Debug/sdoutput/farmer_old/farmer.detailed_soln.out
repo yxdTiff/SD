@@ -1,0 +1,44 @@
+Problem:                                farmer
+First Stage Rows:                       2
+First Stage Columns:                    3
+First Stage Non-zeros:                  3
+Number of replications:                 30
+Status:                                 COMPROMISE SOLUTION
+Total Objective Function Upper Bound:   -108030.014,[-109122.648234,-106937.380295],half-width:1092.634, stdev:557.466
+Total Objective Function Lower Bound:   -108069.494,[-108420.790575,-107718.196650],half-width:351.297, stdev:179.233
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 cost         -1.080300e+05 
+     1 tLand         5.000000e+02                5.000000e+02 -2.746175e+02  0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.499627e+02  0.000000e+00               0.000000e+00  0.000000e+00 
+     2 x2            9.999999e+01  0.000000e+00               0.000000e+00  0.000000e+00 
+     3 x3            2.500373e+02  0.000000e+00               0.000000e+00  0.000000e+00 
+
+
+Problem:                                farmer
+First Stage Rows:                       2
+First Stage Columns:                    3
+First Stage Non-zeros:                  3
+Number of replications:                 30
+Status:                                 MEAN SOLUTION
+Total Objective Function Upper Bound:   -108037.764,[-109130.367138,-106945.161534],half-width:1092.603, stdev:557.450
+Total Objective Function Lower Bound:   -108069.494,[-108420.790575,-107718.196650],half-width:351.297, stdev:179.233
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 cost         -1.080378e+05 
+     1 tLand         5.000000e+02                5.000000e+02 -2.745409e+02  1.560414e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.500616e+02  0.000000e+00               0.000000e+00  0.000000e+00 
+     2 x2            9.992884e+01  0.000000e+00               0.000000e+00  0.000000e+00 
+     3 x3            2.500096e+02  0.000000e+00               0.000000e+00  0.000000e+00 
+
+

@@ -1,0 +1,600 @@
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 0
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -270.443923
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.309297e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.441715e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 1
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -297.207253
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           2.315842e+77 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.306176e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.423383e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 2
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -272.381391
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.306943e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.494031e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 3
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -257.416383
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           1.000000e+01 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.251286e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.510560e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 4
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -274.908172
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.248079e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.405999e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 5
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -269.059245
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.192506e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.515308e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 6
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -289.483401
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.249152e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.560728e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 7
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -295.371801
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj          3.111097e+231 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.305635e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.416332e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 8
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -267.001344
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj          3.111097e+231 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.247339e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.553129e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 9
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -287.962749
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.247197e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.555443e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 10
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -307.388804
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj          3.111097e+231 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.361761e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.294311e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 11
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -250.464716
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj          3.111097e+231 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.220569e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.579328e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 12
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -267.257848
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.247464e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.493552e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 13
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -309.249866
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.296284e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.337575e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 14
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -282.202445
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.248945e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.500529e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 15
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -262.681158
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.248782e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.563432e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 16
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -272.305426
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.248162e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.615771e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 17
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -270.443923
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           2.315842e+77 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.309297e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.441715e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 18
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -304.591879
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           2.315842e+77 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.368428e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.486390e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 19
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -276.394260
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.193888e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.512398e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 20
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -283.464979
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.369292e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.523883e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 21
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -299.071564
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           1.003226e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.249169e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.547605e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 22
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -298.183694
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.248583e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.561384e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 23
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -297.471605
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj          3.111097e+231 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.338084e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.519041e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 24
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -274.971366
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           2.315842e+77 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.306413e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.445013e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 25
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -264.074478
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.368825e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.456445e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 26
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -285.752603
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.263159e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.497659e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 27
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -279.507771
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.191108e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.466266e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 28
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -298.739890
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.248079e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.475401e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Replication No. 29
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   -264.137379
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            1.321353e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+     2 x2            1.538310e+02  0.000000e+00  2.170000e+02  0.000000e+00 
+
+

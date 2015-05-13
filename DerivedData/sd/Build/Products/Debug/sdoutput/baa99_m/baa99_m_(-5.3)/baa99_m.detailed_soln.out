@@ -1,0 +1,40 @@
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Number of replications:                 30
+Status:                                 COMPROMISE SOLUTION
+Total Objective Function Upper Bound:   -345.101,[-350.359967,-339.842088],half-width:5.259, stdev:2.683
+Total Objective Function Lower Bound:   -350.143,[-354.975980,-345.310652],half-width:4.833, stdev:2.466
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj          -3.451010e+02 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            7.227323e+01  0.000000e+00  2.170000e+02  0.000000e+00  0.000000e+00 
+     2 x2            2.088078e+02  0.000000e+00  2.170000e+02  0.000000e+00  0.000000e+00 
+
+
+Problem:                                baa99_m
+First Stage Rows:                       1
+First Stage Columns:                    2
+First Stage Non-zeros:                  0
+Number of replications:                 30
+Status:                                 MEAN SOLUTION
+Total Objective Function Upper Bound:   -345.091,[-350.350268,-339.831055],half-width:5.260, stdev:2.683
+Total Objective Function Lower Bound:   -350.143,[-354.975980,-345.310652],half-width:4.833, stdev:2.466
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj          -3.450907e+02 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x1            7.232100e+01  0.000000e+00  2.170000e+02  0.000000e+00  0.000000e+00 
+     2 x2            2.087997e+02  0.000000e+00  2.170000e+02 -7.302678e-03  2.820253e-02 
+
+

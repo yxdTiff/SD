@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "self:">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/batch.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/batch.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/cell.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/cell.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/cuts.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/cuts.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/delta.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/delta.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/improve.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/improve.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/input.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/input.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/lambda.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/lambda.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/log.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/log.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/master.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/master.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/memory.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/memory.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/omega.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/omega.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/optimal.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/optimal.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/parser.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/parser.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/prob.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/prob.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/quad.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/quad.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/rc.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/rc.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/resume.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/resume.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/resumeb.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/resumeb.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/rvgen.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/rvgen.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/sd.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/sdconstants.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/sdglobal.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/sigma.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/sigma.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/soln.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/soln.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/solver.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/solverc.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/solverg.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/subprob.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/subprob.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/supomega.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/supomega.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/testout.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/testout.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/theta.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/theta.h">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/utility.c">
+   </FileRef>
+   <FileRef
+      location = "group:../sdlb/utility.h">
+   </FileRef>
+</Workspace>
