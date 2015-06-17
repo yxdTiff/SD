@@ -434,11 +434,12 @@ class ScenarioTreeManager(object):
 
             if self._options.verbose or self._options.output_times:
                 print("Time to construct scenario instances=%.2f seconds"
-                      % (time.time() - start_time))
+                      % (time.time() - build_start_time))
 
             if not _OLD_OUTPUT:
                 print("Linking instances into scenario tree")
-            start_time = time.time()
+
+            build_start_time = time.time()
 
             # with the scenario instances now available, link the
             # referenced objects directly into the scenario tree.

@@ -19,6 +19,8 @@ from pyomo.repn.canonical_repn import generate_canonical_repn
 
 from six import iteritems
 
+import scenariotreeserverutils
+
 # NOTES:
 #  - Constants in the objective?
 #  - Max variable name length
@@ -422,16 +424,27 @@ def EXTERNAL_convert_explicit_setup(scenario_tree_manager,
                 LP_names = constraint_LP_names[constraint_data]
                 for con_label in LP_names:
                     if con_label.startswith('c_e_') or \
-                       con_label.startswith('c_l_') or \
-                       con_label.startswith('r_l_') :
+                       con_label.startswith('c_l_'):
+                        assert include_bound is True
                         f.write(rhs_template %
                                 (con_label,
                                  value(constraint_data.lower) - value(body_constant)))
-                    elif con_label.startswith('r_u_') or \
-                         con_label.startswith('c_u_'):
+                    elif con_label.startswith('r_l_') :
+                        assert len(include_bound) == 2
+                        if include_bound[0] is True:
+                            f.write(rhs_template %
+                                    (con_label,
+                                     value(constraint_data.lower) - value(body_constant)))
+                    elif con_label.startswith('c_u_'):
+                        assert include_bound is True
                         f.write(rhs_template %
                                 (con_label,
                                  value(constraint_data.upper) - value(body_constant)))
+                    elif con_label.startswith('r_u_'):
+                        if include_bound[1] is True:
+                            f.write(rhs_template %
+                                    (con_label,
+                                     value(constraint_data.upper) - value(body_constant)))
                     else:
                         assert False
 
@@ -514,8 +527,9 @@ def convert_explicit(output_directory,
     if scenario_tree.contains_bundles():
         raise ValueError("SMPS conversion does not yet handle bundles")
 
-    scenario_directory = os.path.join(output_directory,
-                                      'scenario_files')
+    scenario_directory = os.path.abspath(os.path.join(output_directory,
+                                                      'scenario_files'))
+
     if not os.path.exists(scenario_directory):
         os.mkdir(scenario_directory)
 
@@ -528,7 +542,7 @@ def convert_explicit(output_directory,
             ahs.append(scenariotreeserverutils.\
                        transmit_external_function_invocation_to_worker(
                            scenario_tree_manager,
-                           referenced_scenario._name,
+                           scenario._name,
                            thisfile,
                            "EXTERNAL_convert_explicit_setup",
                            invocation_type=(scenariotreeserverutils.\

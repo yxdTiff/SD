@@ -256,7 +256,7 @@ class _ScenarioTreeWorker(object):
         if self._scenario_tree.contains_bundles():
 
             # validate that the bundle actually exists.
-            if self._scenario_tree.contains_bundle(object_name) is False:
+            if not self._scenario_tree.contains_bundle(object_name):
                 raise RuntimeError("Bundle="+object_name+" does not exist.")
 
             if self._verbose:
@@ -348,14 +348,15 @@ class _ScenarioTreeWorker(object):
     def update_master_scenario_tree_ids(self, object_name, new_ids):
 
         if self._verbose:
-            if self._scenario_tree.contains_bundles() is True:
-                print("Received request to update xbars for bundle="+object_name)
+            if self._scenario_tree.contains_bundles():
+                print("Received request to update master "
+                      "scenario tree ids for bundle="+object_name)
             else:
-                print("Received request to update xbars for scenario="+object_name)
+                print("Received request to update master "
+                      "scenario tree ids scenario="+object_name)
 
-        if self._initialized is False:
-            raise RuntimeError("PH solver server has not been initialized!")
-
+        if not self._initialized:
+            raise RuntimeError("Scenario tree worker has not been initialized!")
 
         for node_name, new_master_node_ids in iteritems(new_ids):
             tree_node = self._scenario_tree.get_node(node_name)
@@ -421,8 +422,8 @@ class _ScenarioTreeWorker(object):
                       "="+function_name+" in module="+module_name+" "
                       "for scenario="+object_name)
 
-        if self._initialized is False:
-            raise RuntimeError("PH solver server has not been initialized!")
+        if not self._initialized:
+            raise RuntimeError("Scenario tree worker has not been initialized!")
 
         scenario_tree_object = None
         if self._scenario_tree.contains_bundles():
@@ -601,7 +602,7 @@ def run(args=None):
         ans = [tmp, None]
     else:
         #
-        # Call the main PH routine without profiling.
+        # Call the main routine without profiling.
         #
         ans = run_server(options)
 
@@ -646,14 +647,12 @@ def main(args=None):
             print("@@@@@@@ Stack Trace @@@@@@@@")
             traceback.print_exc()
             print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-            # if an exception occurred, then we probably want to shut down
-            # all Pyro components.  otherwise, the PH client may have
-            # forever while waiting for results that will never
-            # arrive. there are better ways to handle this at the PH
-            # client level, but until those are implemented, this will
-            # suffice for cleanup.
-            #NOTE: this should perhaps be command-line driven, so it can
-            #      be disabled if desired.
+            # If an exception occurred, then we probably want to shut
+            # down all Pyro components. Otherwise, the client might
+            # wait forever for results that will never arrive. There
+            # are better ways to handle this at the client level, but
+            # until those are implemented, this will suffice for
+            # cleanup.
             print("ScenarioTreeServer aborted. Sending shutdown request.")
             shutdown_pyro_components(num_retries=0)
 

@@ -176,7 +176,8 @@ def transmit_external_function_invocation_to_worker(
         print("Transmitting external function invocation request to "
               "scenario tree worker with name %s" % worker_name)
 
-    generate_response = scenario_tree_manager._handshake_with_phpyro or return_action_handle
+    generate_response = \
+        scenario_tree_manager._options.handshake_with_phpyro or return_action_handle
 
     if scenario_tree_manager._scenario_tree.contains_bundles():
         if worker_name not in scenario_tree_manager._scenario_tree._scenario_bundle_map:
@@ -213,13 +214,14 @@ def transmit_external_function_invocation(
 
     start_time = time.time()
 
-    if scenario_tree_manager._verbose:
+    if scenario_tree_manager._options.verbose:
         print("Transmitting external function invocation request "
               "to scenario tree workers")
 
     action_handles = []
 
-    generate_responses = scenario_tree_manager._handshake_with_phpyro or return_action_handles
+    generate_responses = \
+        scenario_tree_manager._options.handshake_with_phpyro or return_action_handles
 
     if scenario_tree_manager._scenario_tree.contains_bundles():
 
@@ -256,7 +258,7 @@ def transmit_external_function_invocation(
 
     end_time = time.time()
 
-    if scenario_tree_manager._output_times:
+    if scenario_tree_manager._options.output_times:
         print("External function invocation request transmission "
               "time=%.2f seconds" % (end_time - start_time))
 
