@@ -399,7 +399,7 @@ def EXTERNAL_convert_explicit_setup(scenario_tree_manager,
 
     with open(os.path.join(output_directory,
                            basename+".sto."+scenario._name),'w') as f:
-        f.write("BL BLOCK1 PERIOD2 %.17g\n" % (scenario._probability))
+        f.write(" BL BLOCK1 PERIOD2 %.17g\n" % (scenario._probability))
         #
         # Stochastic RHS
         #
