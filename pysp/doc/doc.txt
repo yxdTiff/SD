@@ -1,0 +1,42 @@
+Generating SMPS Input Files From PySP Models
+==========================================
+:Author:    Gabriel Hackebeil <gabe.hackebeil@gmail.com>
+:numbered:
+
+This document explains how to annotate PySP models to enable
+conversion to the SMPS input file format. These annotations are
+necessary so that conversion routines know the locations of stochastic
+elements in a Pyomo model and thus can output these locations in a
+sparse manner over the entire scenario tree.
+
+Annotating Models for SMPS Output
+---------------------------------
+.Declaring Stochastic Parameters
+[source,python]
+----
+from pyomo.core import *
+
+model = ConcreteModel()
+
+model.PySP_StochasticData = Suffix()
+model.PySP_StochasticRHS = Suffix()
+model.PySP_StochasticMatrix = Suffix()
+model.PySP_StochasticObjective = Suffix()
+model.PySP_StochasticVariableBounds = Suffix()
+----
+
+Corner Cases
+------------
+This section todo.
+
+Stochastic Objective Constant
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This section todo.
+
+Range Constraints with Stochastic RHS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This section todo.
+
+Failing Cross-Scenario Nonzero Check
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This section todo.
