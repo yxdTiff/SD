@@ -10,13 +10,12 @@ necessary so that conversion routines know the locations of stochastic
 elements in a Pyomo model and thus can output these locations in a
 sparse manner over the entire scenario tree.
 
-Annotating Models for SMPS Output
----------------------------------
+Annotating Models for SMPS File Generation
+------------------------------------------
 Model annotations are declared on the reference model using the Suffix
 component. The complete list of annotation types are shown in the
 example below. These will be discussed in further detail in the
 remainder of this section.
-.Declaring Annotations
 [source,python]
 ----
 from pyomo.core import *
@@ -34,13 +33,12 @@ Stochastic Constraint Bounds (RHS)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 If stochastic elements appear on the right-hand-side of constraints,
 these locations should be declared on the PySP_StochasticRHS
-suffix. This suffix maps constraint objects to trivial boolean True
-values.  In the case of range constraints, the constraint object
-should be mapped to a 2-tuple of boolean values.  In this situation,
-the first and second tuple elements should be boolean flags indicating
+suffix. This suffix maps constraint objects to a trivial boolean True
+value.  In the case of range constraints, the constraint object should
+be mapped to a 2-tuple of boolean values.  In this situation, the
+first and second tuple elements should be boolean flags indicating
 stochasticity of the constraint lower bound and upper bound,
-respectively.
-.Declaring Annotations
+respectively.  This is highlighted in the example below.
 [source,python]
 ----
 model.c = Constraint(expr= model.x >= 1)
@@ -54,11 +52,10 @@ Stochastic Constraint Matrix
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 If stochastic elements appear as coefficients of variables in the
 constraint matrix, these locations should be declared on
-PySP_StochasticMatrix suffix. The entries of this suffix
+the PySP_StochasticMatrix suffix. The entries of this suffix
 map constraint objects to a list of variable objects for
 which stochastic elements appear next to. This is highlighted
 in the example below.
-.Declaring Annotations
 [source,python]
 ----
 model.c = Constraint(expr= 2 * model.x >= 1)
@@ -72,10 +69,9 @@ Stochastic Objective Elements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 If stochastic elements appear as coefficients of variables in the
 objective expression, these locations should be declared on
-PySP_StochasticObjective suffix. The entries of this suffix map
-variable objects to a simple boolean True values. This is highlighted
+the PySP_StochasticObjective suffix. The entries of this suffix map
+variable objects to a simple boolean True value. This is highlighted
 in the example below.
-.Declaring Annotations
 [source,python]
 ----
 model.s = Set(initialize=[1,2,3])
@@ -84,17 +80,6 @@ model.x = Var()
 model.PySP_StochasticObjective[model.y[1]] = True
 model.PySP_StochasticObjective[model.x] = True
 ----
-
-Generating SMPS Input Files
----------------------------
-
-Explicit Scenario Output
-~~~~~~~~~~~~~~~~~~~~~~~~
-TODO
-
-Implicit Scenario Output
-~~~~~~~~~~~~~~~~~~~~~~~~
-TODO
 
 Stochastic Variable Bounds
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -111,3 +96,15 @@ TODO
 Failing Cross-Scenario Nonzero Check
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO
+
+Generating SMPS Input Files
+---------------------------
+
+Explicit Scenario Output
+~~~~~~~~~~~~~~~~~~~~~~~~
+TODO
+
+Implicit Scenario Output
+~~~~~~~~~~~~~~~~~~~~~~~~
+TODO
+

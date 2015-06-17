@@ -748,15 +748,14 @@ sparse manner over the entire scenario tree.</p></div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_annotating_models_for_smps_output">1. Annotating Models for SMPS Output</h2>
+<h2 id="_annotating_models_for_smps_file_generation">1. Annotating Models for SMPS File Generation</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>Model annotations are declared on the reference model using the Suffix
 component. The complete list of annotation types are shown in the
 example below. These will be discussed in further detail in the
-remainder of this section.
-.Declaring Annotations</p></div>
+remainder of this section.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -773,15 +772,14 @@ model<span style="color: #990000">.</span>PySP_StochasticData <span style="color
 <h3 id="_stochastic_constraint_bounds_rhs">1.1. Stochastic Constraint Bounds (RHS)</h3>
 <div class="paragraph"><p>If stochastic elements appear on the right-hand-side of constraints,
 these locations should be declared on the PySP_StochasticRHS
-suffix. This suffix maps constraint objects to trivial boolean True
-values.  In the case of range constraints, the constraint object
-should be mapped to a 2-tuple of boolean values.  In this situation,
-the first and second tuple elements should be boolean flags indicating
+suffix. This suffix maps constraint objects to a trivial boolean True
+value.  In the case of range constraints, the constraint object should
+be mapped to a 2-tuple of boolean values.  In this situation, the
+first and second tuple elements should be boolean flags indicating
 stochasticity of the constraint lower bound and upper bound,
-respectively.
-.Declaring Annotations</p></div>
+respectively.  This is highlighted in the example below.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -795,13 +793,12 @@ model<span style="color: #990000">.</span>PySP_StochasticRHS<span style="color: 
 <h3 id="_stochastic_constraint_matrix">1.2. Stochastic Constraint Matrix</h3>
 <div class="paragraph"><p>If stochastic elements appear as coefficients of variables in the
 constraint matrix, these locations should be declared on
-PySP_StochasticMatrix suffix. The entries of this suffix
+the PySP_StochasticMatrix suffix. The entries of this suffix
 map constraint objects to a list of variable objects for
 which stochastic elements appear next to. This is highlighted
-in the example below.
-.Declaring Annotations</p></div>
+in the example below.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -815,12 +812,11 @@ model<span style="color: #990000">.</span>PySP_StochasticRHS<span style="color: 
 <h3 id="_stochastic_objective_elements">1.3. Stochastic Objective Elements</h3>
 <div class="paragraph"><p>If stochastic elements appear as coefficients of variables in the
 objective expression, these locations should be declared on
-PySP_StochasticObjective suffix. The entries of this suffix map
-variable objects to a simple boolean True values. This is highlighted
-in the example below.
-.Declaring Annotations</p></div>
+the PySP_StochasticObjective suffix. The entries of this suffix map
+variable objects to a simple boolean True value. This is highlighted
+in the example below.</p></div>
 <div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -830,35 +826,35 @@ model<span style="color: #990000">.</span>x <span style="color: #990000">=</span
 model<span style="color: #990000">.</span>PySP_StochasticObjective<span style="color: #990000">[</span>model<span style="color: #990000">.</span>y<span style="color: #990000">[</span><span style="color: #993399">1</span><span style="color: #990000">]]</span> <span style="color: #990000">=</span> True
 model<span style="color: #990000">.</span>PySP_StochasticObjective<span style="color: #990000">[</span>model<span style="color: #990000">.</span>x<span style="color: #990000">]</span> <span style="color: #990000">=</span> True</tt></pre></div></div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_generating_smps_input_files">2. Generating SMPS Input Files</h2>
-<div class="sectionbody">
 <div class="sect2">
-<h3 id="_explicit_scenario_output">2.1. Explicit Scenario Output</h3>
-<div class="paragraph"><p>TODO</p></div>
-</div>
-<div class="sect2">
-<h3 id="_implicit_scenario_output">2.2. Implicit Scenario Output</h3>
-<div class="paragraph"><p>TODO</p></div>
-</div>
-<div class="sect2">
-<h3 id="_stochastic_variable_bounds">2.3. Stochastic Variable Bounds</h3>
+<h3 id="_stochastic_variable_bounds">1.4. Stochastic Variable Bounds</h3>
 <div class="paragraph"><p>TODO</p></div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_corner_cases">3. Corner Cases</h2>
+<h2 id="_corner_cases">2. Corner Cases</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>TODO</p></div>
 <div class="sect2">
-<h3 id="_stochastic_objective_constant">3.1. Stochastic Objective Constant</h3>
+<h3 id="_stochastic_objective_constant">2.1. Stochastic Objective Constant</h3>
 <div class="paragraph"><p>TODO</p></div>
 </div>
 <div class="sect2">
-<h3 id="_failing_cross_scenario_nonzero_check">3.2. Failing Cross-Scenario Nonzero Check</h3>
+<h3 id="_failing_cross_scenario_nonzero_check">2.2. Failing Cross-Scenario Nonzero Check</h3>
+<div class="paragraph"><p>TODO</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_generating_smps_input_files">3. Generating SMPS Input Files</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_explicit_scenario_output">3.1. Explicit Scenario Output</h3>
+<div class="paragraph"><p>TODO</p></div>
+</div>
+<div class="sect2">
+<h3 id="_implicit_scenario_output">3.2. Implicit Scenario Output</h3>
 <div class="paragraph"><p>TODO</p></div>
 </div>
 </div>
@@ -867,7 +863,7 @@ model<span style="color: #990000">.</span>PySP_StochasticObjective<span style="c
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-06-17 13:33:43 PDT
+Last updated 2015-06-17 14:12:26 PDT
 </div>
 </div>
 </body>
