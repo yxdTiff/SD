@@ -740,7 +740,8 @@ asciidoc.install();
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph"><p>This document explains how to annotate PySP models to enable
-conversion to the SMPS input file format. These annotations are
+conversion to the SMPS input file format and additionally how run the
+necessary scripts to perform this conversion. Annotations are
 necessary so that conversion routines know the locations of stochastic
 elements in a Pyomo model and thus can output these locations in a
 sparse manner over the entire scenario tree.</p></div>
@@ -749,9 +750,13 @@ sparse manner over the entire scenario tree.</p></div>
 <div class="sect1">
 <h2 id="_annotating_models_for_smps_output">1. Annotating Models for SMPS Output</h2>
 <div class="sectionbody">
+<div class="paragraph"><p>Model annotations are declared on the reference model using the Suffix
+component. The complete list of annotation types are shown in the
+example below. These will be discussed in further detail in the
+remainder of this section.
+.Declaring Annotations</p></div>
 <div class="listingblock">
-<div class="title">Declaring Stochastic Parameters</div>
-<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
@@ -759,28 +764,102 @@ http://www.gnu.org/software/src-highlite -->
 
 model <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">ConcreteModel</span></span><span style="color: #990000">()</span>
 
-model<span style="color: #990000">.</span>PySP_StochasticData <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Suffix</span></span><span style="color: #990000">()</span>
 model<span style="color: #990000">.</span>PySP_StochasticRHS <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Suffix</span></span><span style="color: #990000">()</span>
 model<span style="color: #990000">.</span>PySP_StochasticMatrix <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Suffix</span></span><span style="color: #990000">()</span>
 model<span style="color: #990000">.</span>PySP_StochasticObjective <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Suffix</span></span><span style="color: #990000">()</span>
-model<span style="color: #990000">.</span>PySP_StochasticVariableBounds <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Suffix</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+model<span style="color: #990000">.</span>PySP_StochasticVariableBounds <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Suffix</span></span><span style="color: #990000">()</span>
+model<span style="color: #990000">.</span>PySP_StochasticData <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Suffix</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+<div class="sect2">
+<h3 id="_stochastic_constraint_bounds_rhs">1.1. Stochastic Constraint Bounds (RHS)</h3>
+<div class="paragraph"><p>If stochastic elements appear on the right-hand-side of constraints,
+these locations should be declared on the PySP_StochasticRHS
+suffix. This suffix maps constraint objects to trivial boolean True
+values.  In the case of range constraints, the constraint object
+should be mapped to a 2-tuple of boolean values.  In this situation,
+the first and second tuple elements should be boolean flags indicating
+stochasticity of the constraint lower bound and upper bound,
+respectively.
+.Declaring Annotations</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>model<span style="color: #990000">.</span>c <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Constraint</span></span><span style="color: #990000">(</span>expr<span style="color: #990000">=</span> model<span style="color: #990000">.</span>x <span style="color: #990000">&gt;=</span> <span style="color: #993399">1</span><span style="color: #990000">)</span>
+model<span style="color: #990000">.</span>PySP_StochasticRHS<span style="color: #990000">[</span>model<span style="color: #990000">.</span>c<span style="color: #990000">]</span> <span style="color: #990000">=</span> True
+
+model<span style="color: #990000">.</span>r <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Constraint</span></span><span style="color: #990000">(</span>expr<span style="color: #990000">=</span> <span style="color: #993399">0</span> <span style="color: #990000">&lt;=</span> model<span style="color: #990000">.</span>x <span style="color: #990000">&lt;=</span> <span style="color: #993399">10</span><span style="color: #990000">)</span>
+model<span style="color: #990000">.</span>PySP_StochasticRHS<span style="color: #990000">[</span>model<span style="color: #990000">.</span>r<span style="color: #990000">]</span> <span style="color: #990000">=</span> <span style="color: #990000">(</span>False<span style="color: #990000">,</span> True<span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_stochastic_constraint_matrix">1.2. Stochastic Constraint Matrix</h3>
+<div class="paragraph"><p>If stochastic elements appear as coefficients of variables in the
+constraint matrix, these locations should be declared on
+PySP_StochasticMatrix suffix. The entries of this suffix
+map constraint objects to a list of variable objects for
+which stochastic elements appear next to. This is highlighted
+in the example below.
+.Declaring Annotations</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>model<span style="color: #990000">.</span>c <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Constraint</span></span><span style="color: #990000">(</span>expr<span style="color: #990000">=</span> <span style="color: #993399">2</span> <span style="color: #990000">*</span> model<span style="color: #990000">.</span>x <span style="color: #990000">&gt;=</span> <span style="color: #993399">1</span><span style="color: #990000">)</span>
+model<span style="color: #990000">.</span>PySP_StochasticRHS<span style="color: #990000">[</span>model<span style="color: #990000">.</span>c<span style="color: #990000">]</span> <span style="color: #990000">=</span> <span style="color: #990000">[</span>model<span style="color: #990000">.</span>x<span style="color: #990000">]</span>
+
+model<span style="color: #990000">.</span>r <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Constraint</span></span><span style="color: #990000">(</span>expr<span style="color: #990000">=</span> <span style="color: #993399">0</span> <span style="color: #990000">&lt;=</span> <span style="color: #993399">1</span> <span style="color: #990000">*</span> model<span style="color: #990000">.</span>x <span style="color: #990000">+</span> model<span style="color: #990000">.</span>y <span style="color: #990000">*</span> <span style="color: #993399">5</span> <span style="color: #990000">&lt;=</span> <span style="color: #993399">10</span><span style="color: #990000">)</span>
+model<span style="color: #990000">.</span>PySP_StochasticRHS<span style="color: #990000">[</span>model<span style="color: #990000">.</span>r<span style="color: #990000">]</span> <span style="color: #990000">=</span> <span style="color: #990000">[</span>model<span style="color: #990000">.</span>x<span style="color: #990000">,</span> model<span style="color: #990000">.</span>y<span style="color: #990000">]</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_stochastic_objective_elements">1.3. Stochastic Objective Elements</h3>
+<div class="paragraph"><p>If stochastic elements appear as coefficients of variables in the
+objective expression, these locations should be declared on
+PySP_StochasticObjective suffix. The entries of this suffix map
+variable objects to a simple boolean True values. This is highlighted
+in the example below.
+.Declaring Annotations</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>model<span style="color: #990000">.</span>s <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Set</span></span><span style="color: #990000">(</span>initialize<span style="color: #990000">=[</span><span style="color: #993399">1</span><span style="color: #990000">,</span><span style="color: #993399">2</span><span style="color: #990000">,</span><span style="color: #993399">3</span><span style="color: #990000">])</span>
+model<span style="color: #990000">.</span>y <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Var</span></span><span style="color: #990000">(</span>model<span style="color: #990000">.</span>s<span style="color: #990000">)</span>
+model<span style="color: #990000">.</span>x <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Var</span></span><span style="color: #990000">()</span>
+model<span style="color: #990000">.</span>PySP_StochasticObjective<span style="color: #990000">[</span>model<span style="color: #990000">.</span>y<span style="color: #990000">[</span><span style="color: #993399">1</span><span style="color: #990000">]]</span> <span style="color: #990000">=</span> True
+model<span style="color: #990000">.</span>PySP_StochasticObjective<span style="color: #990000">[</span>model<span style="color: #990000">.</span>x<span style="color: #990000">]</span> <span style="color: #990000">=</span> True</tt></pre></div></div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_corner_cases">2. Corner Cases</h2>
+<h2 id="_generating_smps_input_files">2. Generating SMPS Input Files</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>This section todo.</p></div>
 <div class="sect2">
-<h3 id="_stochastic_objective_constant">2.1. Stochastic Objective Constant</h3>
-<div class="paragraph"><p>This section todo.</p></div>
+<h3 id="_explicit_scenario_output">2.1. Explicit Scenario Output</h3>
+<div class="paragraph"><p>TODO</p></div>
 </div>
 <div class="sect2">
-<h3 id="_range_constraints_with_stochastic_rhs">2.2. Range Constraints with Stochastic RHS</h3>
-<div class="paragraph"><p>This section todo.</p></div>
+<h3 id="_implicit_scenario_output">2.2. Implicit Scenario Output</h3>
+<div class="paragraph"><p>TODO</p></div>
 </div>
 <div class="sect2">
-<h3 id="_failing_cross_scenario_nonzero_check">2.3. Failing Cross-Scenario Nonzero Check</h3>
-<div class="paragraph"><p>This section todo.</p></div>
+<h3 id="_stochastic_variable_bounds">2.3. Stochastic Variable Bounds</h3>
+<div class="paragraph"><p>TODO</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_corner_cases">3. Corner Cases</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>TODO</p></div>
+<div class="sect2">
+<h3 id="_stochastic_objective_constant">3.1. Stochastic Objective Constant</h3>
+<div class="paragraph"><p>TODO</p></div>
+</div>
+<div class="sect2">
+<h3 id="_failing_cross_scenario_nonzero_check">3.2. Failing Cross-Scenario Nonzero Check</h3>
+<div class="paragraph"><p>TODO</p></div>
 </div>
 </div>
 </div>
@@ -788,7 +867,7 @@ model<span style="color: #990000">.</span>PySP_StochasticVariableBounds <span st
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-06-17 02:09:19 PDT
+Last updated 2015-06-17 13:33:43 PDT
 </div>
 </div>
 </body>
