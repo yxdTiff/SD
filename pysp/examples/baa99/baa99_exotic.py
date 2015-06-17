@@ -34,12 +34,15 @@ model.obj = Objective(expr=model.FirstStageCost + model.SecondStageCost)
 
 model.s2 = Constraint(expr=0 <= -model.x2 + model.w22 + model.v2 <= 0)
 
-model.d2 = Constraint(expr=model.d2_rhs <= model.w12 + model.w22 + model.u2 <= model.d2_rhs)
-model.PySP_StochasticRHS[model.d2] = (True, True)
+model.d2_lower = Constraint(expr=model.d2_rhs <= model.w12 + model.w22 + model.u2)
+model.PySP_StochasticRHS[model.d2_lower] = True
+
+model.d2_upper = Constraint(expr=model.w12 + model.w22 + model.u2 <= model.d2_rhs)
+model.PySP_StochasticRHS[model.d2_upper] = True
 
 model.s1 = Constraint(expr=0 <= -model.x1 + model.w11 + model.w12 + model.v1 <= 0)
 
-model.d1 = Constraint(expr=model.d1_rhs <= model.w11 + model.u1 <= model.d1_rhs)
+model.d1 = Constraint(expr=model.d1_rhs + 1.0 <= 1.0 + model.w11 + model.u1 <= model.d1_rhs + 1.0)
 model.PySP_StochasticRHS[model.d1] = (True, True)
 
 model.bounds = ConstraintList(noruleinit=True)
@@ -64,7 +67,6 @@ def pysp_scenario_tree_model_callback():
 scenario_data = itertools.product(d1_rhs_table,
                                   d2_rhs_table)
 def pysp_instance_creation_callback(scenario_name, node_names):
-    assert sample_data is not None
 
     #
     # Clone a new instance and update the stochastic
