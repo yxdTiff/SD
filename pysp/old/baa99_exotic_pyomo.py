@@ -2,7 +2,7 @@ import random
 
 from pyomo.core import *
 
-import baa99_util
+import baa99_base
 
 #
 # A more exotic form of the baa99 model used for
@@ -12,7 +12,7 @@ import baa99_util
 #  - Variable bounds are moved to constraints
 #    in order to create "first-stage" constraints
 
-model = baa99_util.define_stochastic_model()
+model = baa99_base.define_stochastic_model()
 
 model.x1 = Var()
 model.x2 = Var()
@@ -35,12 +35,12 @@ model.obj = Objective(expr=model.FirstStageCost + model.SecondStageCost)
 model.s2 = Constraint(expr=0 <= -model.x2 + model.w22 + model.v2 <= 0)
 
 model.d2 = Constraint(expr=model.d2_rhs <= model.w12 + model.w22 + model.u2 <= model.d2_rhs)
-model.PySP_StochasticRHS[model.d2_rhs] = model.d2
+model.PySP_StochasticRHS[model.d2] = model.d2_rhs
 
 model.s1 = Constraint(expr=0 <= -model.x1 + model.w11 + model.w12 + model.v1 <= 0)
 
 model.d1 = Constraint(expr=model.d1_rhs <= model.w11 + model.u1 <= model.d1_rhs)
-model.PySP_StochasticRHS[model.d1_rhs] = model.d1
+model.PySP_StochasticRHS[model.d1] = model.d1_rhs
 
 model.bounds = ConstraintList(noruleinit=True)
 model.bounds.add(0 <= model.x1 <= 217)
@@ -59,9 +59,9 @@ def pysp_scenario_tree_model_callback():
     global sample_data
 
     scenario_tree_model = \
-        baa99_util.generate_scenario_tree_model(num_scenarios)
+        baa99_base.generate_scenario_tree_model(num_scenarios)
 
-    sample_data = baa99_util.sample_into_scenario_tree_model(model, scenario_tree_model)
+    sample_data = baa99_base.sample_into_scenario_tree_model(model, scenario_tree_model)
 
     return scenario_tree_model
 

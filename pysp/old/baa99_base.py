@@ -71,23 +71,6 @@ def define_stochastic_model():
 
     return model
 
-def _cdf(weights):
-    total = sum(weights)
-    result = []
-    cumsum = 0
-    for w in weights:
-        cumsum += w
-        result.append(cumsum / total)
-    return result
-
-def _sample(table):
-    population, weights = zip(*table)
-    assert len(population) == len(weights)
-    cdf_vals = _cdf(weights)
-    x = random.random()
-    idx = bisect.bisect(cdf_vals, x)
-    return population[idx]
-
 def generate_scenario_tree_model(scenario_count):
 
     from pyomo.pysp.util.scenariomodels import generate_simple_twostage
