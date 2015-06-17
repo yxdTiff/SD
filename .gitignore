@@ -2,3 +2,9 @@ Breakpoints_v2.xcbkptlist
 sdlb.xcodeproj
 DerivedData
 .DS_Store
+
+#python
+*.pyc
+
+#object files
+*.o
