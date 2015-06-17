@@ -1,0 +1,96 @@
+
+Log started (V12.6.0.0) Tue Jun  2 19:59:24 2015
+
+
+Selected objective sense:  MINIMIZE
+Selected objective  name:  totalCost
+Selected RHS        name:  RHS1
+
+Problem 'gscrc.cor' read.
+Read time = 0.01 sec. (0.02 ticks)
+
+Warning:  Output names have been modified to conform to LP format.
+Problem written to file 'gscrc.lp'.
+
+Log started (V12.6.0.0) Tue Jun  2 22:23:04 2015
+
+
+Selected objective sense:  MINIMIZE
+Selected objective  name:  totalCost
+Selected RHS        name:  RHS1
+
+Problem 'gscrc.cor' read.
+Read time = 0.01 sec. (0.02 ticks)
+
+Warning:  Output names have been modified to conform to LP format.
+Problem written to file 'gscrc_update.lp'.
+
+Log started (V12.6.0.0) Tue Jun  2 22:27:20 2015
+
+
+Selected objective sense:  MINIMIZE
+Selected objective  name:  totalCost
+Selected RHS        name:  RHS1
+
+Problem 'gscrc.cor' read.
+Read time = 0.00 sec. (0.02 ticks)
+Tried aggregator 1 time.
+LP Presolve eliminated 41 rows and 90 columns.
+Aggregator did 3 substitutions.
+Reduced LP has 10 rows, 23 columns, and 33 nonzeros.
+Presolve time = 0.00 sec. (0.06 ticks)
+Initializing dual steep norms . . .
+
+Iteration log . . .
+Iteration:     1   Dual objective     =        565715.000000
+
+Dual simplex - Optimal:  Objective =  5.6775250000e+05
+Solution time =    0.01 sec.  Iterations = 7 (0)
+Deterministic time = 0.09 ticks  (7.01 ticks/sec)
+
+
+Variable Name                 Solution Value
+F[P1,DC1,Pr1,Truck,1]             215.000000
+F[P1,DC2,Pr1,Truck,1]             210.000000
+F[P2,DC3,Pr1,Truck,1]             100.000000
+I[P1,Pr1,1]                        20.000000
+I[P2,Pr1,1]                        10.000000
+I[DC1,Pr1,1]                      150.000000
+I[DC2,Pr1,1]                      100.000000
+I[DC3,Pr1,1]                       50.000000
+S[P1,R1,Pr1,Truck,1]              110.000000
+W[P1,Pr1,1]                       505.000000
+W[P2,Pr1,1]                        60.000000
+SF[R1,Pr1,1]                      100.000000
+SF[R2,Pr1,1]                      100.000000
+SF[R3,Pr1,1]                      100.000000
+SF[R4,Pr1,1]                      100.000000
+SF[R5,Pr1,1]                      100.000000
+SF[R6,Pr1,1]                      100.000000
+I[P1,Pr1,2]                        20.000000
+I[P1,Pr1,3]                        20.000000
+I[P2,Pr1,2]                        10.000000
+I[P2,Pr1,3]                        10.000000
+I[DC1,Pr1,2]                      150.000000
+I[DC1,Pr1,3]                      150.000000
+I[DC2,Pr1,2]                      100.000000
+I[DC2,Pr1,3]                      100.000000
+I[DC3,Pr1,2]                       50.000000
+I[DC3,Pr1,3]                       50.000000
+S[P1,R1,Pr1,Truck,2]              100.000000
+S[DC1,R2,Pr1,Truck,2]             105.000000
+S[DC1,R3,Pr1,Truck,2]             110.000000
+S[DC2,R4,Pr1,Truck,2]             100.000000
+S[DC2,R5,Pr1,Truck,2]             110.000000
+S[DC3,R6,Pr1,Truck,2]             100.000000
+W[P1,Pr1,2]                       100.000000
+SW[P1,Pr1,2]                      900.000000
+SW[P1,Pr1,3]                     1000.000000
+SW[P2,Pr1,2]                      800.000000
+SW[P2,Pr1,3]                      800.000000
+SF[R2,Pr1,2]                      110.000000
+SF[R3,Pr1,2]                      100.000000
+SF[R4,Pr1,2]                      110.000000
+SF[R5,Pr1,2]                      100.000000
+SF[R6,Pr1,2]                      110.000000
+All other variables matching '*' are 0.

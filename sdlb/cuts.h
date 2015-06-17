@@ -33,7 +33,7 @@ one_cut *new_cut(int num_x, int num_istar, int num_samples);
 void free_cuts(cut_type *cuts);
 void print_cut(cut_type *cuts, num_type *num, int idx);
 void print_cut_info(cell_type *c, num_type *num, char *phrase);
-BOOL stochastic_updates(sdglobal_type* sd_global, cell_type *c, soln_type *s,
+BOOL stochastic_updates(sdglobal_type* sd_global, cell_type *c, soln_type *s, prob_type * p,
 		lambda_type *lambda, sigma_type *sigma, delta_type *delta,
 		omega_type *omega, num_type *num, sparse_vect *Rbar,
 		sparse_matrix *Tbar, one_problem *subprob, vector Pi, int omeg_idx,

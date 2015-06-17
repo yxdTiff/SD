@@ -740,6 +740,23 @@ BOOL get_dual(vector Pi, one_problem *p, num_type *num, int length)
 	return !failed;
 }
 
+BOOL get_reduced_cost(vector Dj, one_problem *p, num_type *num, int length)
+{   BOOL failed;
+    
+#ifdef TRACE
+    printf("Inside get_reduced_cost\n");
+#endif
+    
+    failed = CPXgetdj(env, p->lp, Dj + 1, 0, length - 1);
+    
+    Dj[0] = one_norm(Dj + 1, length);
+#ifdef TRACE
+    printf("Inside get_reduced_cost\n");
+#endif
+    
+    return !failed;
+}
+
 /***********************************************************************\
 ** This function obtains the vector of optimal dual slacks  for
  ** a given problem.  The vector is allocated and filled here, and
@@ -1031,7 +1048,7 @@ BOOL add_row(one_problem *p, int start, int stop, int *coef_col, double *coef,
 
 #ifdef SAVE
 	print_problem(p, "addrow.mps");
-	print_contents(p, "addrow.out");
+	// print_contents(p, "addrow.out");
 	printf("Problem successfully printed\n");
 #endif
 
@@ -1056,7 +1073,7 @@ BOOL add_row(one_problem *p, int start, int stop, int *coef_col, double *coef,
 
 #ifdef SAVE
 	print_problem(p, "afteraddrow.mps");
-	print_contents(p, "afteraddrow.out");
+	// print_contents(p, "afteraddrow.out");
 	printf("Problem successfully printed\n");
 #endif
 
@@ -1132,7 +1149,7 @@ BOOL add_row_to_master(one_problem *p, int start, int stop, int *coef_col,
 
 #ifdef SAVE
 	print_problem(p, "AddFeaRow.mps");
-	print_contents(p, "AddFeaRow.out");
+	// print_contents(p, "AddFeaRow.out");
 	printf("Problem successfully printed\n");
 #endif
 
@@ -1154,7 +1171,7 @@ BOOL add_row_to_master(one_problem *p, int start, int stop, int *coef_col,
 	if (cumul_num==2)
 	{
 		print_problem(p, "AfterAddFeaRow.mps");
-		print_contents(p, "AfterAddFeaRow.out");
+		// print_contents(p, "AfterAddFeaRow.out");
 		printf("Problem successfully printed\n");
 	}
 
@@ -1221,7 +1238,7 @@ BOOL add_row_to_batch(one_problem *p, int start, int nzcnt, int *coef_col,
   
 #ifdef SAVE
   print_problem(p, "AddFeaRow.mps");
-  print_contents(p, "AddFeaRow.out");
+  // print_contents(p, "AddFeaRow.out");
   printf("Problem successfully printed\n");
 #endif
   
@@ -1243,7 +1260,7 @@ BOOL add_row_to_batch(one_problem *p, int start, int nzcnt, int *coef_col,
   if (cumul_num==2)
   {
     print_problem(p, "AfterAddFeaRow.mps");
-    print_contents(p, "AfterAddFeaRow.out");
+    // print_contents(p, "AfterAddFeaRow.out");
     printf("Problem successfully printed\n");
   }
   

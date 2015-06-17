@@ -1,0 +1,57 @@
+
+Log started (V12.6.0.0) Tue Jun  2 15:10:14 2015
+
+
+Selected objective sense:  MINIMIZE
+Selected objective  name:  totalCost
+Selected RHS        name:  RHS1
+
+Problem 'gsc.cor' read.
+Read time = 0.01 sec. (0.02 ticks)
+
+Warning:  Output names have been modified to conform to LP format.
+Problem written to file 'gsc.lp'.
+
+Log started (V12.6.0.0) Tue Jun  2 15:25:42 2015
+
+
+Problem 'gsc.lp' read.
+Read time = 0.01 sec. (0.01 ticks)
+Tried aggregator 1 time.
+LP Presolve eliminated 41 rows and 67 columns.
+Aggregator did 9 substitutions.
+Reduced LP has 4 rows, 14 columns, and 18 nonzeros.
+Presolve time = 0.00 sec. (0.05 ticks)
+Initializing dual steep norms . . .
+
+Iteration log . . .
+Iteration:     1   Dual objective     =        567752.500000
+
+Dual simplex - Optimal:  Objective =  5.6775250000e+05
+Solution time =    0.01 sec.  Iterations = 1 (0)
+Deterministic time = 0.07 ticks  (5.64 ticks/sec)
+
+
+Log started (V12.6.0.0) Tue Jun  2 15:25:54 2015
+
+
+Selected objective sense:  MINIMIZE
+Selected objective  name:  totalCost
+Selected RHS        name:  RHS1
+
+Problem 'gsc.cor' read.
+Read time = 0.00 sec. (0.02 ticks)
+Tried aggregator 1 time.
+LP Presolve eliminated 41 rows and 67 columns.
+Aggregator did 9 substitutions.
+Reduced LP has 4 rows, 14 columns, and 18 nonzeros.
+Presolve time = 0.00 sec. (0.05 ticks)
+Initializing dual steep norms . . .
+
+Iteration log . . .
+Iteration:     1   Dual objective     =        567752.500000
+
+Dual simplex - Optimal:  Objective =  5.6775250000e+05
+Solution time =    0.00 sec.  Iterations = 1 (0)
+Deterministic time = 0.07 ticks  (69.66 ticks/sec)
+

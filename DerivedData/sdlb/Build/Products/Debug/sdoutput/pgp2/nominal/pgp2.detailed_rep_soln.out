@@ -1,0 +1,24 @@
+Problem:                                pgp2
+First Stage Rows:                       3
+First Stage Columns:                    4
+First Stage Non-zeros:                  8
+Replication No. 0
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   440.958596
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 FOBJ          0.000000e+00 
+     1 MXDEMD        1.655797e+01  1.500000e+01                0.000000e+00 
+     2 BUDGET        1.607165e+02                2.200000e+02  0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 INVEQ1        1.503615e+00  0.000000e+00               0.000000e+00 
+     2 INVEQ2        5.341220e+00  0.000000e+00               0.000000e+00 
+     3 INVEQ3        5.001304e+00  0.000000e+00               0.000000e+00 
+     4 INVEQ4        4.711827e+00  0.000000e+00               0.000000e+00 
+
+

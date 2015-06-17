@@ -17,7 +17,7 @@ int get_observ(sdglobal_type* sd_global, omega_type *omega, num_type *num, BOOL 
 int next_omega_idx(omega_type *omega);
 omega_type *new_omega(int num_iter, int num_rv, coord_type *coord);
 ids_type *new_ids(int num_iter, int sub_col, int sub_row, int rv_g);
-id_type *new_id(int num_word);
+id_type *new_id(int num_word, num_type *num, int num_iter);
 rc_type *new_rcdata(int sub_rows, int rv_g, int num_word);
 int get_omega_index(prob_type *p, soln_type *s);
 void free_omega(omega_type *omega);

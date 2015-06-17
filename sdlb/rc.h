@@ -25,6 +25,7 @@ void free_phi(id_type *index);
 int get_phi_val(soln_type *s, prob_type *p, id_type *index);
 int get_cost_val(sdglobal_type *sd_global, omega_type *omega, num_type *num, id_type *index, double *cost, int *col, int obs_idx);
 int adjust_dual_solution(double *Pi, num_type *num, id_type *index);
+int calc_theta_from_phi(double *Pi, num_type *num, id_type *index);
 int put_phi_into_sigma_delta(sdglobal_type* sd_global, cell_type *c, soln_type *s,
                              lambda_type *lambda, sigma_type *sigma, delta_type *delta,
                              omega_type *omega, num_type *num, sparse_vect *Rbar,
@@ -33,4 +34,12 @@ int adjust_argmax_value(soln_type *s, int obs, sigma_type *sigma, delta_type *de
 int adjust_alpha_value(soln_type *s, int obs, one_cut *cut ,sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, id_type *index, int weight);
 int adjust_beta_value(soln_type *s, int obs, one_cut *cut ,sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, id_type *index, int weight);
 int adjust_incumbent_height(soln_type *s, int obs, one_cut *cut , double *beta, sigma_type *sigma, delta_type *delta, omega_type *omega, num_type *num, id_type *index);
+int check_pi_feasibility(sdglobal_type* sd_global, cell_type *c, soln_type *s, prob_type *p,
+                         omega_type *omega, num_type *num, ids_type *ids, BOOL new_pi, BOOL new_omega);
+BOOL calculate_reduced_cost(sdglobal_type* sd_global, cell_type *c, soln_type *s, prob_type *p,
+                            omega_type *omega, num_type *num, ids_type *ids, id_type* index, double *pi);
+int reconstruct_pi(sdglobal_type* sd_global, lambda_type *lambda, sigma_type *sigma, delta_type *delta,
+                   omega_type *omega, num_type *num, id_type *index, double *pi);
+int calc_W_trans_nu(sdglobal_type *sd_global, cell_type *c, soln_type *s, prob_type *p,
+                    omega_type *omega, num_type *num, ids_type *ids, id_type *index, double *nu);
 #endif

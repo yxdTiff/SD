@@ -1,0 +1,20 @@
+Problem:                                dim1
+First Stage Rows:                       2
+First Stage Columns:                    1
+First Stage Non-zeros:                  1
+Replication No. 0
+Status:                                 REPLICATION SOLUTION
+Total Objective Function Upper Bound:   
+Total Objective Function Lower Bound:   0.641135
+
+First Stage Solutions:
+   No.   Row name   Activity      Lower bound   Upper bound   Dual          Dual STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     0 obj           2.315842e+77 
+     1 c1            3.334897e-01                5.000000e+00  0.000000e+00 
+
+   No. Column name  Activity      Lower bound   Upper bound   Reduced Cost  RC STDEV
+------ ------------ ------------- ------------- ------------- ------------- -------------
+     1 x             3.334897e-01  0.000000e+00               0.000000e+00 
+
+

@@ -962,7 +962,7 @@ void sd_mv_output_files(char *buffer1, char *buffer2, char *fname)
         strcpy(buffer2, "mv resume_time store_time *.out *.lp *.dat ");
     }
     else{
-        strcpy(buffer2, "mv *.out *.lp *.dat ");
+        strcpy(buffer2, "mv *.out *.lp ");
     }
     
 	strcat(buffer2, buffer1);

@@ -1,0 +1,13 @@
+STOCH		gsc
+INDEP		DISCRETE
+    RHS         massBalanceC2[R1,Pr1,2]        90           0.2
+    RHS         massBalanceC2[R1,Pr1,2]        95           0.2
+    RHS         massBalanceC2[R1,Pr1,2]       100           0.2
+    RHS         massBalanceC2[R1,Pr1,2]       105           0.2
+    RHS         massBalanceC2[R1,Pr1,2]       110           0.2    
+    RHS         massBalanceC2[R1,Pr1,3]        90           0.2
+    RHS         massBalanceC2[R1,Pr1,3]        95           0.2
+    RHS         massBalanceC2[R1,Pr1,3]       100           0.2
+    RHS         massBalanceC2[R1,Pr1,3]       105           0.2
+    RHS         massBalanceC2[R1,Pr1,3]       110           0.2
+ENDATA

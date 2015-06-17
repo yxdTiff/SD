@@ -410,15 +410,27 @@ ids_type *new_ids(int num_iter, int sub_col, int sub_row, int rv_g)
 #endif
     return ids;
 }
-id_type *new_id(int num_word)
+id_type *new_id(int num_word, num_type *num, int max_iter)
 {
     id_type *index;
+    int idx;
     
     if(!(index = (id_type *) mem_malloc(sizeof(id_type))))
 
     index->freq = 1;
     index->first_c_k = 0;
     index->phi_cnt = 0;
+    
+    if (!(index->W_trans_nu = arr_alloc(num->sub_cols + 1, double)))
+        err_msg("Allocation", "new_ids", "ids->index->W_trans_nu");
+    
+    if (!(index->pi_omega_flag = arr_alloc(max_iter, BOOL)))
+        err_msg("Allocation", "new_ids", "ids->index->pi_omega_flag");
+    
+    for (idx = 0; idx < max_iter; idx++) {
+        index->pi_omega_flag[idx] = TRUE;
+    }
+    
     return index;
 }
 
@@ -529,6 +541,12 @@ void free_id(id_type *index)
         }
         if (index->phi_cnt) {
             free_phi(index);
+        }
+        if (index->W_trans_nu) {
+            mem_free(index->W_trans_nu);
+        }
+        if (index->pi_omega_flag) {
+            mem_free(index->pi_omega_flag);
         }
         mem_free(index);
     }

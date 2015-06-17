@@ -1,0 +1,12 @@
+
+Log started (V12.6.0.0) Fri Jun  5 15:41:15 2015
+
+
+Selected objective sense:  MINIMIZE
+Selected objective  name:  obj
+Selected RHS        name:  rhs
+
+Problem 'dim6.cor' read.
+Read time = 0.01 sec. (0.00 ticks)
+
+Problem written to file 'dim6.lp'.

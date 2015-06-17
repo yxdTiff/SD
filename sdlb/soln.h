@@ -142,9 +142,11 @@ typedef struct
     int phi_cnt;
     double **phi_val;
     double *phi_cost_delta;
+    double *W_trans_nu;
     int *phi_col_num;
     int *phi_sigma_idx;
     int *phi_lambda_idx;
+    BOOL *pi_omega_flag;
 } id_type, *id_ptr;
 
 typedef struct
@@ -196,6 +198,7 @@ typedef struct
 typedef struct
 {
 	vector Pi; /* Sub poblem dual multipliers*/
+    vector Dj; /* Sub problem reduced cost */
 	double subobj_est; /*added by Yifan 02/01/12*/
 	vector Master_pi;
 	vector Master_dj;

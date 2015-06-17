@@ -722,8 +722,8 @@ int load_stoch(sdglobal_type* sd_global, one_problem *original, identity *ident,
 	int category;
 	double percentile = 0.0, base;
 	double val1, val2, **mean_dest;
-	char field1[15] =
-	{ 0 }, field2[60] =
+	char field1[NAME_SIZE] =
+	{ 0 }, field2[NAME_SIZE] =
 	{ 0 }, field3[15] =
 	{ 0 };
 	char field4[15] =
@@ -733,8 +733,8 @@ int load_stoch(sdglobal_type* sd_global, one_problem *original, identity *ident,
 	{ 0 };
 	char fieldType;
 	/* char	fileType[6];*/
-	char last_col[16] =
-	{ 0 }, last_row[16] =
+	char last_col[NAME_SIZE] =
+	{ 0 }, last_row[NAME_SIZE] =
 	{ 0 };
 	char name[NAME_SIZE] =
 	{ 0 };
@@ -976,7 +976,7 @@ int load_stoch(sdglobal_type* sd_global, one_problem *original, identity *ident,
                         }
                         else
                         {
-                            printf("undefined row name in constraint matrix: %s\n",
+                            printf("undefined row name \"%s\" in constraint matrix\n",
                                     field2);
                             printf(
                                     "Randomness in W metrix will be supported in later release\n");
@@ -1001,7 +1001,7 @@ int load_stoch(sdglobal_type* sd_global, one_problem *original, identity *ident,
                             i = -1;
                         else
                         {
-                            printf("undefined column name in constraint matrix\n");
+                            printf("undefined column name \"%s\" in constraint matrix\n", field1);
                             printf(
                                     "Randomness in W metrix will be supported in later release\n");
                             /*added by Yifan Oct 12 2011*/
@@ -1546,7 +1546,7 @@ int load_time(sd_small *row_num, sd_small *col_num, identity *ident, char *fname
 					*col_num = i;
 				else
 				{
-					printf("unidentified col name in time file\n");
+					printf("unidentified col name \"%s\" in time file\n", field1);
 					printf(
 							"Randomness in Cost Coefficients and W metrix will be supported in later release\n");
 					/*added by Yifan Oct 12 2011*/

@@ -110,6 +110,12 @@ prob_type *new_prob(sdglobal_type* sd_global, one_problem *original, int num_rv,
 		if (!(p->A = (sparse_matrix *) mem_malloc (sizeof(sparse_matrix))))
 			err_msg("Allocation", "new_prob", "prob->A");
 	}
+    
+    if (!(p->W = (sparse_matrix *) mem_malloc (sizeof(sparse_matrix))))
+        err_msg("Allocation", "new_prob", "prob->W");
+    
+    if (!(p->W_trans = (sparse_matrix *) mem_malloc (sizeof(sparse_matrix))))
+        err_msg("Allocation", "new_prob", "prob->W_trans");
 
 	if (!(p->coord = (coord_type *) mem_malloc (sizeof(coord_type))))
 		err_msg("Allocation", "new_prob", "prob->coord");
@@ -226,6 +232,16 @@ void free_prob(sdglobal_type* sd_global, prob_type *p)
 		mem_free(p->A);
 	}
 
+    mem_free(p->W->row);
+    mem_free(p->W->col);
+    mem_free(p->W->val);
+    mem_free(p->W);
+    
+    mem_free(p->W_trans->row);
+    mem_free(p->W_trans->col);
+    mem_free(p->W_trans->val);
+    mem_free(p->W_trans);
+    
 	mem_free(p->num);
 	mem_free(p->c);
 	mem_free(p);
@@ -451,7 +467,7 @@ int decompose(sdglobal_type* sd_global, one_problem *orig, prob_type *p,
 	p->num->sub_cols = s->mac;
 	if (sd_global->config.MASTER_TYPE == SDQP)
 		p->A->cnt = 0; /* Master's A matrix. zl */
-
+    p->W->cnt = 0;
 	/* sd_global->config.MASTER_TYPE indicates whether we are solving the master problem
 	 using basic LP method or regularized QP method. If QP, then we only need to     keep m->mac+3 cuts. zl */
 
@@ -510,6 +526,19 @@ int decompose(sdglobal_type* sd_global, one_problem *orig, prob_type *p,
 			err_msg("Allocaiton", "decompose", "A->val");
 	}
 
+    if (!(p->W->row = arr_alloc(orig->matsz+1, int)))
+        err_msg("Allocation", "decompose", "W->row");
+    if (!(p->W->col = arr_alloc(orig->matsz+1, int)))
+        err_msg("Allocation", "decompose", "W->col");
+    if (!(p->W->val = arr_alloc(orig->matsz+1, double)))
+        err_msg("Allocaiton", "decompose", "W->val");
+    
+    if (!(p->W_trans->row = arr_alloc(orig->matsz+1, int)))
+        err_msg("Allocation", "decompose", "W_trans->row");
+    if (!(p->W_trans->col = arr_alloc(orig->matsz+1, int)))
+        err_msg("Allocation", "decompose", "W_trans->col");
+    if (!(p->W_trans->val = arr_alloc(orig->matsz+1, double)))
+        err_msg("Allocaiton", "decompose", "W_trans->val");
 	/*
 	 ** Make initial allocations of known sizes (based on row
 	 ** and col) for master and subproblem CPLEX data.
@@ -688,9 +717,21 @@ int decompose(sdglobal_type* sd_global, one_problem *orig, prob_type *p,
 				s->matind[s->matsz] = orig->matind[idx] - row;
 				++s->matcnt[c - col];
 				++s->matsz;
+                
+                p->W->val[p->W->cnt + 1] = orig->matval[idx];
+                p->W->row[p->W->cnt + 1] = orig->matind[idx] + 1;
+                p->W->col[p->W->cnt + 1] = c - col + 1;
+                ++p->W->cnt;
 			}
 		}
 	}
+    
+    /* Calculate W^{\top} */
+    for (idx = 0; idx < p->W->cnt; idx++) {
+        p->W_trans->val[idx] = p->W->val[idx];
+        p->W_trans->row[idx] = p->W->col[idx];
+        p->W_trans->col[idx] = p->W->row[idx];
+    }
     
     /* modified by Yifan 2014.06.11 */
     for (c = col; c < orig->mac; c++) {

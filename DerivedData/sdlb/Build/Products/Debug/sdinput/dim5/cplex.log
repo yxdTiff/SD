@@ -1,0 +1,38 @@
+
+Log started (V12.6.0.0) Tue Jun  2 11:24:07 2015
+
+
+Selected objective sense:  MINIMIZE
+Selected objective  name:  obj
+Selected RHS        name:  RHS
+
+Problem 'dim5.cor' read.
+Read time = 0.00 sec. (0.00 ticks)
+
+Problem written to file 'dim5.lp'.
+
+Log started (V12.6.0.0) Tue Jun  2 11:31:04 2015
+
+
+Problem 'dim5.lp' read.
+Read time = 0.00 sec. (0.00 ticks)
+
+Log started (V12.6.0.0) Tue Jun  2 11:34:27 2015
+
+
+Problem 'dim5.lp' read.
+Read time = 0.00 sec. (0.00 ticks)
+
+Problem written to file 'dim5.mps'.
+
+Log started (V12.6.0.0) Tue Jun  2 11:35:00 2015
+
+
+Selected objective sense:  MINIMIZE
+Selected objective  name:  obj
+Selected RHS        name:  rhs
+
+Problem 'dim5.mps' read.
+Read time = 0.00 sec. (0.00 ticks)
+
+Problem written to file 'dim.lp'.

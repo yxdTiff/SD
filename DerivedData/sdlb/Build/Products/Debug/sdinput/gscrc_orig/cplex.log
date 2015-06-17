@@ -1,0 +1,13 @@
+
+Log started (V12.6.0.0) Tue Jun  9 09:21:01 2015
+
+
+Selected objective sense:  MINIMIZE
+Selected objective  name:  totalCost
+Selected RHS        name:  RHS1
+
+Problem 'gscrc_orig.cor' read.
+Read time = 0.01 sec. (0.02 ticks)
+
+Warning:  Output names have been modified to conform to LP format.
+Problem written to file 'gscrc_orig.lp'.

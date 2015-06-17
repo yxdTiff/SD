@@ -223,6 +223,7 @@ soln_type * new_soln(sdglobal_type* sd_global, prob_type *p, vector x_k)
 
 	/* Initial allocation for the subproblem dual vector, including 1-norm */
 	s->Pi = arr_alloc(p->num->sub_rows+1, double);
+    s->Dj = arr_alloc(p->num->sub_cols+1, double);
 	/* Allocating space for the master problem dual vector & slacks JH 4/8/98 */
 	/* Yifan 03/09/2012 Master_pi structure need to be updated at the begining of the optimality full test*/
 	s->Master_pi = arr_alloc(p->num->mast_rows+p->num->max_cuts+1,double);
@@ -307,6 +308,7 @@ void free_soln(prob_type *p, cell_type *c, soln_type *s)
 	mem_free(s->pi_ratio);
 	/* added by Yifan, 09/27/2011*/
 	mem_free(s->Pi);
+    mem_free(s->Dj);
 	mem_free(s->Master_pi);
 	mem_free(s->Master_dj);
 

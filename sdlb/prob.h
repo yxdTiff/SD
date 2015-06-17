@@ -150,6 +150,8 @@ typedef struct
 	sparse_matrix *Tbar;
     sparse_vect *Gbar;
 	sparse_matrix *A; /* to store the A matrix in regularized QP method. zl */
+    sparse_matrix *W; /* to store the W matrix for random cost feasibility check. Yifan */
+    sparse_matrix *W_trans;
 	coord_type *coord;
 	num_type *num;
 	vector c;

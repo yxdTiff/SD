@@ -99,8 +99,9 @@ void form_new_cut(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 
 	cut = new_cut(p->num->mast_cols, s->omega->most, c->k);
 
-	stochastic_updates(sd_global, c, s, c->lambda, c->sigma, s->delta, s->omega,
+	stochastic_updates(sd_global, c, s, p, c->lambda, c->sigma, s->delta, s->omega,
 			p->num, p->Rbar, p->Tbar, c->subprob, s->Pi, omeg_idx, new_omega);
+    
 
 	SD_cut(sd_global, p, c, s, c->sigma, s->delta, s->omega, p->num, cut, s->candid_x,
 			s->pi_ratio, s->max_ratio, s->min_ratio, c->k,
@@ -170,7 +171,7 @@ void form_fea_cut(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 	printf("Inside form_fea_cut; %d cuts now\n", c->cuts->cnt);
 #endif    
 
-	new_sigma = stochastic_updates(sd_global, c, s, c->feasible_lambda,
+	new_sigma = stochastic_updates(sd_global, c, s, p, c->feasible_lambda,
 			c->feasible_sigma, s->feasible_delta, s->omega, p->num, p->Rbar,
 			p->Tbar, c->subprob, s->Pi, omeg_idx, new_omega);
 
@@ -320,7 +321,7 @@ BOOL form_incumb_cut(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 			start = clock(); /* zl, 06/30/04. */
 			cut = new_cut(p->num->mast_cols, s->omega->most, c->k);
 			cut->is_incumbent = TRUE; /*added by Yifan 02/02/2012 indentify a new incumbent cut*/
-			stochastic_updates(sd_global, c, s, c->lambda, c->sigma, s->delta,
+			stochastic_updates(sd_global, c, s, p, c->lambda, c->sigma, s->delta,
 					s->omega, p->num, p->Rbar, p->Tbar, c->subprob, s->Pi,
 					omeg_idx, FALSE);
 			SD_cut(sd_global, p, c, s, c->sigma, s->delta, s->omega, p->num, cut,
@@ -374,7 +375,7 @@ void decrease_feacut_rownum(cell_type *c)
  ** so that the intersection of the new row and new column in delta is
  ** only computed once (they overlap at the bottom, right-hand corner).
  \***********************************************************************/
-BOOL stochastic_updates(sdglobal_type* sd_global, cell_type *c, soln_type *s,
+BOOL stochastic_updates(sdglobal_type* sd_global, cell_type *c, soln_type *s, prob_type * p,
 		lambda_type *lambda, sigma_type *sigma, delta_type *delta,
 		omega_type *omega, num_type *num, sparse_vect *Rbar,
 		sparse_matrix *Tbar, one_problem *subprob, vector Pi, int omeg_idx,
@@ -443,14 +444,17 @@ BOOL stochastic_updates(sdglobal_type* sd_global, cell_type *c, soln_type *s,
             calc_delta_row(sd_global, delta, lambda, omega, num, lamb_idx);
         
         /* If random cost exits and phi show up for the current index */
-        /* Then store all the phi's associate with this index similar */
+        /* Then store all the phis associated with this index similar */
         /* to a dual mutiplier. Think of nu and phi's as a general representation */
         /* of the dual mutiplier */
         if (num->rv_g && s->ids->index[s->ids->current_index_idx]->phi_cnt){
             put_phi_into_sigma_delta(sd_global, c, s, lambda, sigma, delta, omega, num, Rbar, Tbar, s->ids->index[s->ids->current_index_idx]);
         }
-
+        /* W_trans_nu will later be used for checking subproblem dual feasibility */
+        calc_W_trans_nu(sd_global, c, s, p, omega, num, s->ids, s->ids->index[s->ids->current_index_idx], Pi);
     }
+    
+    check_pi_feasibility(sd_global, c, s, p, omega, num, s->ids, s->ids->NewIndex, new_omega);
     
 #ifdef DEBUG
     int idx, obs;

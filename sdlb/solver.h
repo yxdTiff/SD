@@ -55,6 +55,7 @@ BOOL solve_problem(sdglobal_type* sd_global, one_problem *p);
 double get_objective(one_problem *p);
 BOOL get_primal(vector X, one_problem *p, int length);
 BOOL get_dual(vector Pi, one_problem *p, num_type *num, int length);
+BOOL get_reduced_cost(vector Dj, one_problem *p, num_type *num, int length);
 BOOL get_dual_slacks(vector Dj, one_problem *p, num_type *num, int length);
 void remove_problem(one_problem *p);
 BOOL change_col(one_problem *p, int column, vector coef, int start, int stop);

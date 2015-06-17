@@ -34,8 +34,8 @@
 		696004AA1821A00300CD6831 /* utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 6960048F1821A00300CD6831 /* utility.c */; };
 		696004AC1821A04200CD6831 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696004AB1821A04200CD6831 /* CoreFoundation.framework */; };
 		696004AE1821A04800CD6831 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696004AD1821A04800CD6831 /* IOKit.framework */; };
-		698318A618EA86F900B2EB86 /* libcplex.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 698318A518EA86F900B2EB86 /* libcplex.a */; };
 		69A2FEC618A20EE600997825 /* resumeb.c in Sources */ = {isa = PBXBuildFile; fileRef = 69A2FEC518A20EE600997825 /* resumeb.c */; };
+		69A94D111B1E246600F05F6D /* libcplex.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69A94D101B1E246600F05F6D /* libcplex.a */; };
 		69FE2109195C85E200DA3CA3 /* rc.c in Sources */ = {isa = PBXBuildFile; fileRef = 69FE2108195C85E200DA3CA3 /* rc.c */; };
 /* End PBXBuildFile section */
 
@@ -109,10 +109,9 @@
 		696004901821A00300CD6831 /* utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utility.h; sourceTree = "<group>"; };
 		696004AB1821A04200CD6831 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		696004AD1821A04800CD6831 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		696004B41821A2EA00CD6831 /* config.sd */ = {isa = PBXFileReference; lastKnownFileType = text; name = config.sd; path = "../../../../Library/Developer/Xcode/DerivedData/sdlb-aqzmdecdolvenjbvdyqijfayklfa/Build/Products/Debug/config.sd"; sourceTree = "<group>"; };
-		698318A518EA86F900B2EB86 /* libcplex.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcplex.a; path = "../../../../Applications/IBM/ILOG/CPLEX_Studio126/cplex/lib/x86-64_osx/static_pic/libcplex.a"; sourceTree = "<group>"; };
 		69A2FEC518A20EE600997825 /* resumeb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = resumeb.c; sourceTree = "<group>"; };
 		69A2FEC718A20F2500997825 /* resumeb.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = resumeb.h; sourceTree = "<group>"; };
+		69A94D101B1E246600F05F6D /* libcplex.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcplex.a; path = "../../Applications/IBM/ILOG/CPLEX_Studio126/cplex/lib/x86-64_osx/static_pic/libcplex.a"; sourceTree = "<group>"; };
 		69FE2108195C85E200DA3CA3 /* rc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rc.c; sourceTree = "<group>"; };
 		69FE210A195C862A00DA3CA3 /* rc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rc.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -122,7 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				698318A618EA86F900B2EB86 /* libcplex.a in Frameworks */,
+				69A94D111B1E246600F05F6D /* libcplex.a in Frameworks */,
 				696004AE1821A04800CD6831 /* IOKit.framework in Frameworks */,
 				696004AC1821A04200CD6831 /* CoreFoundation.framework in Frameworks */,
 			);
@@ -136,7 +135,6 @@
 			children = (
 				696004B11821A06C00CD6831 /* Framework */,
 				6960045318219FE900CD6831 /* sdlb */,
-				696004B41821A2EA00CD6831 /* config.sd */,
 				6960045218219FE900CD6831 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -217,7 +215,7 @@
 		696004B11821A06C00CD6831 /* Framework */ = {
 			isa = PBXGroup;
 			children = (
-				698318A518EA86F900B2EB86 /* libcplex.a */,
+				69A94D101B1E246600F05F6D /* libcplex.a */,
 				696004AD1821A04800CD6831 /* IOKit.framework */,
 				696004AB1821A04200CD6831 /* CoreFoundation.framework */,
 			);
@@ -403,6 +401,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"/Users/yifanliu/Applications/IBM/ILOG/CPLEX_Studio126/cplex/lib/x86-64_osx/static_pic",
 					"$(USER_APPS_DIR)/IBM/ILOG/CPLEX_Studio126/cplex/lib/x86-64_osx/static_pic",
 				);
 				OTHER_LDFLAGS = "-Wl,-no_compact_unwind";
@@ -436,6 +435,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"/Users/yifanliu/Applications/IBM/ILOG/CPLEX_Studio126/cplex/lib/x86-64_osx/static_pic",
 					"$(USER_APPS_DIR)/IBM/ILOG/CPLEX_Studio126/cplex/lib/x86-64_osx/static_pic",
 				);
 				OTHER_LDFLAGS = "-Wl,-no_compact_unwind";
