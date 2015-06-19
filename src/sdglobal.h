@@ -330,6 +330,9 @@ typedef struct
 	batch_cut_type *bfcuts_pool;
 	double ck[BATCH_SIZE];
 	double Eta0;
+    double z_mean;
+    double z_var;
+    double k;
 	FILE *fptrALLOC;
 	FILE *fptrFREE;
     FILE *fptrOMEGA;

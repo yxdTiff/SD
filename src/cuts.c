@@ -104,6 +104,8 @@ void form_new_cut(sdglobal_type* sd_global, prob_type *p, cell_type *c,
 			s->pi_ratio, s->max_ratio, s->min_ratio, c->k,
 			s->dual_statble_flag);
     
+    printf("mean: %f, std_dev <= : %f\n", sd_global->z_mean + CxX(p->c, s->candid_x, p->num->mast_cols), sqrt(sd_global->z_var));
+
     add_cut(sd_global, cut, p, c, s);
 
 	/* Print all the cuts after adding a cut, for the purpose of cut index
@@ -478,6 +480,10 @@ void SD_cut(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
 	double *argmax_new;
 	double *argmax_old;
 	double *beta;
+    double *z;              /* Yifan 2015-06-17 */
+    double sum_z = 0;       /* Yifan 2015-06-17 */
+    double z_square = 0;    /* Yifan 2015-06-17 */
+    double k = 0;           /* Yifan 2015-06-17 */
 	double argmax_dif_sum = 0;
 	double argmax_all_sum = 0;
 	double vari = 1.0;
@@ -498,7 +504,11 @@ void SD_cut(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
 		err_msg("Allocation", "SD_cut", "argmax_new");
 	if (!(argmax_old = arr_alloc(1, double)))
 		err_msg("Allocation", "SD_cut", "argmax_old");
-
+    
+    /* Yifan 2015-06-17 */
+    if (!(z = arr_alloc(omega->most+1, double)))
+        err_msg("Allocation", "SD_cut", "z");
+    
 	/* by Yifan 02/02/12 */
 	if (cut->is_incumbent)
 	{
@@ -613,9 +623,28 @@ void SD_cut(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
 			for (c = 1; c <= num->rv_cols; c++)
 				cut->beta[delta->col[c]] += delta->val[istar.delta][obs].T[c]
 						* omega->weight[obs];
-
+            
+            z[obs] = *argmax_all;
+            sum_z += omega->weight[obs] * z[obs];
 		}
-
+    
+    /* Yifan 2015-06-17 */
+    for (obs = 0; obs < omega->most; obs++) {
+        k += (double) omega->weight[obs];
+    }
+    
+    /* Yifan 2015-06-17 */
+    if (k > 1) {
+        for (obs = 0; obs < omega->most; obs++) {
+            z_square += omega->weight[obs] * pow((z[obs])/(k-1.0) - sum_z / (k*(k-1.0)),2);
+        }
+        z_square = z_square / k;
+        sd_global->k = k;
+        sd_global->z_mean = sum_z / k;
+        sd_global->z_var = z_square;
+    }
+    
+    
 	if (pi_eval_flag == TRUE)
 	{
 		pi_ratio[num_samples % sd_global->config.SCAN_LEN] = argmax_dif_sum
@@ -663,6 +692,7 @@ void SD_cut(sdglobal_type* sd_global, sigma_type *sigma, delta_type *delta,
 	mem_free(argmax_all);
 	mem_free(argmax_new);
 	mem_free(argmax_old);
+    mem_free(z);            /* Yifan 2015-06-17 */
 	if (cut->is_incumbent)
 	{
 		mem_free(beta);
