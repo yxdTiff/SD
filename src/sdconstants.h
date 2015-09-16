@@ -13,7 +13,7 @@
 #define KEY_PAGE	500 / MAX_BITS
 
 //input.c
-#define WORDSIZE 16
+#define WORDSIZE 64
 #define BLOCKSIZE 20
 #define STRSIZE 180
 
