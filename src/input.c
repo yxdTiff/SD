@@ -752,6 +752,22 @@ int load_stoch(sdglobal_type* sd_global, one_problem *original, identity *ident,
 		return 0;
 	}
 
+  /* Do a pre-pass to count the total number of blocks */  
+    while (get_line(&stoch, field1, field2, field3, field4, field5, field6, field7, &fieldType)) {
+        if (strcmp(field1, "BLOCKS") == 0)
+            num_rvs = 1;
+        
+        if (strcmp(field1, "BL") == 0)
+            num_rvs++;
+    }
+
+    /* Open up sto file again for further processing */
+    if (!(get_file(&stoch, fname, ".sto", name)))
+    {
+        printf("failure opening stoch file\n");
+        return 0;
+    }
+    
 	last_col[0] = '\0';
 	last_row[0] = '\0';
 
@@ -819,6 +835,8 @@ int load_stoch(sdglobal_type* sd_global, one_problem *original, identity *ident,
 		While data remains in stoch file continue reading and storing
 	 of values in struct omegas
 	 \******************************************************************/
+    /* Do a pre-pass to count the total number of blocks */
+    
 	while (get_line(&stoch, field1, field2, field3, field4, field5, field6,
 			field7, &fieldType))
 	{
